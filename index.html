@@ -567,7 +567,16 @@
     font-family:'Pilat Extended',Arial,sans-serif;font-weight:900;color:#fff;font-size:30px;
     text-transform:uppercase;letter-spacing:0.02em;line-height:1;
   }
-  .bm-dope .ex{color:#6285ED;}
+   .bm-dope .ex{color:#6285ED;}
+
+   /* ---------- MERK-WOORDMERKEN (fix: bm-text had geen kleur -> onzichtbaar op donkere balk) ---------- */
+   .brand-mark .bm-text{
+     font-family:'Pilat Extended','Pilat',Arial,sans-serif;font-weight:900;color:#fff;
+     font-size:16px;line-height:1.12;letter-spacing:0.02em;text-transform:uppercase;
+     text-align:center;white-space:normal;max-width:100%;
+   }
+   @media(max-width:800px){ .brand-mark .bm-text{font-size:14px;} }
+   .brand-block .bb-logo .bm-text{color:#fff;}
 
   /* ---------- MERKEN PAGE ---------- */
   .brand-block-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;}
