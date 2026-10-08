@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>THH Europe · Beheer</title>
+<style>
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Regular.woff') format('woff');font-weight:400;font-display:swap}
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Book.woff') format('woff');font-weight:500;font-display:swap}
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Bold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Black.woff') format('woff');font-weight:900;font-display:swap}
+@font-face{font-family:'Pilat Extended';src:url('assets/fonts/PilatExtended-Bold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:'Pilat Extended';src:url('assets/fonts/PilatExtended-Black.woff') format('woff');font-weight:900;font-display:swap}
+/* THH Europe — dark beheer (kleuren en typografie van thheurope.com) */
+:root{--bg:#0F0F0F;--panel:#15191D;--panel2:#1B1B1B;--line:#2a2a2a;--line2:#343a40;--ink:rgba(255,255,255,.92);--text:rgba(255,255,255,.78);--muted:#8A8A8A;--muted2:#9A9A9A;--white:#fff;--black:#15191D;
+--blue:#fff;--blue-soft:rgba(255,255,255,.08);
+--ok:#3CCB9A;--ok-soft:rgba(18,134,102,.2);--green:#128666;--warn:#F2B544;--warn-soft:rgba(242,181,68,.13);--bad:#FF6B63;--bad-soft:rgba(225,6,0,.16);--red:#e10600}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.5 'Pilat',Arial,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--white)}
+button,input,select,textarea{font:inherit;color:inherit}
+.hidden{display:none!important}
+::selection{background:rgba(255,255,255,.2)}
+/* logo zoals thheurope.com */
+.tgl-logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.tgl-badge{background:#fff;color:var(--black);font:900 11px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.06em;padding:5px 7px;border-radius:3px}
+.tgl-word{display:flex;flex-direction:column;gap:3px}
+.tgl-main{font:900 15px/1 'Pilat Extended',Arial,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:rgba(255,255,255,.78);white-space:nowrap}
+.tgl-main .tgl-accent{color:#fff}
+.tgl-sub{font:700 7px/1 'Pilat',Arial,sans-serif;text-transform:uppercase;letter-spacing:.32em;color:rgba(255,255,255,.55);white-space:nowrap}
+/* layout */
+.top{position:sticky;top:0;z-index:20;height:60px;background:var(--bg);border-bottom:1px solid var(--line);color:#fff;display:flex;align-items:center;gap:16px;padding:0 22px}
+.top .sect{font:700 11px/1 'Pilat',Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding-left:16px;border-left:1px solid var(--line)}
+.top .sp{flex:1}
+.top .who{font-size:12px;color:var(--muted)}
+.top button{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:4px;padding:6px 12px;cursor:pointer;font:700 12px/1 'Pilat',Arial,sans-serif}
+.top button:hover{border-color:#fff}
+.env{background:var(--red);color:#fff;font:700 10px/1 'Pilat',Arial,sans-serif;padding:5px 8px;border-radius:3px;letter-spacing:.12em}
+.wrap{display:flex;min-height:calc(100vh - 60px)}
+nav.side{width:214px;flex:0 0 214px;background:var(--panel);border-right:1px solid var(--line);padding:18px 12px}
+nav.side a{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:4px;text-decoration:none;color:rgba(255,255,255,.66);font:700 12px/1.2 'Pilat',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+nav.side a:hover{background:var(--panel2);color:#fff}
+nav.side a.on{background:var(--panel2);color:#fff;box-shadow:inset 2px 0 0 #fff}
+nav.side .cnt{background:var(--red);color:#fff;border-radius:10px;font:700 10px/18px 'Pilat',Arial,sans-serif;letter-spacing:0;padding:0 7px;min-width:20px;text-align:center}
+main{flex:1;min-width:0;padding:26px 30px 70px;max-width:1440px}
+h1{font:900 24px/1.1 'Pilat Extended',Arial,sans-serif;text-transform:uppercase;letter-spacing:-.5px;margin:0 0 16px;color:#fff}
+h2{font:900 13px/1.2 'Pilat Extended',Arial,sans-serif;text-transform:uppercase;letter-spacing:.02em;margin:26px 0 12px;color:#fff}
+.eyebrow{font:700 11px/1 'Pilat',Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row .sp{flex:1}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.g2{grid-template-columns:1fr 1fr}
+.g32{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:14px;align-items:start}
+.tscroll{overflow-x:auto;border-radius:8px}
+.tscroll table td,.tscroll table th{padding:9px 9px}
+@media(max-width:1100px){.g32{grid-template-columns:1fr}}
+@media(max-width:900px){.top{padding:0 12px;gap:10px}.top .who,.top .sect,.top .tgl-word{display:none}.wrap{flex-direction:column}nav.side{width:auto;flex:none;display:flex;gap:2px;overflow-x:auto;padding:6px 8px;border-right:0;border-bottom:1px solid var(--line)}nav.side a{white-space:nowrap;margin:0;gap:6px}nav.side a.on{box-shadow:inset 0 -2px 0 #fff}.g2{grid-template-columns:1fr}main{padding:16px 14px 60px}.kv{grid-template-columns:110px 1fr}table{display:block;overflow-x:auto}}
+.stat .k{font:700 10.5px/1.3 'Pilat',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font:900 22px/1.15 'Pilat Extended',Arial,sans-serif;margin-top:6px;color:#fff;letter-spacing:-.3px}
+.stat .s{font-size:12px;color:var(--muted2);margin-top:6px}
+.stat.alert .v{color:var(--bad)}
+.stat.big .v{font-size:30px}
+/* tabellen */
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 10.5px/1.3 'Pilat',Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:var(--panel2);white-space:nowrap}
+tfoot td{background:var(--panel2);color:#fff}
+tr:last-child td{border-bottom:0}
+tr.click{cursor:pointer}
+tr.click:hover td{background:#1d2227}
+td.num,th.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+b,strong{color:#fff}
+/* badges */
+.b{display:inline-block;border-radius:3px;padding:2px 7px;font:700 10.5px/1.4 'Pilat',Arial,sans-serif;letter-spacing:.04em;white-space:nowrap;text-decoration:none}
+.b.ok{background:var(--ok-soft);color:var(--ok)}
+.b.warn{background:var(--warn-soft);color:var(--warn)}
+.b.bad{background:var(--bad-soft);color:var(--bad)}
+.b.info{background:rgba(255,255,255,.08);color:#DADADA}
+.b.grey{background:rgba(255,255,255,.05);color:var(--muted2)}
+.b.test{background:var(--red);color:#fff}
+/* illustratief: klein rood rondje */
+.dd{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-left:6px;vertical-align:1px;box-shadow:0 0 0 2px rgba(225,6,0,.22);flex:none}
+/* formulieren */
+label.f{display:block;font:700 10.5px/1.3 'Pilat',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+label.f input,label.f select,label.f textarea{display:block;width:100%;margin-top:5px;text-transform:none;letter-spacing:0;font-weight:400;font-size:14px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],input[type=date],select,textarea{border:1px solid var(--line2);border-radius:4px;padding:8px 10px;background:var(--bg);color:#fff;min-width:0}
+input::placeholder,textarea::placeholder{color:#6f6f6f}
+select option{background:var(--panel);color:#fff}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.12)}
+input[type=checkbox]{accent-color:#fff}
+textarea{min-height:70px;resize:vertical}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #fff;background:#fff;color:var(--black);border-radius:4px;padding:8px 14px;font:700 12.5px/1.2 'Pilat',Arial,sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{opacity:.88}
+.btn.sec{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
+.btn.sec:hover{border-color:#fff;opacity:1}
+.btn.blue{background:#fff;border-color:#fff;color:var(--black)}
+.btn.ok{background:var(--green);border-color:var(--green);color:#fff}
+.btn.bad{background:transparent;color:var(--bad);border-color:rgba(255,107,99,.45)}
+.btn.sm{padding:5px 10px;font-size:11.5px}
+.btn[disabled]{opacity:.4;cursor:default}
+.chk{display:flex;gap:8px;align-items:center;font-size:13px;margin:6px 0;cursor:pointer}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{border:1px solid var(--line2);background:transparent;color:rgba(255,255,255,.75);border-radius:4px;padding:6px 12px;cursor:pointer;font:700 11px/1 'Pilat',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.tabs button:hover{border-color:#fff;color:#fff}
+.tabs button.on{background:#fff;color:var(--black);border-color:#fff}
+.stats4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+@media(max-width:800px){.stats4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.chipf{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,.08);color:#fff;border-radius:4px;padding:4px 10px;font-size:12px;font-weight:700}
+.chipf button{border:0;background:none;color:inherit;cursor:pointer;font-weight:700;padding:0}
+tr.late td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:5px 12px;font-size:13px}
+.kv div:nth-child(odd){color:var(--muted)}
+.note{border-left:3px solid var(--line2);padding:4px 10px;margin:6px 0;font-size:12px;color:var(--text)}
+.note.c{border-color:#fff}
+.msg{border-radius:4px;padding:10px 13px;margin:10px 0;font-size:13px;border:1px solid transparent}
+.msg.ok{background:var(--ok-soft);color:var(--ok)}
+.msg.warn{background:var(--warn-soft);color:var(--warn)}
+.msg.bad{background:var(--bad-soft);color:var(--bad)}
+.msg.info{background:rgba(255,255,255,.06);color:var(--text);border-color:var(--line)}
+/* login */
+.login{max-width:400px;margin:10vh auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:30px}
+.login .tgl-logo{margin-bottom:22px}
+.login h1{margin-bottom:6px;font-size:20px}
+.login p{color:var(--muted);margin:0 0 20px}
+/* toast */
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#fff;color:var(--black);padding:11px 18px;border-radius:4px;font:700 13px/1.3 'Pilat',Arial,sans-serif;z-index:99;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+#toast.on{opacity:1}
+/* prijzen */
+td input.pr{width:88px;text-align:right;padding:4px 6px}
+tr.dirty td{background:rgba(242,181,68,.08)}
+.pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
+.back{display:inline-block;margin-bottom:12px;text-decoration:none;font:700 11px/1 'Pilat',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.back:hover{color:#fff}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #444;border-top-color:#fff;border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px}
+@keyframes s{to{transform:rotate(360deg)}}
+.share{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+pre.data{white-space:pre-wrap;font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:8px;margin:6px 0 0;max-height:220px;overflow:auto;color:var(--text)}
+/* dashboard */
+.dash-head{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.dash-head h1{margin:0}
+.dash-head .sp{flex:1}
+.kpis{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:12px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi-up{color:var(--ok)}.kpi-down{color:var(--bad)}
+.chart-card{margin-top:14px;padding:18px 18px 10px}
+.chart-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.chart-top h2{margin:0}
+.legend{display:flex;gap:14px;align-items:center;font-size:11.5px;color:var(--muted2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+svg.chart{display:block;width:100%;height:auto}
+svg.chart text{font-family:'Pilat',Arial,sans-serif}
+svg.chart .bar{fill:#fff}
+svg.chart .bar.fut{fill:rgba(255,255,255,.14)}
+svg.chart .ghost{fill:rgba(255,255,255,.13)}
+svg.chart g.m:hover .bar{fill:#DADADA}
+svg.chart g.m:hover .hov{fill:rgba(255,255,255,.04)}
+.demo-tgl{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:4px;padding:6px 10px;font-size:12px;color:var(--text);cursor:pointer;user-select:none}
+.demo-tgl:hover{border-color:#fff}
+.ops{margin-top:30px;padding-top:6px;border-top:1px solid var(--line)}
+.yr-list{list-style:none;margin:0;padding:0}
+.yr-list li{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.yr-list li:last-child{border-bottom:0}
+.bar-in{height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:5px;overflow:hidden}
+.bar-in span{display:block;height:100%;background:#fff}
+/*@@CAMPCSS*/
+.camp-grid{display:grid;grid-template-columns:minmax(360px,1fr) 680px;gap:16px;align-items:start}
+.camp-grid>div{min-width:0}
+.camp-form>.card{margin-bottom:12px}
+.camp-form input,.camp-form select,.camp-form textarea{max-width:100%;box-sizing:border-box}
+.camp-prev{position:sticky;top:12px}
+.pv-wrap{background:#0F0F0F;border:1px solid var(--line);border-radius:6px;overflow:auto;max-height:calc(100vh - 150px);display:flex;justify-content:center}
+.pv-wrap iframe{border:0;height:2300px;background:#0F0F0F;transition:width .2s}
+h3.ch{font:900 13px/1.2 'Pilat Extended','Pilat',Arial,sans-serif;text-transform:uppercase;letter-spacing:.02em;margin:0 0 12px;color:#fff}
+.psel{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pitem{display:flex;gap:10px;align-items:center;background:#0F0F0F;border:1px solid var(--line);border-radius:6px;padding:8px}
+.pitem img{width:46px;height:46px;object-fit:contain;background:#fff;border-radius:4px;flex:none}
+.pitem .pt{flex:1;min-width:0;font-size:12.5px;line-height:1.35}
+.pitem .pt>div:nth-child(2){overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pitem .pb{display:flex;flex-direction:column;gap:3px}
+.pitem .pb .btn{padding:2px 7px;font-size:11px}
+.pres{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;max-height:340px;overflow:auto}
+.pres .pr{display:flex;gap:8px;align-items:center;text-align:left;background:transparent;border:1px solid var(--line);border-radius:6px;padding:6px;color:#fff;cursor:pointer;font:400 12px/1.3 'Pilat',Arial,sans-serif}
+.pres .pr:hover{border-color:#fff}
+.pres .pr[disabled]{opacity:.35;cursor:default}
+.pres .pr img{width:38px;height:38px;object-fit:contain;background:#fff;border-radius:4px;flex:none}
+.pres .pr>span:nth-child(2){flex:1}
+@media(max-width:1250px){.camp-grid{grid-template-columns:1fr}.camp-prev{position:static}}
+@media(max-width:700px){.psel,.pres{grid-template-columns:1fr}.pv-wrap{justify-content:flex-start}.pv-wrap iframe{width:100%!important;min-width:360px}}
+/*@@CAMPCSS_END*/
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- LOGIN / WACHTWOORD -->
+<section id="vLogin" class="hidden">
+  <form class="login" id="fLogin" autocomplete="on">
+    <span class="tgl-logo"><span class="tgl-badge">THHEU</span><span class="tgl-word"><span class="tgl-main">THH <span class="tgl-accent">EUROPE</span></span><span class="tgl-sub">Wholesale Supplements</span></span></span>
+    <h1>Beheer</h1>
+    <p>Log in met het beheeraccount.</p>
+    <label class="f">E-mail<input type="email" name="email" required autocomplete="username" /></label>
+    <label class="f">Wachtwoord<input type="password" name="password" required autocomplete="current-password" /></label>
+    <label class="chk"><input type="checkbox" name="remember" /> Ingelogd blijven (30 dagen)</label>
+    <div id="loginMsg"></div>
+    <div class="row" style="margin-top:12px"><button class="btn blue" type="submit">Inloggen</button><span class="sp"></span><a href="#" id="lnkForgot" class="small">Wachtwoord vergeten?</a></div>
+  </form>
+</section>
+<section id="vSetpass" class="hidden">
+  <form class="login" id="fSetpass">
+    <span class="tgl-logo"><span class="tgl-badge">THHEU</span><span class="tgl-word"><span class="tgl-main">THH <span class="tgl-accent">EUROPE</span></span><span class="tgl-sub">Wholesale Supplements</span></span></span>
+    <h1>Nieuw wachtwoord</h1>
+    <p id="spEmail"></p>
+    <label class="f">Nieuw wachtwoord (min. 10 tekens)<input type="password" name="password" minlength="10" required autocomplete="new-password" /></label>
+    <label class="f">Herhaal<input type="password" name="password2" minlength="10" required autocomplete="new-password" /></label>
+    <div id="spMsg"></div>
+    <button class="btn blue" type="submit" style="margin-top:10px">Opslaan en inloggen</button>
+  </form>
+</section>
+
+<!-- APP -->
+<section id="vApp" class="hidden">
+  <header class="top">
+    <span class="tgl-logo"><span class="tgl-badge">THHEU</span><span class="tgl-word"><span class="tgl-main">THH <span class="tgl-accent">EUROPE</span></span><span class="tgl-sub">Wholesale Supplements</span></span></span>
+    <span class="sect">Beheer</span>
+    <span class="env hidden" id="envTag">TESTOMGEVING</span>
+    <span class="sp"></span>
+    <span class="who" id="who"></span>
+    <button id="btnLogout">Uitloggen</button>
+  </header>
+  <div class="wrap">
+    <nav class="side" id="nav">
+      <a href="#dashboard" data-v="dashboard">Overzicht</a>
+      <a href="#klanten" data-v="klanten">Klanten <span class="cnt hidden" id="cntPending"></span></a>
+      <a href="#orders" data-v="orders">Bestellingen <span class="cnt hidden" id="cntUnshipped"></span></a>
+      <a href="#facturen" data-v="facturen">Facturen <span class="cnt hidden" id="cntLate"></span></a>
+      <a href="#prijzen" data-v="prijzen">Prijzen</a>
+      <a href="#campagnes" data-v="campagnes">Campagnes</a>
+      <a href="#aanvragen" data-v="aanvragen">Aanvragen <span class="cnt hidden" id="cntReq"></span></a>
+      <a href="#instellingen" data-v="instellingen">Instellingen</a>
+      <a href="#log" data-v="log">Logboek</a>
+    </nav>
+    <main id="main"></main>
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+var API = "https://thehealthhouse.nl/wp-json/thhe/v1/";
+var TK = "thheAdminToken", AK = "thheAdminAccount";
+var S = { acc:null, stats:null, dashYear:0, inv:{state:"", year:"", q:"", contact:"", contactName:""}, orders:{status:"open", test:0, page:1}, prices:{q:"", flag:"", brand:"", page:1, rows:[], dirty:{}}, accounts:{status:"", q:""} };
+var IS_TEST = !/^(www\.)?thheurope\.com$/.test(location.hostname);
+
+/* ---------- helpers ---------- */
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s){ return String(s === null || s === undefined ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function eur(n){ if(n === null || n === undefined || n === "" || isNaN(n)) return "—"; var v = Number(n), s = Math.abs(v).toFixed(2).split("."); s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, "."); return (v < 0 ? "- " : "") + "\u20ac " + s[0] + "," + s[1]; }
+function num(n, d){ if(n === null || n === undefined || n === "") return ""; return Number(n).toFixed(d === undefined ? 2 : d).replace(".", ","); }
+function parseNum(s){ s = String(s || "").trim().replace(/[^0-9,.\-]/g, ""); if(s === "") return null; var c = s.lastIndexOf(","), d = s.lastIndexOf("."); if(c > d) s = s.replace(/\./g, "").replace(",", "."); else s = s.replace(/,/g, ""); var v = parseFloat(s); return isNaN(v) ? null : v; }
+function toast(m){ var t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove("on"); }, 3200); }
+function ls(k){ try{ return localStorage.getItem(k) || sessionStorage.getItem(k) || ""; }catch(e){ return ""; } }
+function token(){ return ls(TK); }
+function setSess(tok, acc, rem){ try{ var a = rem ? localStorage : sessionStorage, b = rem ? sessionStorage : localStorage; a.setItem(TK, tok); a.setItem(AK, JSON.stringify(acc)); b.removeItem(TK); b.removeItem(AK); }catch(e){} S.acc = acc; }
+function clearSess(){ try{ [localStorage, sessionStorage].forEach(function(s){ s.removeItem(TK); s.removeItem(AK); }); }catch(e){} S.acc = null; }
+function api(path, body){
+  var h = { "Content-Type":"application/json", "Accept":"application/json" };
+  if(token()) h["X-THHE-Token"] = token();
+  return fetch(API + path, { method:"POST", headers:h, body:JSON.stringify(body || {}), credentials:"omit", cache:"no-store" })
+    .then(function(r){ return r.text().then(function(t){ var d; try{ d = JSON.parse(t); }catch(e){ d = { message: t.slice(0, 300) }; } return { ok:r.ok, status:r.status, data:d || {} }; }); })
+    .catch(function(){ return { ok:false, status:0, data:{ message:"Geen verbinding met de server" } }; })
+    .then(function(res){
+      if(res.status === 401 && token()){ clearSess(); toast("Sessie verlopen, log opnieuw in"); show("login"); }
+      return res;
+    });
+}
+function errMsg(res){ return (res.data && (res.data.message || res.data.error)) || ("Fout " + res.status); }
+function msg(el, kind, text){ el.innerHTML = text ? '<div class="msg ' + kind + '">' + esc(text) + "</div>" : ""; }
+function busy(btn, on){ if(!btn) return; if(on){ btn._t = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="spin"></span> ' + btn._t; } else { btn.disabled = false; if(btn._t) btn.innerHTML = btn._t; } }
+function download(name, text, type){ var b = new Blob([text], { type: type || "text/csv;charset=utf-8" }); var a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+function copy(text){ if(navigator.clipboard) return navigator.clipboard.writeText(text).then(function(){ toast("Gekopieerd"); }, function(){ prompt("Kopieer:", text); }); prompt("Kopieer:", text); }
+function dt(s){ if(!s) return "—"; var m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})[ T]?(\d{2}:\d{2})?/); return m ? (m[3] + "-" + m[2] + "-" + m[1] + (m[4] ? " " + m[4] : "")) : s; }
+
+var ACC_ST = { pending:["Wacht op goedkeuring","warn"], approved:["Actief","ok"], rejected:["Afgewezen","grey"], blocked:["Geblokkeerd","bad"] };
+var ORD_ST = { "pending":["Wacht op betaling","warn"], "on-hold":["In afwachting","warn"], "processing":["Te verzenden","info"], "completed":["Verzonden","ok"], "cancelled":["Geannuleerd","grey"], "refunded":["Terugbetaald","grey"], "failed":["Mislukt","bad"] };
+var VAT_MODE = { nl:"NL btw", ic:"Btw verlegd", "export":"Export 0%" };
+function badge(map, k){ var v = map[k] || [k || "—", "grey"]; return '<span class="b ' + v[1] + '">' + esc(v[0]) + "</span>"; }
+function ordBadge(o){ var h = badge(ORD_ST, o.wc_status); if(o.tracking) h += ' <span class="b ' + (o.status === "delivered" ? "ok" : "info") + '">' + (o.status === "delivered" ? "Bezorgd" : "T&amp;T") + "</span>"; if(o.test) h += ' <span class="b test">TEST</span>'; return h; }
+
+/* ---------- views ---------- */
+function show(which){
+  $("#vLogin").classList.toggle("hidden", which !== "login");
+  $("#vSetpass").classList.toggle("hidden", which !== "setpass");
+  $("#vApp").classList.toggle("hidden", which !== "app");
+}
+
+/* ---------- login ---------- */
+$("#fLogin").addEventListener("submit", function(e){
+  e.preventDefault();
+  var f = e.target, btn = f.querySelector("button[type=submit]"), box = $("#loginMsg");
+  msg(box); busy(btn, true);
+  api("login", { email:f.email.value.trim(), password:f.password.value, remember:f.remember.checked ? 1 : 0, admin:1 }).then(function(res){
+    busy(btn, false);
+    if(!res.ok || !res.data.token){ msg(box, "bad", res.status === 429 ? "Te veel pogingen. Probeer het over 15 minuten opnieuw." : "E-mail of wachtwoord onjuist."); return; }
+    if(!res.data.account || res.data.account.role !== "admin"){ msg(box, "bad", "Dit account heeft geen beheerrechten."); return; }
+    setSess(res.data.token, res.data.account, f.remember.checked);
+    f.password.value = "";
+    start();
+  });
+});
+$("#lnkForgot").addEventListener("click", function(e){
+  e.preventDefault();
+  var em = $("#fLogin").email.value.trim() || prompt("E-mailadres van het beheeraccount:");
+  if(!em) return;
+  api("password/forgot", { email:em }).then(function(){ msg($("#loginMsg"), "info", "Als dit adres bestaat, is er een herstellink gemaild. Die is 2 uur geldig."); });
+});
+function hashParams(){ var h = location.hash, i = h.indexOf("?"), o = {}; if(i < 0) return o; h.slice(i + 1).split("&").forEach(function(p){ var kv = p.split("="); o[decodeURIComponent(kv[0])] = decodeURIComponent((kv[1] || "").replace(/\+/g, " ")); }); return o; }
+$("#fSetpass").addEventListener("submit", function(e){
+  e.preventDefault();
+  var f = e.target, p = hashParams(), btn = f.querySelector("button"), box = $("#spMsg");
+  if(f.password.value !== f.password2.value){ msg(box, "bad", "De wachtwoorden zijn niet gelijk."); return; }
+  busy(btn, true);
+  api("password/set", { email:p.e, token:p.token, password:f.password.value }).then(function(res){
+    busy(btn, false);
+    if(!res.ok){ msg(box, "bad", res.data.error === "invalid_link" ? "Deze link is ongeldig of verlopen. Vraag een nieuwe aan." : errMsg(res)); return; }
+    if(!res.data.account || res.data.account.role !== "admin"){ msg(box, "ok", "Wachtwoord opgeslagen. Dit is geen beheeraccount; log in via de website."); return; }
+    setSess(res.data.token, res.data.account, false);
+    history.replaceState(null, "", location.pathname + "#dashboard");
+    start();
+  });
+});
+$("#btnLogout").addEventListener("click", function(){ clearSess(); location.hash = ""; show("login"); });
+
+/* ---------- router ---------- */
+function route(){
+  var h = location.hash.replace(/^#/, "");
+  if(h.indexOf("wachtwoord") === 0){ var p = hashParams(); $("#spEmail").textContent = p.e || ""; show("setpass"); return; }
+  if(!token()){ show("login"); return; }
+  show("app");
+  var parts = h.split("?")[0].split("/"), v = parts[0] || "dashboard", id = parts[1];
+  $$("#nav a").forEach(function(a){ a.classList.toggle("on", a.getAttribute("data-v") === v || (v === "klant" && a.getAttribute("data-v") === "klanten") || (v === "order" && a.getAttribute("data-v") === "orders") || (v === "mbklanten" && a.getAttribute("data-v") === "facturen") || (v === "campagne" && a.getAttribute("data-v") === "campagnes")); });
+  var m = $("#main"); m.innerHTML = '<p class="muted"><span class="spin"></span> Laden…</p>';
+  window.scrollTo(0, 0);
+  ({ dashboard:vDash, klanten:vAccounts, klant:vAccount, nieuw:vAccountNew, orders:vOrders, order:vOrder, prijzen:vPrices, facturen:vInvoices, mbklanten:vInvContacts, aanvragen:vRequests, campagnes:vCamps, campagne:vCamp, instellingen:vSettings, log:vLog }[v] || vDash)(m, id);
+}
+window.addEventListener("hashchange", route);
+
+function refreshCounts(){
+  return api("admin/stats").then(function(res){
+    if(!res.ok) return;
+    S.stats = res.data;
+    var set = function(id, n){ var el = $(id); el.textContent = n; el.classList.toggle("hidden", !n); };
+    set("#cntPending", (res.data.accounts || {}).pending || 0);
+    set("#cntUnshipped", res.data.unshipped || 0);
+    set("#cntReq", res.data.requests_new || 0);
+  });
+}
+
+/* ---------- dashboard ---------- */
+var MND = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+var MND_L = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+var DEMO_T = "Illustratief — geen echte factuur (niet in Moneybird, niet zichtbaar voor klanten)";
+function dd(on){ return on ? '<span class="dd" title="' + DEMO_T + '"></span>' : ""; }
+function eur0(n){ var v = Math.round(Number(n) || 0), s = Math.abs(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); return (v < 0 ? "- " : "") + "\u20ac " + s; }
+function eurK(n){ var v = Number(n) || 0; if(Math.abs(v) >= 1e6) return "\u20ac " + (v / 1e6).toFixed(1).replace(".", ",") + "M"; if(Math.abs(v) >= 1e4) return "\u20ac " + Math.round(v / 1e3) + "k"; if(Math.abs(v) >= 1e3) return "\u20ac " + (v / 1e3).toFixed(1).replace(".", ",") + "k"; return "\u20ac " + Math.round(v); }
+function pctTxt(p){ if(p === null || p === undefined || !isFinite(p)) return "—"; return (p > 0 ? "+" : "") + String(Math.round(p * 10) / 10).replace(".", ",") + "%"; }
+function kpi(k, v, sub, cls){ return '<div class="card stat' + (cls ? " " + cls : "") + '"><div class="k">' + k + '</div><div class="v">' + v + "</div>" + (sub ? '<div class="s">' + sub + "</div>" : "") + "</div>"; }
+function chartSvg(R){
+  var M = R.months, now = new Date(), curY = R.current_year, y = R.year, curM = now.getMonth() + 1, showDemo = R.demo && R.demo.show;
+  var W = 960, H = 300, L = 58, Rp = 10, T = 26, B = 34, cw = (W - L - Rp) / 12, ih = H - T - B;
+  var max = 0; M.forEach(function(m){ max = Math.max(max, +m.excl, +m.prev_excl); });
+  if(max <= 0) max = 1000;
+  var mag = Math.pow(10, Math.floor(Math.log10(max))), step = [1, 2, 2.5, 5, 10].map(function(f){ return f * mag; }).find(function(s){ return max / s <= 4.2; }) || mag * 10;
+  var top = Math.ceil(max * 1.08 / step) * step, yv = function(v){ return T + ih - (v / top) * ih; };
+  var s = '<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Omzet per maand ' + y + '">';
+  for(var g = 0; g <= top + 1e-6; g += step){ var gy = yv(g); s += '<line x1="' + L + '" x2="' + (W - Rp) + '" y1="' + gy + '" y2="' + gy + '" stroke="#2a2a2a" stroke-width="1"' + (g ? ' stroke-dasharray="2 4"' : "") + "/>" + '<text x="' + (L - 10) + '" y="' + (gy + 4) + '" fill="#8A8A8A" font-size="11" text-anchor="end">' + eurK(g) + "</text>"; }
+  M.forEach(function(m, i){
+    var x0 = L + i * cw, bw = cw * 0.46, gw = cw * 0.66, cx = x0 + cw / 2;
+    var fut = y > curY || (y === curY && m.m > curM);
+    var tip = MND_L[i] + " " + y + ": " + eur(m.excl) + " excl. btw · " + m.n + " facturen" + (showDemo && +m.demo_excl ? " (waarvan illustratief " + eur(m.demo_excl) + ")" : "") + "\n" + MND_L[i] + " " + (y - 1) + ": " + eur(m.prev_excl);
+    s += '<g class="m"><title>' + esc(tip) + "</title>" + '<rect class="hov" x="' + x0 + '" y="' + T + '" width="' + cw + '" height="' + ih + '" fill="transparent"/>';
+    if(+m.prev_excl > 0){ var py = yv(+m.prev_excl); s += '<rect class="ghost" x="' + (cx - gw / 2) + '" y="' + py + '" width="' + gw + '" height="' + (T + ih - py) + '" rx="2"/>'; }
+    if(+m.excl !== 0){
+      var v = Math.max(0, +m.excl), by = yv(v), h = Math.max(1.5, T + ih - by);
+      s += '<rect class="bar' + (fut ? " fut" : "") + '" x="' + (cx - bw / 2) + '" y="' + (T + ih - h) + '" width="' + bw + '" height="' + h + '" rx="2"/>';
+      var ly = T + ih - h - 8;
+      s += '<text x="' + cx + '" y="' + ly + '" fill="rgba(255,255,255,.78)" font-size="11" font-weight="700" text-anchor="middle">' + eurK(m.excl) + "</text>";
+      if(showDemo && +m.demo_excl > 0) s += '<circle cx="' + cx + '" cy="' + (ly - 14) + '" r="3.6" fill="#e10600"/>';
+    }
+    s += '<text x="' + cx + '" y="' + (H - 12) + '" fill="' + (y === curY && m.m === curM ? "#fff" : "#8A8A8A") + '" font-size="10.5" font-weight="700" letter-spacing="1.2" text-anchor="middle">' + MND[i].toUpperCase() + "</text></g>";
+  });
+  return s + "</svg>";
+}
+function vDash(m){
+  var y = S.dashYear || new Date().getFullYear();
+  Promise.all([ refreshCounts(), api("admin/revenue", { year:y }), api("admin/accounts", { status:"pending" }), api("admin/orders", { status:"processing,on-hold", test:0 }) ]).then(function(r){
+    var s = S.stats || {}, acc = s.accounts || {}, R = r[1].ok ? r[1].data : null, pend = (r[2].data.accounts || []), ords = (r[3].data.orders || []);
+    var h = '<div class="dash-head"><div><div class="eyebrow">THH Europe · B2B Wholesale</div><h1>Overzicht</h1></div><span class="sp"></span>';
+    if(R){
+      var yrs = (R.years || []).map(function(x){ return x.year; }); if(yrs.indexOf(R.current_year) < 0) yrs.unshift(R.current_year);
+      h += '<select id="dYear" aria-label="Jaar">' + yrs.map(function(v){ return '<option value="' + v + '"' + (v === R.year ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>";
+      if(R.demo && R.demo.count) h += '<label class="demo-tgl" title="' + DEMO_T + '"><input type="checkbox" id="dDemo"' + (R.demo.show ? " checked" : "") + ' /> Illustratieve facturen <span class="dd"></span></label>';
+    }
+    h += "</div>";
+    if(!R){ h += '<div class="msg bad">Omzet kon niet worden geladen: ' + esc(errMsg(r[1])) + "</div>"; }
+    else {
+      var T = R.total, Y = R.ytd, O = R.open || {}, showDemo = R.demo && R.demo.show;
+      var first = R.first || "", prevPartial = first && first.slice(0, 4) === String(R.year - 1) && first.slice(5) > "01-01";
+      var avg = T.n ? T.excl / T.n : 0;
+      var cmp = "";
+      if(Y && prevPartial){
+        var nm = R.year === R.current_year ? new Date().getMonth() + 1 : 12;
+        cmp = kpi("Gemiddeld per maand " + R.year, eur0(Y.excl / nm), "Jan t/m " + MND[nm - 1] + " · vergelijking met " + (R.year - 1) + ' niet zinvol: <span class="muted">Moneybird-archief begint ' + esc(dt(first)) + "</span>");
+      }
+      else if(Y){ cmp = kpi("T/m vandaag vs " + (R.year - 1), '<span class="' + (Y.pct >= 0 ? "kpi-up" : "kpi-down") + '">' + pctTxt(Y.pct) + "</span>", eur0(Y.excl) + " vs " + eur0(Y.prev_excl)); }
+      else { var d = T.prev_excl ? (T.excl - T.prev_excl) / T.prev_excl * 100 : null; cmp = kpi("Vs " + (R.year - 1), '<span class="' + (d >= 0 ? "kpi-up" : "kpi-down") + '">' + pctTxt(d) + "</span>", eur0(T.excl) + " vs " + eur0(T.prev_excl)); }
+      h += '<div class="kpis">' +
+        kpi("Omzet " + R.year + " · excl. btw", eur0(T.excl) + dd(showDemo && +T.demo_excl > 0), "Incl. btw " + eur0(T.incl) + " · " + T.n + " facturen", "big") + cmp +
+        kpi("Klanten " + R.year, String(T.customers), "Gemiddelde factuur " + eur0(avg)) +
+        kpi("Openstaand", eur0(O.open), (O.open_n || 0) + " facturen · vervallen <b style=\"color:var(--bad)\">" + eur0(O.late) + "</b> (" + (O.late_n || 0) + ")", O.late_n ? "" : "") + "</div>";
+      h += '<div class="card chart-card"><div class="chart-top"><h2>Omzet per maand · ' + R.year + '</h2><span class="sp" style="flex:1"></span><div class="legend"><span><i style="background:#fff"></i>' + R.year + '</span><span><i style="background:rgba(255,255,255,.18)"></i>' + (R.year - 1) + "</span>" + (showDemo && +T.demo_excl ? '<span><span class="dd" style="margin:0 6px 0 0"></span>bevat illustratieve facturen</span>' : "") + '<span class="muted">excl. btw · creditfacturen verrekend</span></div></div>' + chartSvg(R) + "</div>";
+      var rowsM = R.months.map(function(x, i){
+        var dlt = +x.prev_excl ? (x.excl - x.prev_excl) / x.prev_excl * 100 : null, fut = R.year === R.current_year && x.m > (new Date().getMonth() + 1) && !x.n;
+        return "<tr" + (fut ? ' style="opacity:.45"' : "") + "><td><b>" + MND_L[i].charAt(0).toUpperCase() + MND_L[i].slice(1) + '</b></td><td class="num">' + (x.n || "—") + '</td><td class="num">' + (x.customers || "—") + '</td><td class="num"><b>' + (x.n ? eur(x.excl) : "—") + "</b>" + dd(showDemo && +x.demo_excl > 0) + '</td><td class="num muted">' + (x.n ? eur(x.incl) : "—") + '</td><td class="num muted">' + (+x.prev_excl ? eur(x.prev_excl) : "—") + '</td><td class="num">' + (dlt === null || !x.n ? '<span class="muted">—</span>' : '<span class="' + (dlt >= 0 ? "kpi-up" : "kpi-down") + '">' + pctTxt(dlt) + "</span>") + "</td></tr>";
+      }).join("");
+      var maxTop = (R.top || []).reduce(function(a, t){ return Math.max(a, +t.excl); }, 0) || 1;
+      var topH = (R.top || []).length ? '<table><thead><tr><th>Klant</th><th class="num">Facturen</th><th class="num">Omzet</th></tr></thead><tbody>' + R.top.map(function(t){
+        return '<tr class="click" data-top="' + esc(t.contact_id) + '" data-topn="' + esc(t.company) + '"><td><b>' + esc(t.company) + "</b>" + dd(showDemo && +t.demo_excl > 0) + (t.country && t.country !== "NL" ? ' <span class="muted small">' + esc(t.country) + "</span>" : "") + '<div class="bar-in"><span style="width:' + Math.max(2, Math.round(+t.excl / maxTop * 100)) + '%"></span></div></td><td class="num">' + t.n + '</td><td class="num"><b>' + eur0(t.excl) + "</b></td></tr>";
+      }).join("") + "</tbody></table>" : '<p class="muted">Geen facturen in ' + R.year + ".</p>";
+      var yrsH = '<ul class="yr-list">' + (R.years || []).map(function(x){ return "<li><span><b>" + x.year + "</b>" + (x.year === R.current_year ? ' <span class="muted small">lopend</span>' : "") + '</span><span><span class="muted small">' + x.n + " facturen · </span><b>" + eur0(x.excl) + "</b>" + dd(showDemo && +x.demo_excl > 0) + "</span></li>"; }).join("") + "</ul>";
+      h += '<div class="g32" style="margin-top:14px"><div><h2 style="margin-top:8px">Per maand</h2><div class="tscroll"><table><thead><tr><th>Maand</th><th class="num">Facturen</th><th class="num">Klanten</th><th class="num">Excl. btw</th><th class="num">Incl. btw</th><th class="num">' + (R.year - 1) + '</th><th class="num">Verschil</th></tr></thead><tbody>' + rowsM + '</tbody><tfoot><tr><td><b>Totaal ' + R.year + '</b></td><td class="num">' + T.n + '</td><td class="num">' + T.customers + '</td><td class="num"><b>' + eur(T.excl) + "</b>" + dd(showDemo && +T.demo_excl > 0) + '</td><td class="num">' + eur(T.incl) + '</td><td class="num">' + eur(T.prev_excl) + '</td><td class="num"></td></tr></tfoot></table></div></div>' +
+        '<div><h2 style="margin-top:8px">Topklanten ' + R.year + "</h2>" + topH + '<h2>Omzet per jaar</h2><div class="card" style="padding:4px 16px">' + yrsH + "</div></div></div>";
+      if(showDemo && +T.demo_excl) h += '<p class="small muted" style="margin-top:12px"><span class="dd" style="margin:0 6px 0 0"></span>Rood rondje = bevat illustratieve facturen (' + T.demo_n + " stuks, " + eur(T.demo_excl) + ' excl. btw). Die staan niet in Moneybird, zijn niet zichtbaar voor klanten en tellen niet mee in openstaand/vervallen.</p>';
+    }
+    /* operationeel */
+    var warn = [];
+    if(!s.moneybird) warn.push("Moneybird is niet gekoppeld: facturen blijven in de wachtrij tot de API-sleutel is ingesteld (Instellingen).");
+    if(!s.mollie) warn.push("Mollie-sleutel ontbreekt: klanten kunnen niet afrekenen.");
+    if(!s.enabled) warn.push("Het portaal staat uit voor klanten (alleen testaccounts en beheer).");
+    if(s.invoices_pending) warn.push(s.invoices_pending + " factu(u)r(en) in de wachtrij.");
+    h += '<div class="ops"><h2>Portaal vandaag</h2>';
+    warn.forEach(function(w){ h += '<div class="msg warn">' + esc(w) + "</div>"; });
+    h += '<div class="grid g4">' +
+      stat("Webshop-omzet 30 dagen", eur(s.revenue_30d)) + stat("Bestellingen 30 dagen", s.orders_30d || 0) +
+      stat("Te verzenden", s.unshipped || 0, s.unshipped) + stat("Wacht op goedkeuring", acc.pending || 0, acc.pending) +
+      stat("Actieve klanten", acc.approved || 0) + stat("Nieuwe aanvragen", s.requests_new || 0, s.requests_new) +
+      stat("Producten met prijs", (s.products || 0) + " · " + (s.prices || 0) + " varianten") + stat("Facturen in wachtrij", s.invoices_pending || 0, s.invoices_pending) + "</div>";
+    h += '<div class="grid g2" style="margin-top:6px"><div><h2>Wacht op goedkeuring</h2>' + (pend.length ? accTable(pend.slice(0, 8)) : '<p class="muted">Niemand.</p>') + '</div><div><h2>Te verzenden</h2>' + (ords.length ? ordTable(ords.slice(0, 10), true) : '<p class="muted">Niets open.</p>') + "</div></div>";
+    h += '<p class="small muted" style="margin-top:20px">Mollie ' + (s.mollie ? "✓" : "✗") + " · Moneybird " + (s.moneybird ? "✓" : "✗") + " · Laatste achtergrondronde " + esc(dt(s.cron_last)) + (R && R.last && R.last.at ? " · Facturen bijgewerkt " + esc(dt(R.last.at)) : "") + "</p></div>";
+    m.innerHTML = h; bindRows(m);
+    var ys = $("#dYear"); if(ys) ys.onchange = function(){ S.dashYear = +ys.value; vDash(m); };
+    var dm = $("#dDemo"); if(dm) dm.onchange = function(){ dm.disabled = true; api("admin/demo", { action: dm.checked ? "show" : "hide" }).then(function(res){ if(!res.ok) toast(errMsg(res)); vDash(m); }); };
+    $$("tr[data-top]", m).forEach(function(tr){ tr.onclick = function(){ S.inv.contact = tr.getAttribute("data-top"); S.inv.contactName = tr.getAttribute("data-topn"); S.inv.state = ""; S.inv.year = String(R.year); location.hash = "#facturen"; }; });
+  });
+}
+function stat(k, v, alert){ return '<div class="card stat' + (alert ? " alert" : "") + '"><div class="k">' + esc(k) + '</div><div class="v">' + esc(v) + "</div></div>"; }
+
+/* ---------- klanten ---------- */
+function accTable(list){
+  return "<table><thead><tr><th>Bedrijf</th><th>Contact</th><th>Land</th><th>Btw</th><th>Status</th><th>Sinds</th></tr></thead><tbody>" + list.map(function(a){
+    return '<tr class="click" data-href="#klant/' + a.id + '"><td><b>' + esc(a.company || "—") + "</b>" + (a.test ? ' <span class="b test">TEST</span>' : "") + (a.role === "admin" ? ' <span class="b info">beheer</span>' : "") + '<div class="small muted">' + esc(a.no) + "</div></td><td>" + esc(a.contact) + '<div class="small muted">' + esc(a.email) + "</div></td><td>" + esc(a.country) + '</td><td class="small">' + esc(a.vat || "—") + (a.vat ? (a.vat_valid ? ' <span class="b ok">VIES ✓</span>' : ' <span class="b warn">niet geldig</span>') : "") + "</td><td>" + badge(ACC_ST, a.status) + '</td><td class="small">' + esc(dt(a.created)) + "</td></tr>";
+  }).join("") + "</tbody></table>";
+}
+function bindRows(root){ $$("tr.click", root).forEach(function(tr){ tr.addEventListener("click", function(e){ if(e.target.closest("a,button,input,select")) return; location.hash = tr.getAttribute("data-href"); }); }); }
+function vAccounts(m){
+  var st = S.accounts;
+  m.innerHTML = '<div class="row"><h1 style="margin:0">Klanten</h1><span class="sp"></span><a class="btn sec" href="#nieuw">+ Klant aanmaken</a></div>' +
+    '<div class="row" style="margin:14px 0 10px"><div class="tabs" id="accTabs" style="margin:0">' + [["", "Alle"], ["pending", "Wacht op goedkeuring"], ["approved", "Actief"], ["blocked", "Geblokkeerd"], ["rejected", "Afgewezen"]].map(function(t){ return '<button data-s="' + t[0] + '" class="' + (st.status === t[0] ? "on" : "") + '">' + t[1] + "</button>"; }).join("") + '</div><span class="sp"></span><input type="search" id="accQ" placeholder="Zoek bedrijf, e-mail, btw…" value="' + esc(st.q) + '" style="width:260px" /></div><div id="accList"><p class="muted"><span class="spin"></span></p></div>';
+  function load(){ api("admin/accounts", { status:st.status, q:st.q }).then(function(res){ var l = $("#accList"); if(!l) return; if(!res.ok){ msg(l, "bad", errMsg(res)); return; } var a = res.data.accounts || []; l.innerHTML = a.length ? accTable(a) + '<p class="small muted">' + a.length + " account(s)</p>" : '<p class="muted">Geen accounts gevonden.</p>'; bindRows(l); }); }
+  $$("#accTabs button").forEach(function(b){ b.onclick = function(){ st.status = b.getAttribute("data-s"); $$("#accTabs button").forEach(function(x){ x.classList.toggle("on", x === b); }); load(); }; });
+  var tm; $("#accQ").oninput = function(e){ clearTimeout(tm); tm = setTimeout(function(){ st.q = e.target.value.trim(); load(); }, 300); };
+  load();
+}
+var ACC_FIELDS = [["company","Bedrijfsnaam"],["contact","Contactpersoon"],["phone","Telefoon"],["kvk","KvK-nummer"],["vat","Btw-nummer"],["street","Straat"],["house","Huisnummer"],["postcode","Postcode"],["city","Plaats"],["country","Land (2 letters)"],["lang","Taal (nl/en/fr/de/bs)"],["btype","Type bedrijf"],["volume","Verwacht volume"]];
+function accForm(a){
+  return '<div class="grid g2">' + ACC_FIELDS.map(function(f){ return '<label class="f">' + f[1] + '<input type="text" name="' + f[0] + '" value="' + esc(a[f[0]] || "") + '" /></label>'; }).join("") +
+    '<label class="f">Extra korting (%, 0–30)<input type="number" step="0.5" min="0" max="30" name="discount" value="' + esc(a.discount || 0) + '" /></label>' +
+    '<label class="f">Eigen verzendkosten (€, leeg = standaard)<input type="text" name="ship_cost" value="' + esc(a.ship_cost === null || a.ship_cost === undefined ? "" : a.ship_cost) + '" /></label>' +
+    '<label class="f">Gratis verzending vanaf (€, leeg = standaard)<input type="text" name="ship_free" value="' + esc(a.ship_free === null || a.ship_free === undefined ? "" : a.ship_free) + '" /></label>' +
+    '<label class="chk" style="margin-top:22px"><input type="checkbox" name="pay_on_account" ' + (a.pay_on_account ? "checked" : "") + " /> Mag op rekening bestellen (factuur, zonder directe betaling)</label></div>" +
+    '<label class="f">Interne notities (niet zichtbaar voor klant)<textarea name="notes">' + esc(a.notes || "") + "</textarea></label>";
+}
+function readAccForm(root){
+  var b = {};
+  $$("input[name],textarea[name]", root).forEach(function(i){
+    if(i.type === "checkbox") b[i.name] = i.checked ? 1 : 0;
+    else if(i.name === "ship_cost" || i.name === "ship_free") b[i.name] = i.value.trim() === "" ? "" : parseNum(i.value);
+    else if(i.name === "discount") b[i.name] = parseNum(i.value) || 0;
+    else b[i.name] = i.value.trim();
+  });
+  return b;
+}
+function vAccount(m, id){
+  Promise.all([ api("admin/accounts", {}), api("admin/log", { account:+id }), api("admin/orders", {}) ]).then(function(r){
+    var a = (r[0].data.accounts || []).filter(function(x){ return String(x.id) === String(id); })[0];
+    if(!a){ m.innerHTML = '<a class="back" href="#klanten">← Klanten</a><div class="msg bad">Account niet gevonden.</div>'; return; }
+    var ords = (r[2].data.orders || []).filter(function(o){ return String(o.account) === String(id); });
+    var log = r[1].data.log || [];
+    var acts = "";
+    if(a.status === "pending") acts += '<button class="btn ok" data-a="approve">Goedkeuren en uitnodigen</button><button class="btn bad" data-a="reject">Afwijzen</button>';
+    if(a.status === "approved") acts += '<button class="btn sec" data-a="invite">' + (a.has_password ? "Herstellink mailen" : "Uitnodiging opnieuw mailen") + '</button><button class="btn sec" data-a="logout">Overal uitloggen</button>' + (a.role !== "admin" ? '<button class="btn bad" data-a="block">Blokkeren</button>' : "");
+    if(a.status === "blocked" || a.status === "rejected") acts += '<button class="btn ok" data-a="unblock">Weer activeren</button>';
+    if(a.vat) acts += '<button class="btn sec" data-a="vies">Btw-nummer controleren (VIES)</button>';
+    m.innerHTML = '<a class="back" href="#klanten">← Klanten</a><div class="row"><h1 style="margin:0">' + esc(a.company || a.email) + "</h1>" + badge(ACC_ST, a.status) + (a.test ? ' <span class="b test">TEST</span>' : "") + "</div>" +
+      '<div class="row small muted" style="margin:6px 0 14px">' + esc(a.no) + " · " + esc(a.email) + " · aangemaakt " + esc(dt(a.created)) + " · laatst ingelogd " + esc(dt(a.last_login)) + (a.has_password ? "" : ' · <b style="color:var(--warn)">nog geen wachtwoord</b>') + "</div>" +
+      '<div class="row" id="accActs">' + acts + '</div><div id="accMsg"></div>' +
+      (a.message ? '<div class="card" style="margin-top:14px"><b>Bericht bij aanvraag</b><div class="small" style="white-space:pre-wrap;margin-top:4px">' + esc(a.message) + "</div></div>" : "") +
+      '<div class="card" style="margin-top:14px"><div class="kv"><div>Btw-controle</div><div>' + (a.vat ? (a.vat_valid ? '<span class="b ok">Geldig</span> ' : '<span class="b warn">Niet bevestigd</span> ') + esc(a.vat_name || "") + ' <span class="muted small">' + esc(dt(a.vat_checked)) + "</span>" : "Geen btw-nummer (Nederlandse btw)") + "</div><div>Btw bij bestellen</div><div>" + esc(a.country === "NL" || !a.vat_valid ? "Nederlandse btw (9%/21%)" : "0% — btw verlegd") + "</div><div>Moneybird-contact</div><div>" + (a.mb_contact ? '<a href="#facturen" data-mbc="' + esc(a.mb_contact) + '" data-mbn="' + esc(a.company || "") + '">Facturen van deze klant bekijken</a> <span class="muted small mono">' + esc(a.mb_contact) + "</span>" : 'Nog niet gekoppeld — <a href="#mbklanten">koppelen aan bestaande Moneybird-klant</a> <span class="muted small">(anders aangemaakt bij eerste factuur)</span>') + "</div></div></div>" +
+      '<h2>Gegevens</h2><form id="accF" class="card">' + accForm(a) + '<button class="btn blue" type="submit">Opslaan</button></form>' +
+      '<div class="card" style="margin-top:12px"><b>Wachtwoord handmatig instellen</b><div class="row" style="margin-top:8px"><input type="password" id="pwNew" placeholder="Min. 10 tekens" autocomplete="new-password" style="width:240px" /><button class="btn sec" id="pwSet">Instellen</button></div><div class="small muted" style="margin-top:4px">Liever niet: stuur de klant een uitnodiging zodat hij zelf een wachtwoord kiest.</div></div>' +
+      "<h2>Bestellingen</h2>" + (ords.length ? ordTable(ords) : '<p class="muted">Nog geen bestellingen.</p>') +
+      "<h2>Logboek</h2>" + logTable(log.slice(0, 40));
+    bindRows(m);
+    $$("[data-mbc]", m).forEach(function(x){ x.onclick = function(){ S.inv.contact = x.getAttribute("data-mbc"); S.inv.contactName = x.getAttribute("data-mbn"); S.inv.state = ""; }; });
+    $$("#accActs button").forEach(function(b){ b.onclick = function(){
+      var act = b.getAttribute("data-a");
+      if((act === "reject" || act === "block") && !confirm("Weet je het zeker? De klant kan daarna niet meer inloggen.")) return;
+      busy(b, true);
+      var body = { action:act }; if(act === "approve") Object.assign(body, readAccForm($("#accF")));
+      api("admin/accounts/" + id, body).then(function(res){ busy(b, false); if(!res.ok){ msg($("#accMsg"), "bad", errMsg(res)); return; }
+        toast({ approve: res.data.mailed ? "Goedgekeurd, uitnodiging gemaild" : "Goedgekeurd (mail mislukt!)", invite: res.data.mailed ? "Mail verstuurd" : "Mail mislukt", reject:"Afgewezen", block:"Geblokkeerd", unblock:"Weer actief", logout:"Alle sessies beëindigd", vies:"Btw gecontroleerd" }[act] || "Gedaan");
+        refreshCounts(); route(); });
+    }; });
+    $("#accF").onsubmit = function(e){ e.preventDefault(); var b = e.target.querySelector("button"); busy(b, true);
+      api("admin/accounts/" + id, Object.assign({ action:"update" }, readAccForm(e.target))).then(function(res){ busy(b, false); if(!res.ok){ msg($("#accMsg"), "bad", errMsg(res)); return; } toast("Opgeslagen"); route(); }); };
+    $("#pwSet").onclick = function(){ var v = $("#pwNew").value; if(v.length < 10){ toast("Minimaal 10 tekens"); return; }
+      api("admin/accounts/" + id, { action:"password", password:v }).then(function(res){ if(!res.ok){ toast(errMsg(res)); return; } $("#pwNew").value = ""; toast("Wachtwoord ingesteld; klant is overal uitgelogd"); }); };
+  });
+}
+function vAccountNew(m){
+  m.innerHTML = '<a class="back" href="#klanten">← Klanten</a><h1>Klant aanmaken</h1><form id="nf" class="card"><label class="f">E-mail (inlognaam)<input type="email" name="email" required /></label>' + accForm({ country:"NL", lang:"nl" }) +
+    '<label class="chk"><input type="checkbox" name="send_invite" checked /> Direct een uitnodiging mailen om een wachtwoord te kiezen</label><label class="chk"><input type="checkbox" name="is_test" /> Testaccount (orders zonder voorraad- en klantmails)</label><div id="nfMsg"></div><button class="btn blue" type="submit" style="margin-top:8px">Aanmaken</button></form>';
+  $("#nf").onsubmit = function(e){ e.preventDefault(); var f = e.target, b = f.querySelector("button[type=submit]"); var body = readAccForm(f); body.email = f.email.value.trim(); busy(b, true);
+    api("admin/accounts/create", body).then(function(res){ busy(b, false); if(!res.ok){ msg($("#nfMsg"), "bad", errMsg(res)); return; } toast(res.data.invited ? "Aangemaakt en uitgenodigd" : "Aangemaakt"); location.hash = "#klant/" + res.data.account.id; }); };
+}
+
+/* ---------- bestellingen ---------- */
+function ordTable(list, compact){
+  return "<table><thead><tr><th>Order</th><th>Datum</th><th>Klant</th>" + (compact ? "" : "<th>Land</th><th>Btw</th>") + '<th class="num">Totaal</th><th>Status</th>' + (compact ? "" : "<th>Factuur</th>") + "</tr></thead><tbody>" + list.map(function(o){
+    return '<tr class="click" data-href="#order/' + o.id + '"><td><b>' + esc(o.no) + '</b><div class="small muted">#' + o.id + " · " + o.items + " st.</div></td><td class=\"small\">" + esc(dt(o.date)) + "</td><td>" + esc(o.company || "—") + (o.po ? '<div class="small muted">PO ' + esc(o.po) + "</div>" : "") + "</td>" +
+      (compact ? "" : "<td>" + esc(o.country) + '</td><td class="small">' + esc(VAT_MODE[o.vat_mode] || o.vat_mode || "") + "</td>") + '<td class="num">' + eur(o.total) + "</td><td>" + ordBadge(o) + "</td>" +
+      (compact ? "" : '<td class="small">' + (o.invoice ? '<a href="' + esc(o.invoice.id ? invHref(o.invoice.id) : o.invoice.url) + '"' + (o.invoice.id ? "" : ' target="_blank" rel="noopener"') + '>' + esc(o.invoice.no || "factuur") + "</a>" : (o.inv_error ? '<span class="b bad" title="' + esc(o.inv_error) + '">fout</span>' : (o.paid ? '<span class="b warn">wachtrij</span>' : "—"))) + "</td>") + "</tr>";
+  }).join("") + "</tbody></table>";
+}
+function vOrders(m){
+  var st = S.orders;
+  var tabs = [["open","Te verzenden","processing,on-hold"],["pending","Wacht op betaling","pending"],["completed","Verzonden","completed"],["cancelled","Geannuleerd","cancelled,failed,refunded"],["all","Alle",""]];
+  m.innerHTML = '<h1>Bestellingen</h1><div class="row"><div class="tabs" id="oTabs" style="margin:0">' + tabs.map(function(t){ return '<button data-s="' + t[0] + '" class="' + (st.status === t[0] ? "on" : "") + '">' + t[1] + "</button>"; }).join("") + '</div><span class="sp"></span><label class="chk"><input type="checkbox" id="oTest" ' + (st.test === "" ? "checked" : "") + " /> Testorders tonen</label></div><div id=\"oList\" style=\"margin-top:12px\"></div>";
+  function load(){
+    var t = tabs.filter(function(x){ return x[0] === st.status; })[0] || tabs[0];
+    $("#oList").innerHTML = '<p class="muted"><span class="spin"></span></p>';
+    api("admin/orders", st.test === "" ? { status:t[2], page:st.page } : { status:t[2], test:0, page:st.page }).then(function(res){ var l = $("#oList"); if(!l) return; if(!res.ok){ msg(l, "bad", errMsg(res)); return; } var o = res.data.orders || [];
+      l.innerHTML = o.length ? ordTable(o) + '<div class="pager"><button class="btn sec sm" id="pp" ' + (st.page <= 1 ? "disabled" : "") + '>← Vorige</button><span class="small">Pagina ' + st.page + '</span><button class="btn sec sm" id="pn" ' + (o.length < 100 ? "disabled" : "") + ">Volgende →</button></div>" : '<p class="muted">Geen bestellingen in deze lijst.</p>';
+      bindRows(l); var pp = $("#pp"), pn = $("#pn"); if(pp) pp.onclick = function(){ st.page--; load(); }; if(pn) pn.onclick = function(){ st.page++; load(); }; });
+  }
+  $$("#oTabs button").forEach(function(b){ b.onclick = function(){ st.status = b.getAttribute("data-s"); st.page = 1; $$("#oTabs button").forEach(function(x){ x.classList.toggle("on", x === b); }); load(); }; });
+  $("#oTest").onchange = function(e){ st.test = e.target.checked ? "" : 0; st.page = 1; load(); };
+  load();
+}
+function ttText(o, tr){ return "Uw bestelling " + o.no + " bij THH Europe is verzonden. Volg uw zending via " + (tr.carrier || "PostNL") + ": " + tr.url + " (code " + tr.code + ")"; }
+function vOrder(m, id){
+  api("admin/orders/" + id).then(function(res){
+    if(!res.ok){ m.innerHTML = '<a class="back" href="#orders">← Bestellingen</a><div class="msg bad">' + esc(errMsg(res)) + "</div>"; return; }
+    var o = res.data.order, c = o.customer || {}, sa = o.shipping_address || {}, tr = o.tracking;
+    var h = '<a class="back" href="#orders">← Bestellingen</a><div class="row"><h1 style="margin:0">' + esc(o.no) + "</h1>" + ordBadge(o) + '<span class="sp"></span><a class="btn sec sm" href="' + esc(o.wc_url) + '" target="_blank" rel="noopener">Open in WooCommerce</a></div>' +
+      '<div class="small muted" style="margin:6px 0 14px">#' + o.id + " · " + esc(dt(o.date)) + " · " + esc(o.method || "—") + (o.paid ? " · betaald" : " · niet betaald") + " · " + esc(VAT_MODE[o.vat_mode] || o.vat_mode || "") + (o.po ? " · PO " + esc(o.po) : "") + "</div><div id=\"oMsg\"></div>";
+    h += '<div class="grid g2"><div class="card"><b>Klant</b><div style="margin-top:6px">' + (c.id ? '<a href="#klant/' + c.id + '">' + esc(c.company) + "</a>" : "—") + '<div class="small muted">' + esc(c.contact || "") + " · " + esc(c.email || "") + "<br>" + esc(c.vat || "geen btw-nr") + (c.vat_valid ? " ✓" : "") + '</div></div></div><div class="card"><b>Bezorgadres</b><div class="small" style="margin-top:6px">' + esc(sa.name) + "<br>" + esc(sa.contact) + "<br>" + esc(sa.street) + "<br>" + esc(sa.postcode) + " " + esc(sa.city) + " · " + esc(sa.country) + "</div></div></div>";
+    h += '<h2>Regels</h2><table><thead><tr><th>Product</th><th>SKU</th><th class="num">Aantal</th><th class="num">Per stuk</th><th class="num">Totaal excl.</th></tr></thead><tbody>' + (o.lines || []).map(function(l){ return "<tr><td>" + esc(l.name) + '</td><td class="small muted">' + esc(l.sku) + '</td><td class="num">' + l.qty + '</td><td class="num">' + eur(l.unit) + '</td><td class="num">' + eur(l.total) + "</td></tr>"; }).join("") +
+      '<tr><td colspan="4" class="num muted">Subtotaal</td><td class="num">' + eur(o.subtotal) + '</td></tr><tr><td colspan="4" class="num muted">Verzending</td><td class="num">' + eur(o.shipping) + '</td></tr><tr><td colspan="4" class="num muted">Btw</td><td class="num">' + eur(o.vat) + '</td></tr><tr><td colspan="4" class="num"><b>Totaal</b></td><td class="num"><b>' + eur(o.total) + "</b></td></tr></tbody></table>" + (o.note ? '<div class="card" style="margin-top:10px"><b>Opmerking klant</b><div class="small" style="white-space:pre-wrap">' + esc(o.note) + "</div></div>" : "");
+    // track & trace
+    h += '<h2>Track &amp; Trace</h2><div class="card">';
+    if(tr){ h += '<div class="kv"><div>Code</div><div class="mono">' + esc(tr.code) + "</div><div>Vervoerder</div><div>" + esc(tr.carrier || "PostNL") + "</div><div>Status</div><div>" + esc(tr.status || "—") + '</div><div>Link</div><div><a href="' + esc(tr.url) + '" target="_blank" rel="noopener">' + esc(tr.url) + "</a></div></div>" +
+      '<div class="share"><button class="btn sec sm" id="ttCopy">Kopieer link</button><button class="btn sec sm" id="ttCopyTxt">Kopieer bericht</button><a class="btn sec sm" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent(ttText(o, tr)) + '">Deel via WhatsApp</a><a class="btn sec sm" href="mailto:' + esc(c.email || "") + "?subject=" + encodeURIComponent("Track & Trace " + o.no) + "&body=" + encodeURIComponent(ttText(o, tr)) + '">Deel via e-mail</a></div>'; }
+    (o.extra || []).forEach(function(x, i){ h += '<div class="small" style="margin-top:8px">Extra pakket ' + (i + 2) + ': <a href="' + esc(x.url) + '" target="_blank" rel="noopener" class="mono">' + esc(x.code) + "</a> " + esc(x.carrier || "") + "</div>"; });
+    h += '<form id="ttF" style="margin-top:' + (tr ? "14" : "0") + 'px"><div class="row"><input type="text" name="code" placeholder="Barcode, bv. 3SABCD1234567" required style="width:230px" /><select name="carrier"><option>PostNL</option><option>DHL</option><option>DPD</option><option>UPS</option><option>GLS</option><option value="anders">Anders</option></select><input type="text" name="url" placeholder="Eigen link (optioneel)" style="flex:1;min-width:180px" /></div>' +
+      '<label class="chk"><input type="checkbox" name="mail" checked /> Klant mailen met de Track &amp; Trace-link</label><label class="chk"><input type="checkbox" name="complete" checked /> Bestelling op "Verzonden" zetten</label><button class="btn blue" type="submit">' + (tr ? "Nieuwe code opslaan" : "Opslaan") + "</button></form>" +
+      '<div class="small muted" style="margin-top:6px">Verzend je via MyParcel vanuit WooCommerce, dan komt de code hier vanzelf en krijgt de klant automatisch de THH Europe-mail.</div></div>';
+    // acties
+    h += '<h2>Acties</h2><div class="row">';
+    if(o.invoice) h += '<a class="btn sec" href="' + esc(o.invoice.id ? invHref(o.invoice.id) : o.invoice.url) + '"' + (o.invoice.id ? "" : ' target="_blank" rel="noopener"') + '>Factuur ' + esc(o.invoice.no) + " (" + esc(o.invoice.state) + ")</a>";
+    else if(o.paid || ["processing","on-hold","completed"].indexOf(o.wc_status) >= 0) h += '<button class="btn sec" data-x="invoice">Factuur aanmaken in Moneybird</button>';
+    if(o.inv_error) h += '<span class="b bad" title="' + esc(o.inv_error) + '">Factuurfout: ' + esc(o.inv_error.slice(0, 80)) + "</span>";
+    if(o.wc_status === "pending") h += '<button class="btn sec" data-x="sync">Betaalstatus ophalen bij Mollie</button>';
+    if(o.test && o.wc_status === "pending") h += '<button class="btn sec" data-x="simulate">TEST: betaling nabootsen</button>';
+    h += '<select id="stSel"><option value="">Status wijzigen…</option><option value="processing">Te verzenden</option><option value="on-hold">In afwachting</option><option value="completed">Verzonden</option>' + (o.paid ? "" : '<option value="cancelled">Geannuleerd</option>') + "</select></div>";
+    h += "<h2>Notities</h2>" + ((o.notes || []).length ? o.notes.map(function(n){ return '<div class="note' + (n.customer ? " c" : "") + '"><span class="muted">' + esc(dt(n.date)) + "</span> " + esc(n.text) + "</div>"; }).join("") : '<p class="muted">Geen notities.</p>');
+    m.innerHTML = h;
+    var om = $("#oMsg");
+    if(tr){ $("#ttCopy").onclick = function(){ copy(tr.url); }; $("#ttCopyTxt").onclick = function(){ copy(ttText(o, tr)); }; }
+    $("#ttF").onsubmit = function(e){ e.preventDefault(); var f = e.target, b = f.querySelector("button"); busy(b, true);
+      api("admin/orders/" + id + "/tracking", { code:f.code.value, carrier:f.carrier.value === "anders" ? "" : f.carrier.value, url:f.url.value.trim(), mail:f.mail.checked ? 1 : 0, complete:f.complete.checked ? 1 : 0 }).then(function(res){ busy(b, false); if(!res.ok){ msg(om, "bad", errMsg(res)); return; } toast(res.data.mailed ? "Opgeslagen en klant gemaild" : "Opgeslagen (geen mail)"); refreshCounts(); route(); }); };
+    $$("button[data-x]", m).forEach(function(b){ b.onclick = function(){ var x = b.getAttribute("data-x");
+      if(x === "simulate" && !confirm("Alleen voor testorders: betaling nabootsen zonder geld?")) return;
+      busy(b, true); api("admin/orders/" + id + "/" + x).then(function(res){ busy(b, false); if(!res.ok){ msg(om, "bad", errMsg(res)); return; } toast(x === "invoice" ? "Factuur aangemaakt" : x === "sync" ? ("Mollie: " + (res.data.mollie || "bijgewerkt")) : "Gedaan"); route(); }); }; });
+    $("#stSel").onchange = function(e){ var v = e.target.value; if(!v) return; if(!confirm("Status wijzigen naar \"" + e.target.selectedOptions[0].text + "\"?")){ e.target.value = ""; return; }
+      api("admin/orders/" + id + "/status", { status:v }).then(function(res){ if(!res.ok){ msg(om, "bad", errMsg(res)); e.target.value = ""; return; } toast("Status gewijzigd"); refreshCounts(); route(); }); };
+  });
+}
+
+/* ---------- prijzen ---------- */
+var FLAG = { controle:["Controleren","bad"], ondergrens:["Op ondergrens","warn"], "onder-inkoop":["Onder ondergrens","bad"] };
+function vPrices(m){
+  var st = S.prices;
+  m.innerHTML = '<div class="row"><h1 style="margin:0">Prijzen</h1><span class="sp"></span><button class="btn sec" id="pExp">Exporteer naar Excel (CSV)</button><label class="btn sec" style="margin:0">Importeer CSV<input type="file" id="pImp" accept=".csv,text/csv" class="hidden" /></label><button class="btn sec" id="pReb">Herbereken alle prijzen</button></div>' +
+    '<p class="small muted">Prijzen zijn <b>per stuk, exclusief btw</b>, vóór staffelkorting. "Ondergrens" = inkoop + minimale marge. Handmatige prijzen blijven staan bij herberekenen, tot je ze terugzet naar de regel.</p><div id="pMsg"></div>' +
+    '<div class="row" style="margin:10px 0"><input type="search" id="pQ" placeholder="Zoek product, SKU of ID…" value="' + esc(st.q) + '" style="width:260px" /><input type="search" id="pB" placeholder="Merk" value="' + esc(st.brand) + '" style="width:150px" /><select id="pF"><option value="">Alle regels</option><option value="any">Met signaal</option><option value="controle">Controleren</option><option value="ondergrens">Op ondergrens</option><option value="onder-inkoop">Onder ondergrens</option></select><span class="sp"></span><button class="btn blue" id="pSave" disabled>Wijzigingen opslaan</button></div><div id="pList"></div>';
+  $("#pF").value = st.flag;
+  function load(){
+    $("#pList").innerHTML = '<p class="muted"><span class="spin"></span></p>';
+    api("admin/prices", { q:st.q, flag:st.flag, brand:st.brand, page:st.page }).then(function(res){
+      var l = $("#pList"); if(!l) return; if(!res.ok){ msg(l, "bad", errMsg(res)); return; }
+      st.rows = res.data.rows || [];
+      if(!st.rows.length){ l.innerHTML = '<p class="muted">Geen regels gevonden.</p>'; return; }
+      l.innerHTML = '<table><thead><tr><th>Product</th><th>Merk</th><th class="num">Advies excl.</th><th class="num">Inkoop</th><th class="num">Ondergrens</th><th class="num">Prijs excl.</th><th class="num">Marge</th><th>Actief</th><th>Bron</th><th></th></tr></thead><tbody>' + st.rows.map(function(r){
+        var d = st.dirty[r.item_id] || {}, pr = d.price !== undefined ? d.price : r.price, ac = d.active !== undefined ? d.active : r.active;
+        return '<tr data-id="' + r.item_id + '" class="' + (st.dirty[r.item_id] ? "dirty" : "") + '"><td>' + esc(r.name) + (r.label ? '<div class="small muted">' + esc(r.label) + "</div>" : "") + '<div class="small muted">' + esc(r.sku || "") + " · #" + r.item_id + (r.stock === "outofstock" ? ' · <span style="color:var(--bad)">uitverkocht</span>' : "") + '</div></td><td class="small">' + esc(r.brand || "") + '</td><td class="num">' + eur(r.retail_ex) + '</td><td class="num">' + eur(r.cost) + '<div class="small muted">' + esc(r.cost_src || "") + '</div></td><td class="num">' + eur(r.floor) + '</td><td class="num"><input class="pr" data-k="price" value="' + num(pr) + '" /></td><td class="num">' + (r.margin === null ? "—" : num(r.margin, 1) + "%") + '</td><td><input type="checkbox" data-k="active" ' + (+ac ? "checked" : "") + " /></td><td class=\"small\">" + esc(r.source || "") + (r.flag ? " " + badge(FLAG, r.flag) : "") + "</td><td>" + (r.source === "handmatig" ? '<button class="btn sec sm" data-reset="' + r.item_id + '" title="Terug naar berekende prijs">Regel</button>' : "") + "</td></tr>";
+      }).join("") + '</tbody></table><div class="pager"><button class="btn sec sm" id="pp" ' + (st.page <= 1 ? "disabled" : "") + '>← Vorige</button><span class="small">Pagina ' + st.page + '</span><button class="btn sec sm" id="pn" ' + (st.rows.length < 100 ? "disabled" : "") + ">Volgende →</button></div>";
+      $$("tr[data-id]", l).forEach(function(tr){
+        var id = +tr.getAttribute("data-id"), r = st.rows.filter(function(x){ return x.item_id === id; })[0];
+        $$("input[data-k]", tr).forEach(function(i){ i.addEventListener(i.type === "checkbox" ? "change" : "input", function(){
+          var d = st.dirty[id] || {};
+          if(i.type === "checkbox") d.active = i.checked ? 1 : 0; else d.price = parseNum(i.value);
+          if(d.price !== undefined && d.price !== null && Math.abs(d.price - r.price) < 0.005) delete d.price;
+          if(d.active !== undefined && d.active === +r.active) delete d.active;
+          if(Object.keys(d).length) st.dirty[id] = d; else delete st.dirty[id];
+          tr.classList.toggle("dirty", !!st.dirty[id]);
+          if(d.price !== undefined && r.floor !== null && d.price < r.floor) i.style.color = "var(--bad)"; else i.style.color = "";
+          $("#pSave").disabled = !Object.keys(st.dirty).length;
+        }); });
+      });
+      $$("button[data-reset]", l).forEach(function(b){ b.onclick = function(){ busy(b, true); api("admin/prices/save", { rows:[{ item_id:+b.getAttribute("data-reset"), reset:1 }] }).then(function(res){ busy(b, false); if(!res.ok){ toast(errMsg(res)); return; } toast("Teruggezet naar berekende prijs"); load(); }); }; });
+      var pp = $("#pp"), pn = $("#pn"); if(pp) pp.onclick = function(){ st.page--; load(); }; if(pn) pn.onclick = function(){ st.page++; load(); };
+    });
+  }
+  var tm; function deb(fn){ clearTimeout(tm); tm = setTimeout(fn, 300); }
+  $("#pQ").oninput = function(e){ deb(function(){ st.q = e.target.value.trim(); st.page = 1; load(); }); };
+  $("#pB").oninput = function(e){ deb(function(){ st.brand = e.target.value.trim(); st.page = 1; load(); }); };
+  $("#pF").onchange = function(e){ st.flag = e.target.value; st.page = 1; load(); };
+  $("#pSave").onclick = function(){
+    var rows = Object.keys(st.dirty).map(function(id){ var d = st.dirty[id], o = { item_id:+id }; if(d.price !== undefined) o.price = d.price; if(d.active !== undefined) o.active = d.active; return o; });
+    var under = rows.filter(function(x){ var r = st.rows.filter(function(y){ return y.item_id === x.item_id; })[0]; return r && x.price !== undefined && r.floor !== null && x.price < r.floor; });
+    if(under.length && !confirm(under.length + " prijs/prijzen liggen onder de ondergrens (inkoop + minimale marge). Toch opslaan?")) return;
+    var b = $("#pSave"); busy(b, true);
+    api("admin/prices/save", { rows:rows }).then(function(res){ busy(b, false); if(!res.ok){ msg($("#pMsg"), "bad", errMsg(res)); return; } st.dirty = {}; b.disabled = true; toast(rows.length + " regel(s) opgeslagen"); load(); });
+  };
+  $("#pExp").onclick = function(){ var b = this; busy(b, true); api("admin/prices/export").then(function(res){ busy(b, false); if(!res.ok){ msg($("#pMsg"), "bad", errMsg(res)); return; } download("thheurope-prijzen-" + new Date().toISOString().slice(0, 10) + ".csv", res.data.csv); toast(res.data.rows + " regels geëxporteerd"); }); };
+  $("#pImp").onchange = function(e){
+    var file = e.target.files[0]; if(!file) return; e.target.value = "";
+    var rd = new FileReader(); rd.onload = function(){
+      var csv = String(rd.result), box = $("#pMsg");
+      msg(box, "info", "Bestand controleren…");
+      api("admin/prices/import", { csv:csv, dry:1 }).then(function(res){
+        if(!res.ok){ msg(box, "bad", errMsg(res)); return; }
+        var d = res.data, w = (d.waarschuwingen || []);
+        box.innerHTML = '<div class="msg ' + (w.length ? "warn" : "info") + '"><b>Controle ' + esc(file.name) + ":</b> " + d.gewijzigd + " wijzigen, " + d.ongewijzigd + " ongewijzigd, " + d.onbekend + " onbekend." + (w.length ? "<br>" + w.length + " onder de ondergrens: " + esc(w.slice(0, 8).join(" · ")) + (w.length > 8 ? " …" : "") : "") + (d.gewijzigd ? '<div style="margin-top:8px"><button class="btn blue sm" id="impGo">' + d.gewijzigd + ' wijzigingen doorvoeren</button> <button class="btn sec sm" id="impNo">Annuleren</button></div>' : "") + "</div>";
+        var go = $("#impGo"), no = $("#impNo");
+        if(no) no.onclick = function(){ msg(box); };
+        if(go) go.onclick = function(){ busy(go, true); api("admin/prices/import", { csv:csv, dry:0 }).then(function(r2){ if(!r2.ok){ msg(box, "bad", errMsg(r2)); return; } msg(box, "ok", r2.data.gewijzigd + " prijsregels bijgewerkt."); load(); }); };
+      });
+    }; rd.readAsText(file, "utf-8");
+  };
+  $("#pReb").onclick = function(){
+    if(!confirm("Alle berekende prijzen opnieuw uitrekenen op basis van de actuele webshopprijzen en inkoop? Handmatige prijzen blijven staan.")) return;
+    var b = this, box = $("#pMsg"), off = 0, LIM = 150, tot = { changed:0 };
+    busy(b, true);
+    (function step(){
+      msg(box, "info", "Herberekenen… " + off + " producten gedaan");
+      api("admin/prices/rebuild", { all:1, offset:off, limit:LIM }).then(function(res){
+        if(!res.ok){ busy(b, false); msg(box, "bad", errMsg(res)); return; }
+        if(res.data.done || !res.data.count){ busy(b, false); msg(box, "ok", "Klaar: " + off + " producten herberekend."); load(); return; }
+        off += res.data.count; step();
+      });
+    })();
+  };
+  load();
+}
+
+/* ---------- aanvragen ---------- */
+function vRequests(m){
+  api("admin/requests").then(function(res){
+    if(!res.ok){ m.innerHTML = '<div class="msg bad">' + esc(errMsg(res)) + "</div>"; return; }
+    var rq = res.data.requests || [];
+    m.innerHTML = '<h1>Aanvragen</h1><p class="small muted">Offerteaanvragen (o.a. voor uitverkochte producten) en vragen vanuit het portaal.</p>' + (rq.length ? "<table><thead><tr><th>Datum</th><th>Soort</th><th>Van</th><th>Producten / bericht</th><th>Status</th></tr></thead><tbody>" + rq.map(function(r){
+      var d = r.data || {}, who = r.company || d.company || r.name || d.name || r.email || "—";
+      var lines = (d.lines || []).map(function(l){ return "<li>" + esc(l.qty) + "× " + esc(l.name) + (l.label ? " <span class=\"muted\">(" + esc(l.label) + ")</span>" : "") + (l.id ? " <span class=\"small muted\">#" + esc(l.id) + "</span>" : "") + "</li>"; }).join("");
+      return '<tr><td class="small">' + esc(dt(r.at)) + "</td><td>" + esc(r.kind === "quote" ? "Offerte" : r.kind) + "</td><td>" + (r.account_id && +r.account_id ? '<a href="#klant/' + r.account_id + '">' + esc(who) + "</a>" : esc(who)) + '<div class="small muted">' + (r.email ? '<a href="mailto:' + esc(r.email) + '">' + esc(r.email) + "</a>" : "") + (r.name && r.name !== who ? " · " + esc(r.name) : "") + "</div></td><td>" + (lines ? '<ul style="margin:0;padding-left:18px">' + lines + "</ul>" : "") + (d.message ? '<div class="small" style="white-space:pre-wrap;margin-top:4px">' + esc(d.message) + "</div>" : "") + '</td><td><select data-r="' + r.id + '"><option value="new"' + (r.status === "new" ? " selected" : "") + '>Nieuw</option><option value="done"' + (r.status === "done" ? " selected" : "") + '>Afgehandeld</option><option value="archived"' + (r.status === "archived" ? " selected" : "") + ">Archief</option></select></td></tr>";
+    }).join("") + "</tbody></table>" : '<p class="muted">Nog geen aanvragen.</p>');
+    $$("select[data-r]", m).forEach(function(s){ s.onchange = function(){ api("admin/requests/" + s.getAttribute("data-r"), { status:s.value }).then(function(r2){ toast(r2.ok ? "Bijgewerkt" : errMsg(r2)); refreshCounts(); }); }; });
+  });
+}
+
+/* ---------- instellingen ---------- */
+function vSettings(m){
+  api("admin/settings").then(function(res){
+    if(!res.ok){ m.innerHTML = '<div class="msg bad">' + esc(errMsg(res)) + "</div>"; return; }
+    var s = res.data.settings || {}, sec = res.data.secrets || {}, avail = res.data.methods_available || [];
+    var sh = s.shipping || {}, tiers = s.tiers || [];
+    function n(k, lbl, step){ return '<label class="f">' + lbl + '<input type="number" step="' + (step || "0.5") + '" name="' + k + '" value="' + esc(s[k]) + '" /></label>'; }
+    function t(k, lbl){ return '<label class="f">' + lbl + '<input type="text" name="' + k + '" value="' + esc(s[k]) + '" /></label>'; }
+    var h = "<h1>Instellingen</h1><div id=\"sMsg\"></div><form id=\"sF\">";
+    h += '<div class="card"><b>Portaal</b><label class="chk" style="margin-top:8px"><input type="checkbox" name="enabled" ' + (+s.enabled ? "checked" : "") + ' /> Portaal open voor klanten (uit = alleen testaccounts en beheer)</label><label class="chk"><input type="checkbox" name="auto_tt_mail" ' + (+s.auto_tt_mail ? "checked" : "") + ' /> Klant automatisch mailen bij Track &amp; Trace</label><label class="chk"><input type="checkbox" name="invoice_auto" ' + (+s.invoice_auto ? "checked" : "") + " /> Factuur automatisch aanmaken na betaling</label></div>";
+    h += '<div class="card" style="margin-top:12px"><b>Prijsregels</b><div class="grid g2" style="margin-top:8px">' + n("base_discount", "Korting op adviesprijs excl. btw (%)") + n("min_margin", "Minimale marge op inkoop (%)") + n("est_cost_pct", "Geschatte inkoop als die ontbreekt (% van advies)", "1") + n("jennah_cost", "Inkoop Jennah (€)", "0.01") + n("moq", "Minimum per product (stuks)", "1") + n("min_order", "Minimaal orderbedrag excl. btw (€)", "1") + "</div>" +
+      '<b style="display:block;margin-top:6px">Staffelkorting (bovenop de basisprijs, per totaal aantal stuks)</b><table style="margin-top:6px;max-width:420px" id="tierT"><thead><tr><th>Vanaf stuks</th><th>Korting %</th><th></th></tr></thead><tbody>' + tiers.map(tierRow).join("") + '</tbody></table><button type="button" class="btn sec sm" id="tierAdd" style="margin-top:6px">+ Staffel</button><div class="small muted" style="margin-top:6px">Na wijzigen: <b>Prijzen → Herbereken</b> om basisprijzen bij te werken. Staffels gelden direct.</div></div>';
+    h += '<div class="card" style="margin-top:12px"><b>Verzending (excl. btw)</b><table style="margin-top:6px;max-width:520px"><thead><tr><th>Land</th><th>Kosten €</th><th>Gratis vanaf €</th></tr></thead><tbody>' + Object.keys(sh).map(function(k){ return '<tr><td>' + esc(k === "EU" ? "Overig EU" : k === "XX" ? "Buiten EU (op offerte)" : k) + '</td><td><input type="text" data-sh="' + k + '" data-f="cost" value="' + esc(sh[k].cost === null ? "" : sh[k].cost) + '" style="width:90px" /></td><td><input type="text" data-sh="' + k + '" data-f="free" value="' + esc(sh[k].free === null ? "" : sh[k].free) + '" style="width:90px" /></td></tr>'; }).join("") + "</tbody></table></div>";
+    h += '<div class="card" style="margin-top:12px"><b>Betaalmethodes (Mollie)</b><div class="small muted">Beschikbaar op het Mollie-profiel: ' + esc(avail.join(", ") || "—") + '</div><div class="row" style="margin-top:6px">' + ["ideal","bancontact","creditcard","kbc","belfius","banktransfer","trustly","eps","paybybank","billie","klarna","in3","riverty"].map(function(k){ var on = (s.methods || []).indexOf(k) >= 0, av = avail.indexOf(k) >= 0; return '<label class="chk" style="margin-right:10px' + (av ? "" : ";opacity:.45") + '"><input type="checkbox" data-m="' + k + '" ' + (on ? "checked" : "") + " /> " + k + "</label>"; }).join("") + "</div></div>";
+    h += '<div class="card" style="margin-top:12px"><b>Mail</b><div class="grid g2" style="margin-top:8px">' + t("notify", "Meldingen naar (komma-gescheiden)") + t("test_notify", "Meldingen van testaccounts naar") + t("mail_from", "Afzender") + t("mail_name", "Naam afzender") + t("reply_to", "Antwoorden naar") + "</div></div>";
+    h += '<div class="card" style="margin-top:12px"><b>Websites</b><div class="grid g2" style="margin-top:8px">' + t("front_live", "Live website") + t("front_test", "Testwebsite") + '</div><label class="f">Toegestane herkomst (één per regel)<textarea name="origins_txt">' + esc((s.origins || []).join("\n")) + "</textarea></label></div>";
+    h += '<div class="card" style="margin-top:12px"><b>Koppelingen</b><div class="kv" style="margin:8px 0"><div>Mollie</div><div>' + (sec.mollie_key ? '<span class="b ok">ingesteld</span>' : '<span class="b bad">ontbreekt</span>') + "</div><div>Moneybird</div><div>" + (sec.mb_token ? '<span class="b ok">ingesteld</span>' : '<span class="b bad">ontbreekt</span>') + '</div></div><div class="small muted">Sleutels worden alleen op de server bewaard en zijn hier nooit meer uit te lezen. Leeg laten = ongewijzigd.</div><div class="grid g2" style="margin-top:8px"><label class="f">Nieuwe Mollie API-sleutel (live_… of test_…)<input type="password" name="mollie_key" autocomplete="off" /></label><label class="f">Nieuwe Moneybird API-token<input type="password" name="mb_token" autocomplete="off" /></label></div></div>';
+    h += '<div style="margin-top:14px"><button class="btn blue" type="submit">Instellingen opslaan</button></div></form>';
+    m.innerHTML = h;
+    $("#tierAdd").onclick = function(){ $("#tierT tbody").insertAdjacentHTML("beforeend", tierRow([0, 0])); bindTier(); };
+    function bindTier(){ $$("#tierT button[data-del]").forEach(function(b){ b.onclick = function(){ b.closest("tr").remove(); }; }); }
+    bindTier();
+    $("#sF").onsubmit = function(e){
+      e.preventDefault(); var f = e.target, b = f.querySelector("button[type=submit]"), body = {};
+      ["enabled","auto_tt_mail","invoice_auto"].forEach(function(k){ body[k] = f[k].checked ? 1 : 0; });
+      ["base_discount","min_margin","est_cost_pct","jennah_cost","moq","min_order"].forEach(function(k){ body[k] = parseNum(f[k].value) || 0; });
+      ["notify","test_notify","mail_from","mail_name","reply_to","front_live","front_test"].forEach(function(k){ body[k] = f[k].value.trim(); });
+      body.origins = f.origins_txt.value.split(/\s+/).filter(Boolean);
+      body.tiers = $$("#tierT tbody tr").map(function(tr){ var i = $$("input", tr); return [parseInt(i[0].value, 10) || 0, parseNum(i[1].value) || 0]; }).filter(function(x){ return x[0] > 0; });
+      body.shipping = {}; $$("input[data-sh]").forEach(function(i){ var k = i.getAttribute("data-sh"); body.shipping[k] = body.shipping[k] || {}; body.shipping[k][i.getAttribute("data-f")] = i.value.trim() === "" ? "" : parseNum(i.value); });
+      body.methods = $$("input[data-m]").filter(function(i){ return i.checked; }).map(function(i){ return i.getAttribute("data-m"); });
+      if(f.mollie_key.value.trim()) body.mollie_key = f.mollie_key.value.trim();
+      if(f.mb_token.value.trim()) body.mb_token = f.mb_token.value.trim();
+      if(body.origins.indexOf(location.origin) < 0 && !confirm("Deze beheerpagina (" + location.origin + ") staat niet in de toegestane herkomst. Toch opslaan?")) return;
+      busy(b, true);
+      api("admin/settings/save", body).then(function(res){ busy(b, false); if(!res.ok){ msg($("#sMsg"), "bad", errMsg(res)); window.scrollTo(0, 0); return; } toast("Instellingen opgeslagen"); route(); });
+    };
+  });
+}
+function tierRow(t){ return '<tr><td><input type="number" min="1" value="' + esc(t[0]) + '" style="width:90px" /></td><td><input type="text" value="' + esc(num(t[1], 1)) + '" style="width:70px" /></td><td><button type="button" class="btn bad sm" data-del="1">×</button></td></tr>'; }
+
+/* ---------- logboek ---------- */
+function logTable(rows){
+  if(!rows.length) return '<p class="muted">Leeg.</p>';
+  return "<table><thead><tr><th>Moment</th><th>Actie</th><th>Onderwerp</th><th>Details</th><th>Door</th></tr></thead><tbody>" + rows.map(function(r){ return '<tr><td class="small">' + esc(dt(r.at)) + "</td><td>" + esc(r.action) + '</td><td class="small">' + esc(r.ref || "") + '</td><td class="small">' + esc(String(r.detail || "").slice(0, 160)) + '</td><td class="small muted">' + esc(r.actor || "") + "</td></tr>"; }).join("") + "</tbody></table>";
+}
+/* ---------- facturen (Moneybird-archief) ---------- */
+function invHref(id){ return "factuur.html?id=" + encodeURIComponent(id) + "&m=a"; }
+var INV_ST = { draft:["Concept","grey"], open:["Openstaand","info"], pending_payment:["Wacht op betaling","info"], late:["Vervallen","bad"], reminded:["Herinnerd","bad"], paid:["Betaald","ok"], uncollectible:["Oninbaar","grey"], scheduled:["Ingepland","grey"] };
+function vInvoices(m){
+  var st = S.inv;
+  var tabs = [["","Alle"],["unpaid","Openstaand"],["late","Vervallen"],["paid","Betaald"],["credit","Creditfacturen"],["draft","Concepten"]];
+  m.innerHTML = '<div class="row"><h1 style="margin:0">Facturen</h1><span class="sp"></span><a class="btn sec" href="#mbklanten">Klanten koppelen</a><button class="btn sec" id="iCsv">CSV</button><button class="btn blue" id="iSync">Nu ophalen uit Moneybird</button></div>' +
+    '<div class="small muted" id="iLast" style="margin-top:6px"></div><div id="iMsg"></div><div class="stats4" id="iStats"></div>' +
+    '<div class="row" style="margin:4px 0 10px"><div class="tabs" id="iTabs" style="margin:0">' + tabs.map(function(t){ return '<button data-s="' + t[0] + '" class="' + (st.state === t[0] ? "on" : "") + '">' + t[1] + "</button>"; }).join("") + '</div><span class="sp"></span><span id="iChip"></span><select id="iYear"><option value="">Alle jaren</option></select><input type="search" id="iQ" placeholder="Zoek nummer, klant, kenmerk…" value="' + esc(st.q) + '" style="width:240px" /></div><div id="iList"><p class="muted"><span class="spin"></span></p></div>';
+  var last = [];
+  function chip(){ $("#iChip").innerHTML = st.contact ? '<span class="chipf">' + esc(st.contactName || ("Contact " + st.contact)) + ' <button id="iChipX" title="Filter wissen">×</button></span>' : ""; var x = $("#iChipX"); if(x) x.onclick = function(){ st.contact = ""; st.contactName = ""; chip(); load(); }; }
+  function load(){
+    var l = $("#iList"); l.innerHTML = '<p class="muted"><span class="spin"></span></p>';
+    api("admin/invoices", { state:st.state, year:st.year, q:st.q, contact:st.contact }).then(function(res){
+      if(!$("#iList")) return;
+      if(!res.ok){ msg(l, "bad", errMsg(res)); return; }
+      var d = res.data, T = d.totals || {}, list = d.invoices || []; last = list;
+      if(!d.token) msg($("#iMsg"), "warn", "Moneybird is niet gekoppeld (Instellingen → Koppelingen).");
+      var ls = d.last && d.last.at ? "Laatst opgehaald uit Moneybird: " + dt(d.last.at) + (d.last.count !== undefined ? " · " + d.last.count + " facturen" : "") + " · wordt elk halfuur automatisch bijgewerkt" : "Nog niet opgehaald.";
+      $("#iLast").textContent = ls;
+      $("#iStats").innerHTML = (T.demo_n ? '<div class="card stat"><div class="k">Facturen (excl. concepten)</div><div class="v">' + esc((T.count || 0) + " · " + eur(T.total)) + '</div><div class="s"><span class="dd" style="margin:0 5px 0 0"></span>+ ' + T.demo_n + " illustratief · " + esc(eur(T.demo_total)) + "</div></div>" : stat("Facturen (excl. concepten)", (T.count || 0) + " · " + eur(T.total))) + stat("Openstaand", eur(T.open) + " · " + (T.open_n || 0) + " st.", T.open_n) + stat("Vervallen", eur(T.late) + " · " + (T.late_n || 0) + " st.", T.late_n) + stat("Concepten in Moneybird", T.drafts || 0);
+      var ys = $("#iYear"); if(ys && ys.options.length <= 1){ (d.years || []).forEach(function(y){ var o = document.createElement("option"); o.value = y; o.textContent = y; if(String(st.year) === String(y)) o.selected = true; ys.appendChild(o); }); }
+      var cnt = $("#cntLate"); if(cnt){ cnt.textContent = T.late_n || ""; cnt.classList.toggle("hidden", !T.late_n); }
+      if(!list.length){ l.innerHTML = '<p class="muted">Geen facturen in deze selectie.</p>'; return; }
+      var sumT = 0, sumU = 0; list.forEach(function(i){ sumT += Number(i.total) || 0; if(["open","late","reminded","pending_payment"].indexOf(i.state) >= 0) sumU += Number(i.unpaid) || 0; });
+      l.innerHTML = '<table><thead><tr><th>Factuur</th><th>Datum</th><th>Vervalt</th><th>Klant</th><th>Kenmerk / order</th><th class="num">Excl. btw</th><th class="num">Totaal</th><th class="num">Openstaand</th><th>Status</th></tr></thead><tbody>' +
+        list.map(function(i){
+          var late = i.state === "late" || i.state === "reminded", unpaid = ["open","late","reminded","pending_payment"].indexOf(i.state) >= 0;
+          var acc = i.account ? ' <a class="b info" href="#klant/' + i.account.id + '" title="Portaalaccount">portaal</a>' : "";
+          return '<tr class="click' + (late ? " late" : "") + '" data-inv="' + esc(i.id) + '"><td style="white-space:nowrap"><b>' + esc(i.no || "(concept)") + "</b>" + dd(i.demo) + (i.credit ? ' <span class="b info">credit</span>' : "") + "</td><td>" + esc(dt(i.date)) + '</td><td class="small">' + esc(dt(i.due)) + "</td><td>" + esc(i.company) + acc + (i.country && i.country !== "NL" ? ' <span class="muted small">' + esc(i.country) + "</span>" : "") + '</td><td class="small">' + esc(i.order || i.reference || "") + '</td><td class="num">' + eur(i.excl) + '</td><td class="num"><b>' + eur(i.total) + '</b></td><td class="num">' + (unpaid && Number(i.unpaid) ? eur(i.unpaid) : '<span class="muted">—</span>') + "</td><td>" + badge(INV_ST, i.state) + "</td></tr>";
+        }).join("") + '</tbody><tfoot><tr><td colspan="6" class="small muted">' + list.length + ' factu(u)r(en) in deze selectie</td><td class="num"><b>' + eur(sumT) + '</b></td><td class="num"><b>' + eur(sumU) + '</b></td><td></td></tr></tfoot></table><p class="small muted">Klik op een factuur om hem in THH Europe-huisstijl te openen; daar kun je hem afdrukken of als PDF opslaan.' + (list.some(function(i){ return i.demo; }) ? ' <span class="dd" style="margin:0 5px 0 8px"></span>Rood rondje = illustratief, geen echte factuur (niet in Moneybird, niet zichtbaar voor klanten, niet in de CSV).' : "") + "</p>";
+      $$("tr[data-inv]", l).forEach(function(tr){ tr.onclick = function(e){ if(e.target.closest("a")) return; location.href = invHref(tr.getAttribute("data-inv")); }; });
+    });
+  }
+  chip();
+  $$("#iTabs button").forEach(function(b){ b.onclick = function(){ st.state = b.getAttribute("data-s"); $$("#iTabs button").forEach(function(x){ x.classList.toggle("on", x === b); }); load(); }; });
+  $("#iYear").onchange = function(e){ st.year = e.target.value; load(); };
+  var tm; $("#iQ").oninput = function(e){ clearTimeout(tm); tm = setTimeout(function(){ st.q = e.target.value.trim(); load(); }, 300); };
+  $("#iSync").onclick = function(){ var b = this; busy(b, true); api("admin/invoices/sync", {}).then(function(res){ busy(b, false); if(!res.ok){ msg($("#iMsg"), "bad", errMsg(res)); return; } toast("Opgehaald: " + (res.data.count || 0) + " facturen" + (res.data.linked ? ", " + res.data.linked + " gekoppeld" : "")); load(); }); };
+  $("#iCsv").onclick = function(){
+    var q = function(v){ v = String(v === null || v === undefined ? "" : v); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var n = function(v){ return v === null || v === undefined || v === "" ? "" : Number(v).toFixed(2).replace(".", ","); };
+    var echt = last.filter(function(i){ return !i.demo; }); if(echt.length < last.length) toast("Illustratieve facturen zijn niet meegenomen in de CSV");
+    var rows = [["Factuur","Datum","Vervaldatum","Klant","Land","Kenmerk","Order","Excl. btw","Totaal","Openstaand","Status","Credit","Betaald op"]].concat(echt.map(function(i){ return [i.no, i.date, i.due, i.company, i.country, i.reference, i.order, n(i.excl), n(i.total), n(i.unpaid), (INV_ST[i.state] || [i.state])[0], i.credit ? "ja" : "", i.paid_at]; }));
+    download("thh-europe-facturen-" + new Date().toISOString().slice(0, 10) + ".csv", "\ufeff" + rows.map(function(r){ return r.map(q).join(";"); }).join("\n"));
+  };
+  load();
+}
+function vInvContacts(m){
+  m.innerHTML = '<a class="back" href="#facturen">← Facturen</a><div class="row"><h1 style="margin:0">Moneybird-klanten koppelen</h1></div>' +
+    '<p class="small muted" style="max-width:760px">Een klant ziet zijn oude facturen in het portaal zodra zijn portaalaccount aan het juiste Moneybird-contact is gekoppeld. Automatisch gebeurt dat alleen als het e-mailadres exact en uniek overeenkomt. <b>Er wordt vanaf deze pagina nooit een mail verstuurd</b> — uitnodigen doe je daarna zelf bij de klant.</p><div id="cMsg"></div><div id="cList"><p class="muted"><span class="spin"></span></p></div>';
+  Promise.all([ api("admin/invoices/contacts", {}), api("admin/accounts", {}) ]).then(function(r){
+    var l = $("#cList"); if(!l) return;
+    if(!r[0].ok){ msg(l, "bad", errMsg(r[0])); return; }
+    var cs = r[0].data.contacts || [];
+    var free = (r[1].data.accounts || []).filter(function(a){ return a.role !== "admin" && !a.test && !a.mb_contact && (a.status === "approved" || a.status === "pending"); });
+    var opts = '<option value="">Koppel aan bestaand account…</option>' + free.map(function(a){ return '<option value="' + a.id + '">' + esc((a.company || "") + " — " + a.email) + "</option>"; }).join("");
+    var nLinked = cs.filter(function(c){ return c.account; }).length;
+    l.innerHTML = '<p class="small"><b>' + cs.length + "</b> Moneybird-klanten met facturen · <b>" + nLinked + "</b> gekoppeld aan een portaalaccount</p>" +
+      '<table><thead><tr><th>Klant (Moneybird)</th><th>E-mail</th><th>Land</th><th class="num">Facturen</th><th class="num">Totaal</th><th class="num">Openstaand</th><th>Laatste</th><th>Portaalaccount</th></tr></thead><tbody>' +
+      cs.map(function(c){
+        var cell;
+        if(c.account) cell = '<a href="#klant/' + c.account.id + '">' + esc(c.account.company || c.account.email) + "</a> " + badge(ACC_ST, c.account.status) + (c.account.has_password ? "" : ' <span class="b warn">geen wachtwoord</span>') + ' <button class="btn sec sm" data-unlink="' + c.account.id + '">Ontkoppelen</button>';
+        else {
+          cell = "";
+          if(c.suggest) cell += '<button class="btn ok sm" data-link="' + c.suggest.id + '" data-c="' + esc(c.contact_id) + '">Koppel aan ' + esc(c.suggest.company || c.suggest.email) + "</button> ";
+          cell += '<select class="sm" data-sel="' + esc(c.contact_id) + '">' + opts + "</select> ";
+          cell += c.has_email ? '<button class="btn sec sm" data-new="' + esc(c.contact_id) + '">Account aanmaken</button>' : '<span class="muted small">geen e-mail in Moneybird</span>';
+        }
+        return '<tr><td><a href="#facturen" data-mbc="' + esc(c.contact_id) + '" data-mbn="' + esc(c.company) + '"><b>' + esc(c.company || "(zonder naam)") + "</b></a>" + (c.vat ? '<div class="small muted mono">' + esc(c.vat) + "</div>" : "") + '</td><td class="small">' + esc(String(c.emails || "").replace(/,/g, ", ")) + "</td><td>" + esc(c.country) + '</td><td class="num">' + c.n + '</td><td class="num">' + eur(c.total) + '</td><td class="num">' + (Number(c.open) ? eur(c.open) + (c.late ? ' <span class="b bad">' + c.late + " vervallen</span>" : "") : '<span class="muted">—</span>') + '</td><td class="small">' + esc(dt(c.last)) + '</td><td class="small">' + cell + "</td></tr>";
+      }).join("") + "</tbody></table>";
+    function done(res, okText){ if(!res.ok){ msg($("#cMsg"), "bad", errMsg(res)); window.scrollTo(0, 0); return; } toast(okText); route(); }
+    $$("[data-mbc]", l).forEach(function(x){ x.onclick = function(){ S.inv.contact = x.getAttribute("data-mbc"); S.inv.contactName = x.getAttribute("data-mbn"); S.inv.state = ""; }; });
+    $$("[data-link]", l).forEach(function(b){ b.onclick = function(){ busy(b, true); api("admin/invoices/link", { account:+b.getAttribute("data-link"), contact_id:b.getAttribute("data-c") }).then(function(res){ busy(b, false); done(res, "Gekoppeld"); }); }; });
+    $$("[data-sel]", l).forEach(function(s){ s.onchange = function(){ if(!s.value) return; var cid = s.getAttribute("data-sel"); var txt = s.options[s.selectedIndex].text; if(!confirm("Account " + txt + " koppelen aan dit Moneybird-contact? De klant ziet daarna alle facturen van dit contact.")){ s.value = ""; return; } api("admin/invoices/link", { account:+s.value, contact_id:cid }).then(function(res){ done(res, "Gekoppeld"); }); }; });
+    $$("[data-unlink]", l).forEach(function(b){ b.onclick = function(){ if(!confirm("Koppeling verwijderen? De klant ziet deze facturen dan niet meer.")) return; busy(b, true); api("admin/invoices/link", { account:+b.getAttribute("data-unlink"), contact_id:"" }).then(function(res){ busy(b, false); done(res, "Ontkoppeld"); }); }; });
+    $$("[data-new]", l).forEach(function(b){ b.onclick = function(){ if(!confirm("Portaalaccount aanmaken voor deze Moneybird-klant? Status wordt Actief, er gaat GEEN mail uit; uitnodigen doe je daarna zelf.")) return; busy(b, true); api("admin/invoices/contact-account", { contact_id:b.getAttribute("data-new") }).then(function(res){ busy(b, false); if(!res.ok){ msg($("#cMsg"), "bad", errMsg(res)); window.scrollTo(0, 0); return; } toast(res.data.linked_existing ? "Bestaand account gekoppeld" : "Account aangemaakt (niet uitgenodigd)"); location.hash = "#klant/" + res.data.account.id; }); }; });
+  });
+}
+function vLog(m){ api("admin/log").then(function(res){ m.innerHTML = "<h1>Logboek</h1>" + (res.ok ? logTable(res.data.log || []) : '<div class="msg bad">' + esc(errMsg(res)) + "</div>"); }); }
+
+/* ---------- start ---------- */
+function start(){
+  try{ S.acc = JSON.parse(ls(AK) || "null"); }catch(e){ S.acc = null; }
+  $("#who").textContent = S.acc ? S.acc.email : "";
+  $("#envTag").classList.toggle("hidden", !IS_TEST);
+  if(!location.hash || location.hash.indexOf("#wachtwoord") === 0) history.replaceState(null, "", location.pathname + "#dashboard");
+  refreshCounts(); route();
+}
+if(location.hash.indexOf("#wachtwoord") === 0) route();
+else if(token()) start();
+else show("login");
+/*@@CAMP*/
+/* ---------- campagnes (B2B-reclamemails) ---------- */
+var CAMP_LANGS = { en:"Engels", nl:"Nederlands", de:"Duits", fr:"Frans", bs:"Bosnisch" };
+var CAMP_ST = { draft:["Concept","grey"], sending:["Bezig met verzenden","warn"], sent:["Verzonden","ok"] };
+var CAMP_DEF = {
+  en:{ subject:"Wholesale bestsellers — restock for your shelves", preheader:"Top-selling products at wholesale prices. Request your quote today.", title:"Restock your bestsellers", intro:"These are the products our business customers order most. All in stock and ready to ship. Compile your list and receive a tailored price proposal within one business day." },
+  nl:{ subject:"Groothandel topsellers — vul uw schappen aan", preheader:"De best verkochte producten tegen groothandelsprijzen. Vraag vandaag uw offerte aan.", title:"Vul uw topsellers aan", intro:"Dit zijn de producten die onze zakelijke klanten het vaakst bestellen. Alles op voorraad en direct leverbaar. Stel uw lijst samen en ontvang binnen één werkdag een prijsvoorstel op maat." },
+  de:{ subject:"Großhandel-Bestseller — füllen Sie Ihre Regale auf", preheader:"Die meistverkauften Produkte zu Großhandelspreisen. Fordern Sie heute Ihr Angebot an.", title:"Füllen Sie Ihre Bestseller auf", intro:"Das sind die Produkte, die unsere Geschäftskunden am häufigsten bestellen. Alles auf Lager und sofort lieferbar. Stellen Sie Ihre Liste zusammen und erhalten Sie innerhalb eines Werktags ein maßgeschneidertes Angebot." },
+  fr:{ subject:"Best-sellers en gros — réapprovisionnez vos rayons", preheader:"Les produits les plus vendus aux prix de gros. Demandez votre devis aujourd'hui.", title:"Réapprovisionnez vos best-sellers", intro:"Voici les produits que nos clients professionnels commandent le plus. Tous en stock et prêts à être expédiés. Composez votre liste et recevez une proposition de prix sur mesure sous un jour ouvré." },
+  bs:{ subject:"Veleprodajni bestseleri — popunite svoje police", preheader:"Najprodavaniji proizvodi po veleprodajnim cijenama. Zatražite ponudu danas.", title:"Popunite svoje bestselere", intro:"Ovo su proizvodi koje naši poslovni klijenti najčešće naručuju. Sve je na zalihi i spremno za isporuku. Sastavite svoju listu i u roku od jednog radnog dana primite prilagođenu ponudu." }
+};
+function CS(){ if(!S.camp) S.camp = { tab:"list", cat:null, stock:null }; return S.camp; }
+
+function campCatalog(){
+  if(CS().cat) return Promise.resolve(CS().cat);
+  return fetch("catalogus-mail.json", { cache:"no-cache" }).then(function(r){ return r.json(); }).then(function(c){ CS().cat = c; return c; }).catch(function(){ CS().cat = []; return []; });
+}
+function campStock(){
+  if(CS().stock) return Promise.resolve(CS().stock);
+  return api("admin/camp/stock").then(function(res){ var o = {}; ((res.data && res.data.in_stock) || []).forEach(function(i){ o[i] = 1; }); CS().stock = o; return o; });
+}
+function pct(a, b){ return b ? Math.round(a / b * 100) + "%" : "—"; }
+
+function vCamps(m){
+  var tab = CS().tab || "list";
+  api("admin/camp/list").then(function(res){
+    if(!res.ok){ m.innerHTML = '<div class="msg bad">' + esc(errMsg(res)) + "</div>"; return; }
+    var d = res.data, L = d.campaigns || [];
+    var h = '<div class="row"><h1 style="margin:0">Campagnes</h1><span class="sp"></span><button class="btn" id="cNew">Nieuwe campagne</button></div>' +
+      '<p class="small muted" style="margin:6px 0 12px">Reclamemails voor zakelijke klanten, met per product een knop <b>Get a quote</b>. Afzender: ' + esc(d.from) + " · links naar " + esc(d.site) + "</p>" +
+      (d.send_enabled ? "" : '<div class="msg warn"><b>Verzenden naar klanten staat uit.</b> Dat gaat pas aan na akkoord van Ismail. Maken, bekijken en testmails sturen kan wel.</div>') +
+      '<div class="tabs"><button data-t="list" class="' + (tab === "list" ? "on" : "") + '">Campagnes (' + L.length + ')</button><button data-t="unsub" class="' + (tab === "unsub" ? "on" : "") + '">Afmeldingen (' + (d.unsub_n || 0) + ")</button></div><div id=\"cBody\"></div>";
+    m.innerHTML = h;
+    $$(".tabs button", m).forEach(function(b){ b.onclick = function(){ CS().tab = b.getAttribute("data-t"); vCamps(m); }; });
+    $("#cNew").onclick = function(){ location.hash = "#campagne/nieuw"; };
+    var body = $("#cBody");
+    if(tab === "unsub"){ campUnsubs(body); return; }
+    if(!L.length){ body.innerHTML = '<p class="muted">Nog geen campagnes.</p>'; return; }
+    body.innerHTML = '<table><thead><tr><th>Campagne</th><th>Taal</th><th class="num">Producten</th><th>Status</th><th class="num">Verstuurd</th><th class="num">Geopend</th><th class="num">Geklikt</th><th>Bijgewerkt</th></tr></thead><tbody>' +
+      L.map(function(c){
+        var s = c.stats || {};
+        return '<tr class="click" data-c="' + c.id + '"><td><b>' + esc(c.name) + '</b><div class="small muted">' + esc(c.subject || "(geen onderwerp)") + "</div></td><td>" + esc((c.lang || "").toUpperCase()) + '</td><td class="num">' + c.products + "</td><td>" + badge(CAMP_ST, c.status) + '</td><td class="num">' + (s.sent || "—") + (s.failed ? ' <span class="b bad">' + s.failed + " mislukt</span>" : "") + '</td><td class="num">' + (s.sent ? s.opened + " · " + pct(s.opened, s.sent) : "—") + '</td><td class="num">' + (s.sent ? s.clicked + " · " + pct(s.clicked, s.sent) : "—") + '</td><td class="small">' + esc(dt(c.sent_at || c.updated_at)) + "</td></tr>";
+      }).join("") + "</tbody></table>" +
+      '<p class="small muted">Geopend telt alleen als de ontvanger afbeeldingen laadt; Apple Mail opent soms automatisch. Klikken zijn betrouwbaarder.</p>';
+    $$("tr[data-c]", body).forEach(function(tr){ tr.onclick = function(){ location.hash = "#campagne/" + tr.getAttribute("data-c"); }; });
+  });
+}
+
+function campUnsubs(el){
+  function draw(list){
+    el.innerHTML = '<div class="card" style="margin-bottom:12px"><div class="row"><input type="email" id="uEm" placeholder="e-mailadres" style="min-width:260px"><button class="btn sec" id="uAdd">Handmatig afmelden</button></div><p class="small muted" style="margin:8px 0 0">Afgemelde adressen krijgen nooit meer een campagne. Orderbevestigingen, Track &amp; Trace en facturen blijven gewoon komen.</p></div>' +
+      (list.length ? '<table><thead><tr><th>E-mail</th><th>Sinds</th><th>Hoe</th><th></th></tr></thead><tbody>' + list.map(function(u){ return "<tr><td>" + esc(u.email) + '</td><td class="small">' + esc(dt(u.at)) + '</td><td class="small">' + esc(u.source) + (+u.campaign_id ? " · campagne " + u.campaign_id : "") + '</td><td class="num"><button class="btn sec sm" data-rm="' + esc(u.email) + '">Weer aanmelden</button></td></tr>'; }).join("") + "</tbody></table>" : '<p class="muted">Nog niemand afgemeld.</p>');
+    $("#uAdd").onclick = function(){ var e = $("#uEm").value.trim(); if(!e) return; api("admin/camp/unsubs", { action:"add", email:e }).then(function(r){ if(!r.ok){ toast(errMsg(r)); return; } toast("Afgemeld"); draw(r.data.list || []); }); };
+    $$("button[data-rm]", el).forEach(function(b){ b.onclick = function(){ if(!confirm("Weer aanmelden? Doe dit alleen als de klant daar zelf om vraagt.")) return; api("admin/camp/unsubs", { action:"remove", email:b.getAttribute("data-rm") }).then(function(r){ toast(r.ok ? "Weer aangemeld" : errMsg(r)); if(r.ok) draw(r.data.list || []); }); }; });
+  }
+  api("admin/camp/unsubs", { action:"list" }).then(function(r){ draw((r.data && r.data.list) || []); });
+}
+
+function vCamp(m, id){
+  var isNew = !id || id === "nieuw";
+  var P = isNew ? Promise.resolve({ ok:true, data:{ campaign:null } }) : api("admin/camp/get", { id:+id });
+  Promise.all([P, campCatalog(), campStock()]).then(function(r){
+    var res = r[0], CAT = r[1], STK = r[2];
+    if(!res.ok){ m.innerHTML = '<div class="msg bad">' + esc(errMsg(res)) + "</div>"; return; }
+    var c = res.data.campaign, sendOn = !!res.data.send_enabled;
+    var st = {
+      id: c ? c.id : 0, name: c ? c.name : "", lang: c ? c.lang : "nl", subject: c ? c.subject : "", status: c ? c.status : "draft",
+      data: c ? c.data : { preheader:"", eyebrow:"", title:"", intro:"", section:"", cta_title:"", cta_text:"", show_price:0, products:[], audience:{ src:["accounts","moneybird"], countries:[], exclude:[] }, utm:"" }
+    };
+    if(isNew){ var D0 = CAMP_DEF.nl; st.subject = D0.subject; st.data.preheader = D0.preheader; st.data.title = D0.title; st.data.intro = D0.intro; st.data.audience.countries = ["NL","BE"]; }
+    var ro = st.status !== "draft";
+    var dirty = false;
+
+    m.innerHTML = '<a class="back" href="#campagnes">&larr; Campagnes</a>' +
+      '<div class="row" style="margin:6px 0 14px"><h1 style="margin:0">' + (isNew ? "Nieuwe campagne" : esc(st.name)) + "</h1>" + badge(CAMP_ST, st.status) + '<span class="sp"></span>' +
+      (ro ? '<button class="btn sec" id="cCopy">Kopie maken</button>' : '<button class="btn sec" id="cSave">Opslaan</button>' + (st.id ? '<button class="btn sec" id="cCopy">Kopie</button><button class="btn sec" id="cDel">Verwijderen</button>' : "")) + "</div>" +
+      '<div id="cMsg"></div>' +
+      '<div class="camp-grid"><div class="camp-form">' +
+        (ro ? '<div class="card" id="cStats"></div>' : "") +
+        '<div class="card"><div class="grid g2">' +
+          '<label class="f">Naam (intern)<input id="fName" value="' + esc(st.name) + '" placeholder="bv. Topsellers oktober NL"></label>' +
+          '<label class="f">Taal van de mail<select id="fLang">' + Object.keys(CAMP_LANGS).map(function(k){ return '<option value="' + k + '"' + (st.lang === k ? " selected" : "") + ">" + CAMP_LANGS[k] + "</option>"; }).join("") + "</select></label></div>" +
+          '<label class="f">Onderwerp<input id="fSubject" value="' + esc(st.subject) + '" maxlength="120"></label>' +
+          '<label class="f">Voorvertoningstekst (preheader)<input id="fPre" value="' + esc(st.data.preheader) + '" maxlength="200"></label>' +
+          '<div class="row" style="margin:-4px 0 6px"><button class="btn sec sm" id="fDef">Standaardtekst in deze taal</button><span class="small muted">vult onderwerp, titel en intro opnieuw in</span></div>' +
+        "</div>" +
+        '<div class="card"><h3 class="ch">Kop</h3>' +
+          '<label class="f">Bovenregel (leeg = standaard)<input id="fEyebrow" value="' + esc(st.data.eyebrow) + '" maxlength="80" placeholder="B2B Groothandel Sportvoeding"></label>' +
+          '<label class="f">Titel<input id="fTitle" value="' + esc(st.data.title) + '" maxlength="120"></label>' +
+          '<label class="f">Intro<textarea id="fIntro" rows="4" maxlength="700">' + esc(st.data.intro) + "</textarea></label>" +
+        "</div>" +
+        '<div class="card"><div class="row"><h3 class="ch" style="margin:0">Producten <span class="muted small" id="pCount"></span></h3><span class="sp"></span><label class="chk" style="margin:0"><input type="checkbox" id="fPrice"' + (st.data.show_price ? " checked" : "") + "> Toon vanafprijs excl. btw</label></div>" +
+          '<p class="small muted" style="margin:6px 0 10px">Kies 4, 6 of 8 producten (twee per rij). Elke tegel krijgt de knop <b>Get a quote</b> naar het product op thheurope.com.</p>' +
+          '<div id="pSel" class="psel"></div>' +
+          (ro ? "" : '<div class="row" style="margin-top:10px"><input type="search" id="pQ" placeholder="Zoek op merk of product…" style="flex:1;min-width:200px"><label class="chk" style="margin:0"><input type="checkbox" id="pStock" checked> alleen op voorraad</label></div><div id="pRes" class="pres"></div>') +
+        "</div>" +
+        '<div class="card"><h3 class="ch">Afsluiter (leeg = standaard)</h3>' +
+          '<label class="f">Titel<input id="fCtaT" value="' + esc(st.data.cta_title) + '" maxlength="100" placeholder="Klaar om in te kopen?"></label>' +
+          '<label class="f">Tekst<input id="fCtaX" value="' + esc(st.data.cta_text) + '" maxlength="300" placeholder="Stel uw offertelijst samen…"></label>' +
+          '<label class="f">Sectietitel producten<input id="fSection" value="' + esc(st.data.section) + '" maxlength="80" placeholder="Uitgelichte producten"></label>' +
+        "</div>" +
+        '<div class="card"><h3 class="ch">Doelgroep</h3>' +
+          '<label class="chk"><input type="checkbox" id="aAcc"' + (st.data.audience.src.indexOf("accounts") >= 0 ? " checked" : "") + "> Goedgekeurde portaalklanten</label>" +
+          '<label class="chk"><input type="checkbox" id="aMb"' + (st.data.audience.src.indexOf("moneybird") >= 0 ? " checked" : "") + "> Bestaande klanten uit Moneybird (met e-mailadres)</label>" +
+          '<label class="f" style="margin-top:10px">Landen (leeg = alle)<input id="aCc" value="' + esc(st.data.audience.countries.join(", ")) + '" placeholder="bv. NL, BE"></label>' +
+          '<div class="row" style="margin:-4px 0 10px"><button class="btn sec sm" data-cc="">Alle landen</button><button class="btn sec sm" data-cc="NL,BE">NL + BE</button><button class="btn sec sm" data-cc="DE,AT">DE + AT</button><button class="btn sec sm" data-cc="!NL,BE">Buitenland (niet NL/BE)</button></div>' +
+          '<div class="row"><button class="btn sec" id="aShow">Bekijk ontvangers</button><span id="aCount" class="small muted"></span></div><div id="aList"></div>' +
+          '<p class="small muted" style="margin:10px 0 0">Nooit mee: testaccounts, beheerders, eigen bedrijven (THH, Team Champ, Fenix, Prive All), @thehealthhouse.nl/@thheurope.com/@teamchamp.nl en afgemelde adressen.</p>' +
+        "</div>" +
+        '<div class="card"><h3 class="ch">Test en verzenden</h3>' +
+          '<div class="row"><input type="email" id="tTo" placeholder="leeg = vast testadres (Gmail Ismail)" value="" style="min-width:260px"><button class="btn sec" id="tSend">Testmail sturen</button></div>' +
+          '<p class="small muted" style="margin:6px 0 12px">Een testmail heeft een rode balk "TESTMAIL" en telt niet mee in de statistieken.</p>' +
+          (ro ? "" : '<button class="btn" id="cSend"' + (sendOn ? "" : " disabled") + ">Verzenden naar doelgroep</button>" + (sendOn ? "" : ' <span class="small muted">Vergrendeld tot akkoord van Ismail.</span>')) +
+          '<div id="sProg"></div>' +
+        "</div>" +
+      '</div><div class="camp-prev"><div class="card" style="padding:12px"><div class="row" style="margin-bottom:8px"><span class="small muted">Onderwerp:</span> <b id="pvSubj" class="small"></b><span class="sp"></span><div class="tabs" style="margin:0"><button data-w="640" class="on">Desktop</button><button data-w="390">Mobiel</button></div><button class="btn sec sm" id="pvRef">Ververs</button></div>' +
+        '<div class="pv-wrap"><iframe id="pv" title="Voorbeeld" style="width:640px"></iframe></div></div></div></div>';
+
+    function collect(){
+      if(ro) return;
+      st.name = $("#fName").value.trim(); st.lang = $("#fLang").value; st.subject = $("#fSubject").value.trim();
+      var d = st.data;
+      d.preheader = $("#fPre").value.trim(); d.eyebrow = $("#fEyebrow").value.trim(); d.title = $("#fTitle").value.trim(); d.intro = $("#fIntro").value.trim();
+      d.cta_title = $("#fCtaT").value.trim(); d.cta_text = $("#fCtaX").value.trim(); d.section = $("#fSection").value.trim(); d.show_price = $("#fPrice").checked ? 1 : 0;
+      d.audience.src = []; if($("#aAcc").checked) d.audience.src.push("accounts"); if($("#aMb").checked) d.audience.src.push("moneybird");
+      d.audience.countries = $("#aCc").value.toUpperCase().split(/[^A-Z]+/).filter(function(x){ return x.length === 2; });
+    }
+    function payload(){ collect(); return { id:st.id, draft:{ name:st.name, lang:st.lang, subject:st.subject, data:st.data } }; }
+    var pvT;
+    function preview(){
+      clearTimeout(pvT);
+      pvT = setTimeout(function(){
+        $("#pvSubj").textContent = st.subject || "—";
+        api("admin/camp/preview", ro ? { id:st.id } : payload()).then(function(r){ if(r.ok && $("#pv")) $("#pv").srcdoc = r.data.html; });
+      }, 500);
+    }
+    function drawSel(){
+      var el = $("#pSel"), P = st.data.products;
+      $("#pCount").textContent = "(" + P.length + ")";
+      el.innerHTML = P.length ? P.map(function(p, i){
+        return '<div class="pitem"><img src="' + esc(campImg(p.img)) + '" alt=""><div class="pt"><div class="small muted">' + esc(p.brand) + "</div><div>" + esc(p.name) + "</div>" + (STK[p.id] ? '<span class="b ok">op voorraad</span>' : '<span class="b grey">niet op voorraad</span>') + "</div>" +
+          (ro ? "" : '<div class="pb"><button class="btn sec sm" data-up="' + i + '" title="Omhoog">&uarr;</button><button class="btn sec sm" data-dn="' + i + '" title="Omlaag">&darr;</button><button class="btn sec sm" data-rm="' + i + '" title="Verwijderen">&times;</button></div>') + "</div>";
+      }).join("") : '<p class="muted small">Nog geen producten gekozen.</p>';
+      if(P.length % 2) el.insertAdjacentHTML("beforeend", '<p class="small" style="color:#e0a800">Oneven aantal: de laatste rij heeft één tegel.</p>');
+      $$("button[data-up]", el).forEach(function(b){ b.onclick = function(){ var i = +b.getAttribute("data-up"); if(i > 0){ var t = P[i - 1]; P[i - 1] = P[i]; P[i] = t; changed(); drawSel(); } }; });
+      $$("button[data-dn]", el).forEach(function(b){ b.onclick = function(){ var i = +b.getAttribute("data-dn"); if(i < P.length - 1){ var t = P[i + 1]; P[i + 1] = P[i]; P[i] = t; changed(); drawSel(); } }; });
+      $$("button[data-rm]", el).forEach(function(b){ b.onclick = function(){ P.splice(+b.getAttribute("data-rm"), 1); changed(); drawSel(); }; });
+    }
+    function search(){
+      var q = $("#pQ").value.trim().toLowerCase(), onlyStock = $("#pStock").checked, el = $("#pRes");
+      if(q.length < 2){ el.innerHTML = ""; return; }
+      var words = q.split(/\s+/), have = {}; st.data.products.forEach(function(p){ have[p.id] = 1; });
+      var hits = CAT.filter(function(p){ var t = (p.brand + " " + p.name + " " + (p.cat || "")).toLowerCase(); return words.every(function(w){ return t.indexOf(w) >= 0; }) && (!onlyStock || STK[p.id]); }).slice(0, 30);
+      el.innerHTML = hits.length ? hits.map(function(p){ return '<button class="pr" data-add="' + p.id + '"' + (have[p.id] ? " disabled" : "") + '><img src="' + esc(campImg(p.img)) + '" alt=""><span><span class="small muted">' + esc(p.brand) + "</span><br>" + esc(p.name) + (p.unit ? ' <span class="muted small">' + esc(p.unit) + "</span>" : "") + "</span>" + (STK[p.id] ? "" : '<span class="b grey">uit</span>') + "</button>"; }).join("") : '<p class="small muted">Niets gevonden.</p>';
+      $$("button[data-add]", el).forEach(function(b){ b.onclick = function(){
+        if(st.data.products.length >= 12){ toast("Maximaal 12 producten"); return; }
+        var p = CAT.find(function(x){ return String(x.id) === b.getAttribute("data-add"); }); if(!p) return;
+        st.data.products.push({ id:p.id, slug:p.slug, brand:p.brand, name:p.name, unit:p.unit || "", img:p.img }); b.disabled = true; changed(); drawSel();
+      }; });
+    }
+    function changed(){ dirty = true; preview(); }
+    function save(){
+      collect();
+      if(!st.subject){ msg($("#cMsg"), "bad", "Vul een onderwerp in."); return Promise.resolve(false); }
+      var btn = $("#cSave"); busy(btn, true);
+      return api("admin/camp/save", { id:st.id, name:st.name, lang:st.lang, subject:st.subject, data:st.data }).then(function(r){
+        busy(btn, false);
+        if(!r.ok){ msg($("#cMsg"), "bad", errMsg(r)); return false; }
+        dirty = false; toast("Opgeslagen");
+        if(!st.id){ st.id = r.data.id; history.replaceState(null, "", "#campagne/" + st.id); }
+        return true;
+      });
+    }
+    function audience(){
+      collect();
+      var el = $("#aList"); $("#aCount").innerHTML = '<span class="spin"></span>';
+      api("admin/camp/audience", { audience:st.data.audience }).then(function(r){
+        if(!r.ok){ $("#aCount").textContent = errMsg(r); return; }
+        var d = r.data, sk = d.skipped || {};
+        $("#aCount").innerHTML = "<b>" + d.count + " ontvangers</b> · " + Object.keys(d.by_country || {}).map(function(k){ return k + " " + d.by_country[k]; }).join(", ") + (sk.unsub ? " · " + sk.unsub + " afgemeld" : "") + (sk.intern ? " · " + sk.intern + " intern overgeslagen" : "");
+        el.innerHTML = d.list.length ? '<div class="tscroll" style="max-height:260px;overflow:auto;margin-top:8px"><table><thead><tr><th>Bedrijf</th><th>E-mail</th><th>Land</th><th>Bron</th></tr></thead><tbody>' + d.list.map(function(x){ return "<tr><td>" + esc(x.company || x.name || "—") + '</td><td class="small">' + esc(x.email) + "</td><td>" + esc(x.country) + '</td><td class="small muted">' + esc(x.src) + "</td></tr>"; }).join("") + "</tbody></table></div>" : "";
+        CS().lastCountries = Object.keys(d.by_country || {});
+      });
+    }
+    function stats(){
+      var el = $("#cStats"); if(!el) return;
+      api("admin/camp/recipients", { id:st.id }).then(function(r){
+        var L = (r.data && r.data.list) || [], s = c.stats || {};
+        el.innerHTML = '<h3 class="ch">Resultaat</h3><div class="stats4">' + kpi("Verstuurd", s.sent || 0, s.failed ? s.failed + " mislukt" : "") + kpi("Geopend", s.opened || 0, pct(s.opened, s.sent)) + kpi("Geklikt", s.clicked || 0, pct(s.clicked, s.sent) + " · " + (s.clicks || 0) + " kliks") + kpi("Wachtrij", s.queued || 0, "") + "</div>" +
+          (L.length ? '<div class="tscroll" style="max-height:300px;overflow:auto;margin-top:10px"><table><thead><tr><th>Bedrijf</th><th>E-mail</th><th>Status</th><th>Geopend</th><th>Geklikt</th></tr></thead><tbody>' + L.map(function(x){ return "<tr><td>" + esc(x.company || "—") + '</td><td class="small">' + esc(x.email) + '</td><td class="small">' + esc(x.status) + (x.err ? ' <span class="muted">' + esc(x.err) + "</span>" : "") + '</td><td class="small">' + (x.opened_at ? esc(dt(x.opened_at)) + " (" + x.open_n + "×)" : "—") + '</td><td class="small">' + (x.clicked_at ? esc(dt(x.clicked_at)) + " (" + x.click_n + "×)" : "—") + "</td></tr>"; }).join("") + "</tbody></table></div>" : "");
+      });
+    }
+
+    drawSel(); preview(); if(ro) stats();
+    $$(".camp-prev .tabs button").forEach(function(b){ b.onclick = function(){ $$(".camp-prev .tabs button").forEach(function(x){ x.classList.toggle("on", x === b); }); $("#pv").style.width = b.getAttribute("data-w") + "px"; }; });
+    $("#pvRef").onclick = preview;
+    if(!ro){
+      ["fName","fSubject","fPre","fEyebrow","fTitle","fIntro","fCtaT","fCtaX","fSection","aCc"].forEach(function(k){ $("#" + k).addEventListener("input", changed); });
+      ["fLang","fPrice","aAcc","aMb"].forEach(function(k){ $("#" + k).addEventListener("change", changed); });
+      $("#fDef").onclick = function(){ var D = CAMP_DEF[$("#fLang").value] || CAMP_DEF.en; if(($("#fTitle").value || $("#fIntro").value) && !confirm("Onderwerp, voorvertoning, titel en intro vervangen door de standaardtekst?")) return; $("#fSubject").value = D.subject; $("#fPre").value = D.preheader; $("#fTitle").value = D.title; $("#fIntro").value = D.intro; changed(); };
+      var qt; $("#pQ").oninput = function(){ clearTimeout(qt); qt = setTimeout(search, 200); };
+      $("#pStock").onchange = search;
+      $("#cSave").onclick = save;
+      $$("button[data-cc]", m).forEach(function(b){ b.onclick = function(){
+        var v = b.getAttribute("data-cc");
+        if(v.charAt(0) === "!"){
+          var ex = v.slice(1).split(",");
+          api("admin/camp/audience", { audience:{ src:st.data.audience.src, countries:[] } }).then(function(r){ var keys = Object.keys((r.data && r.data.by_country) || {}).filter(function(k){ return ex.indexOf(k) < 0 && k !== "??"; }); $("#aCc").value = keys.join(", "); changed(); audience(); });
+          return;
+        }
+        $("#aCc").value = v.split(",").filter(Boolean).join(", "); changed(); audience();
+      }; });
+      if(st.id){
+        $("#cDel").onclick = function(){ if(!confirm("Deze concept-campagne verwijderen?")) return; api("admin/camp/delete", { id:st.id }).then(function(r){ if(!r.ok){ toast(errMsg(r)); return; } toast("Verwijderd"); location.hash = "#campagnes"; }); };
+      }
+      var sb = $("#cSend");
+      if(sb) sb.onclick = function(){
+        save().then(function(ok){
+          if(!ok) return;
+          api("admin/camp/audience", { id:st.id }).then(function(r){
+            if(!r.ok){ toast(errMsg(r)); return; }
+            var n = r.data.count;
+            var w = prompt("Je gaat \"" + st.subject + "\" versturen naar " + n + " zakelijke klanten. Dit kan niet ongedaan worden gemaakt.\n\nTyp VERZENDEN om te bevestigen:");
+            if(w !== "VERZENDEN") { toast("Niet verzonden"); return; }
+            var pr = $("#sProg"); pr.innerHTML = '<p class="small"><span class="spin"></span> Bezig met verzenden…</p>';
+            (function step(first){
+              api("admin/camp/send", first ? { id:st.id, confirm:"VERZENDEN" } : { id:st.id }).then(function(x){
+                if(!x.ok){ pr.innerHTML = '<div class="msg bad">' + esc(errMsg(x)) + "</div>"; return; }
+                var s = x.data.stats || {};
+                pr.innerHTML = '<p class="small">' + (s.sent || 0) + " van " + (s.n || 0) + " verstuurd" + (s.failed ? " · " + s.failed + " mislukt" : "") + "</p>";
+                if(x.data.status === "sent"){ toast("Campagne verstuurd"); setTimeout(function(){ route(); }, 800); return; }
+                setTimeout(function(){ step(false); }, x.data.busy ? 4000 : 600);
+              });
+            })(true);
+          });
+        });
+      };
+    } else {
+      // Verstuurde of lopende campagne: alleen bekijken; lopend -> doorgaan.
+      if(st.status === "sending" && sendOn){ $("#sProg").innerHTML = '<button class="btn" id="cResume">Verzenden hervatten</button>'; $("#cResume").onclick = function(){ api("admin/camp/send", { id:st.id }).then(function(){ route(); }); }; }
+    }
+    var cp = $("#cCopy"); if(cp) cp.onclick = function(){ api("admin/camp/copy", { id:st.id }).then(function(r){ if(!r.ok){ toast(errMsg(r)); return; } toast("Kopie gemaakt"); location.hash = "#campagne/" + r.data.id; }); };
+    $("#tSend").onclick = function(){
+      var to = $("#tTo").value.trim(), b = this;
+      if(!st.data.products.length){ toast("Voeg eerst producten toe"); return; }
+      busy(b, true);
+      api("admin/camp/test", ro ? { id:st.id, to:to } : Object.assign(payload(), { to:to })).then(function(r){ busy(b, false); toast(r.ok ? "Testmail verstuurd naar " + r.data.sent_to : errMsg(r)); });
+    };
+    window.onbeforeunload = function(){ return dirty && location.hash.indexOf("#campagne/") === 0 ? "Niet opgeslagen wijzigingen" : undefined; };
+  });
+}
+function campImg(src){ src = String(src || ""); return /^https?:/.test(src) ? src : "https://thheurope.com/" + src.replace(/^\//, ""); }
+
+/*@@CAMP_END*/
+})();
+</script>
+</body>
+</html>

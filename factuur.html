@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<meta name="referrer" content="no-referrer" />
+<title>Factuur · THH Europe</title>
+<style>
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Regular.woff') format('woff');font-weight:400;font-display:swap}
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Book.woff') format('woff');font-weight:500;font-display:swap}
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Bold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:'Pilat';src:url('assets/fonts/Pilat-Black.woff') format('woff');font-weight:900;font-display:swap}
+@font-face{font-family:'Pilat Extended';src:url('assets/fonts/PilatExtended-DemiBold.woff') format('woff');font-weight:600;font-display:swap}
+@font-face{font-family:'Pilat Extended';src:url('assets/fonts/PilatExtended-Bold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:'Pilat Extended';src:url('assets/fonts/PilatExtended-Black.woff') format('woff');font-weight:900;font-display:swap}
+:root{--black:#15191D;--head:#1B1B1B;--ink:#1A1A1A;--text:rgba(26,26,26,.78);--muted:#8A8A8A;--line:#E9E9EB;--soft:#F7F7F7;--ok:#128666;--warn:#A15C00;--bad:#B3261E}
+*{box-sizing:border-box}
+html,body{margin:0;background:#EDEDEF;color:var(--ink);font:400 14px/1.5 'Pilat',Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+a{color:inherit}
+.hidden{display:none!important}
+/* ---------- werkbalk (niet printen) ---------- */
+.bar{position:sticky;top:0;z-index:5;background:var(--head);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 20px;flex-wrap:wrap}
+.bar .sp{flex:1}
+.bar a.back{color:rgba(255,255,255,.75);text-decoration:none;font:700 11px/1 'Pilat',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.bar a.back:hover{color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:3px;padding:10px 16px;font:700 13px/1 'Pilat',Arial,sans-serif;cursor:pointer;text-decoration:none;border:1.5px solid #fff;background:#fff;color:var(--black);white-space:nowrap}
+.btn.out{background:transparent;color:#fff}
+.btn:hover{opacity:.88}
+.btn[disabled]{opacity:.5;cursor:default}
+.note{max-width:210mm;margin:14px auto 0;padding:0 4px;font-size:12px;color:#6B6B75}
+/* ---------- logo (zoals thheurope.com) ---------- */
+.tgl-logo{display:inline-flex;align-items:center;gap:10px}
+.tgl-badge{background:#fff;color:var(--black);font:900 13px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.06em;padding:6px 8px;border-radius:3px}
+.tgl-word{display:flex;flex-direction:column;gap:3px}
+.tgl-main{font:900 20px/1 'Pilat Extended',Arial,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:rgba(255,255,255,.78);white-space:nowrap}
+.tgl-main .tgl-accent{color:#fff}
+.tgl-sub{font:700 8px/1 'Pilat',Arial,sans-serif;text-transform:uppercase;letter-spacing:.32em;color:rgba(255,255,255,.55);white-space:nowrap}
+.bar .tgl-badge{font-size:11px;padding:5px 7px}
+.bar .tgl-main{font-size:15px}
+.bar .tgl-sub{font-size:7px}
+/* ---------- document ---------- */
+.doc{width:210mm;max-width:100%;min-height:297mm;margin:22px auto 40px;background:#fff;box-shadow:0 2px 24px rgba(0,0,0,.08);display:flex;flex-direction:column;position:relative}
+.band{background:var(--black);color:#fff;padding:11mm 14mm 10mm;display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.band .tgl-badge{font-size:15px;padding:7px 9px}
+.band .tgl-main{font-size:23px}
+.band .tgl-sub{font-size:8.5px}
+.band .title{text-align:right}
+.band .title .eyebrow{font:700 8.5px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.band .title h1.long{font-size:23px!important}
+.band .title h1{margin:6px 0 0;font:900 30px/1 'Pilat Extended',Arial,sans-serif;text-transform:uppercase;letter-spacing:.01em;color:#fff}
+.band .title .no{margin-top:7px;font:700 13px/1 'Pilat',Arial,sans-serif;letter-spacing:.06em;color:rgba(255,255,255,.78)}
+.inner{padding:9mm 14mm 0;flex:1}
+.lbl{font:700 7.5px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.parties{display:grid;grid-template-columns:1.15fr 1fr;gap:10mm}
+.party{font-size:12.5px;line-height:1.55;color:var(--text)}
+.party b{display:block;color:var(--ink);font-weight:700;font-size:13.5px;margin-bottom:2px}
+.party .extra{margin-top:6px;font-size:11.5px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(28mm,1fr));margin:8mm 0 7mm;background:var(--soft);border-top:2px solid var(--black)}
+.meta > div{padding:9px 12px}
+.meta > div + div{border-left:1px solid var(--line)}
+.meta .v{font-weight:700;font-size:12.5px;color:var(--ink);word-break:break-word}
+.meta .lbl{margin-bottom:5px;letter-spacing:.16em;line-height:1.3}
+table.lines{width:100%;border-collapse:collapse;font-size:12px}
+table.lines thead th{font:700 7.5px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);text-align:left;padding:0 8px 9px;border-bottom:1.5px solid var(--black)}
+table.lines th.n,table.lines td.n{text-align:right;white-space:nowrap}
+table.lines td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--text)}
+table.lines td.q{white-space:nowrap;color:var(--ink);font-weight:700}
+table.lines td .d1{color:var(--ink);font-weight:700}
+table.lines td .dn{font-size:11px;color:#6B6B75}
+table.lines td .per{font-size:10.5px;color:var(--muted)}
+table.lines tr{page-break-inside:avoid}
+.foot-grid{display:grid;grid-template-columns:1fr 78mm;gap:10mm;margin-top:7mm;align-items:start}
+.totals{width:100%;border-collapse:collapse;font-size:12.5px}
+.totals td{padding:6px 0;color:var(--text)}
+.totals td.n{text-align:right;white-space:nowrap;color:var(--ink)}
+.totals tr.sub td{border-bottom:1px solid var(--line)}
+.totals tr.grand td{background:var(--black);color:#fff;padding:12px 12px;font:900 13px/1 'Pilat Extended',Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em}
+.totals tr.grand td.n{font-size:16px;letter-spacing:0}
+.totals tr.gap td{height:6px;padding:0}
+.chip{display:inline-block;margin-top:10px;padding:6px 10px;border-radius:3px;font:700 8px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#fff}
+.chip.ok{background:var(--ok)}.chip.warn{background:var(--warn)}.chip.bad{background:var(--bad)}.chip.grey{background:#6B6B75}
+.pay{background:var(--soft);border-left:3px solid var(--black);padding:12px 14px;font-size:11.5px;line-height:1.55;color:var(--text)}
+.pay .kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin-top:8px}
+.pay .kv span:nth-child(odd){color:var(--muted)}
+.pay .kv span:nth-child(even){color:var(--ink);font-weight:700}
+.remark{margin-top:8px;font-size:11px;color:#6B6B75}
+.footer{margin-top:10mm;padding:6mm 14mm 9mm;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:9.5px;line-height:1.6;color:#6B6B75}
+.footer b{color:var(--ink);font-weight:700}
+.footer .brand{font:900 9px/1.6 'Pilat Extended',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.stamp{position:absolute;top:62mm;right:14mm;transform:rotate(-8deg);border:2.5px solid var(--bad);color:var(--bad);padding:6px 12px;font:900 16px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.state{max-width:210mm;margin:60px auto;background:#fff;padding:30px;text-align:center;font-size:15px}
+.state h2{font:900 18px/1.2 'Pilat Extended',Arial,sans-serif;text-transform:uppercase;margin:0 0 10px}
+.state a{font-weight:700}
+@media screen and (max-width:760px){
+  .bar{padding:10px 12px}
+  .bar .tgl-word{display:none}
+  .btn{padding:9px 12px;font-size:12px}
+  .doc{margin:0 0 30px;min-height:0;box-shadow:none}
+  .band{padding:18px 16px;flex-direction:column;align-items:flex-start}
+  .band .title{text-align:left}
+  .band .title h1{font-size:24px}
+  .inner{padding:18px 16px 0}
+  .parties,.foot-grid{grid-template-columns:1fr;gap:18px}
+  .wrap-lines{overflow-x:auto}
+  table.lines{min-width:0;font-size:11.5px}
+  table.lines thead th{padding:0 5px 8px;letter-spacing:.1em}
+  table.lines td{padding:9px 5px}
+  .meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .meta > div + div{border-left:0}
+  .meta > div:nth-child(even){border-left:1px solid var(--line)}
+  .meta > div:nth-child(n+3){border-top:1px solid var(--line)}
+  .footer{padding:16px}
+  .stamp{top:150px;right:16px;font-size:13px}
+}
+/* beheer: donkere omlijsting, papier blijft wit */
+body.adm{background:#0F0F0F}
+body.adm .bar{background:#0F0F0F;border-bottom:1px solid #2a2a2a}
+body.adm .note{color:#8A8A8A}
+body.adm .state{background:#15191D;color:rgba(255,255,255,.85)}
+/* illustratieve factuur */
+.demo-bar{background:#e10600;color:#fff;font:700 12px/1.3 'Pilat',Arial,sans-serif;padding:8px 20px;text-align:center;letter-spacing:.02em}
+.dd{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e10600;margin-left:8px;vertical-align:1px;box-shadow:0 0 0 2px rgba(225,6,0,.25)}
+.wm{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3}
+.wm span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-32deg);white-space:nowrap;font:900 64px/1 'Pilat Extended',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:rgba(225,6,0,.13);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.wm span.s2{top:22%;font-size:40px}.wm span.s3{top:80%;font-size:40px}
+@media screen and (max-width:760px){.wm span{font-size:34px}.wm span.s2,.wm span.s3{font-size:24px}}
+@page{size:A4;margin:12mm 0 14mm}
+@page :first{margin-top:0}
+@media print{
+  html,body{background:#fff}
+  .bar,.note,.no-print{display:none!important}
+  .doc{margin:0;width:auto;max-width:none;min-height:0;box-shadow:none}
+  .band{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="bar no-print">
+  <span class="tgl-logo"><span class="tgl-badge">THHEU</span><span class="tgl-word"><span class="tgl-main">THH <span class="tgl-accent">EUROPE</span></span><span class="tgl-sub">Wholesale Supplements</span></span></span>
+  <a class="back" id="back" href="./#account">← Terug</a>
+  <span class="sp"></span>
+  <a class="btn out hidden" id="bPay" href="#" target="_blank" rel="noopener">Online betalen</a>
+  <button class="btn out hidden" id="bOrig" type="button">Moneybird-PDF</button>
+  <button class="btn hidden" id="bPdf" type="button">Download PDF</button>
+</div>
+<div id="app"><div class="state">…</div></div>
+<p class="note no-print hidden" id="note"></p>
+
+<script>
+(function(){
+"use strict";
+var API = "https://thehealthhouse.nl/wp-json/thhe/v1/";
+var qs = new URLSearchParams(location.search);
+var ID = (qs.get("id") || "").replace(/\D/g, "");
+var ADMIN = qs.get("m") === "a";
+var TK = ADMIN ? "thheAdminToken" : "thheToken";
+function $(s){ return document.querySelector(s); }
+function token(){ try{ return localStorage.getItem(TK) || sessionStorage.getItem(TK) || ""; }catch(e){ return ""; } }
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
+var LANGS = ["en","nl","fr","de","bs"];
+var UI = ADMIN ? "nl" : (function(){ try{ var l = localStorage.getItem("thhe_lang"); return LANGS.indexOf(l) > -1 ? l : "en"; }catch(e){ return "en"; } })();
+
+/* Werkbalk in de taal van het portaal */
+var UIT = {
+  back:{ en:"← My account", nl:"← Mijn account", fr:"← Mon compte", de:"← Mein Konto", bs:"← Moj račun" },
+  back_a:{ nl:"← Facturen" },
+  pdf:{ en:"Download PDF", nl:"Download PDF", fr:"Télécharger PDF", de:"PDF herunterladen", bs:"Preuzmi PDF" },
+  orig:{ en:"Moneybird PDF", nl:"Moneybird-PDF", fr:"PDF Moneybird", de:"Moneybird-PDF", bs:"Moneybird PDF" },
+  pay:{ en:"Pay online", nl:"Online betalen", fr:"Payer en ligne", de:"Online bezahlen", bs:"Plati online" },
+  note:{ en:"Tip: choose “Save as PDF” in the print window. This copy is identical to the invoice in our accounting system.", nl:"Tip: kies “Opslaan als PDF” in het printvenster. Deze weergave is gelijk aan de factuur in onze boekhouding.", fr:"Astuce : choisissez « Enregistrer au format PDF » dans la fenêtre d'impression. Cette copie est identique à la facture de notre comptabilité.", de:"Tipp: Wählen Sie im Druckfenster „Als PDF speichern“. Diese Ansicht entspricht der Rechnung in unserer Buchhaltung.", bs:"Savjet: u prozoru za ispis odaberite „Spremi kao PDF“. Ovaj prikaz je identičan fakturi u našem knjigovodstvu." },
+  login:{ en:"Please log in to view this invoice.", nl:"Log in om deze factuur te bekijken.", fr:"Connectez-vous pour voir cette facture.", de:"Bitte melden Sie sich an, um diese Rechnung zu sehen.", bs:"Prijavite se da biste vidjeli ovu fakturu." },
+  login_btn:{ en:"Log in", nl:"Inloggen", fr:"Se connecter", de:"Anmelden", bs:"Prijava" },
+  nf:{ en:"Invoice not found.", nl:"Factuur niet gevonden.", fr:"Facture introuvable.", de:"Rechnung nicht gefunden.", bs:"Faktura nije pronađena." },
+  err:{ en:"The invoice could not be loaded. Please try again later.", nl:"De factuur kon niet worden geladen. Probeer het later opnieuw.", fr:"Impossible de charger la facture. Réessayez plus tard.", de:"Die Rechnung konnte nicht geladen werden. Bitte später erneut versuchen.", bs:"Faktura se nije mogla učitati. Pokušajte ponovo kasnije." },
+  pdf_err:{ en:"The PDF is not available right now.", nl:"De PDF is nu niet beschikbaar.", fr:"Le PDF n'est pas disponible pour le moment.", de:"Das PDF ist derzeit nicht verfügbar.", bs:"PDF trenutno nije dostupan." }
+};
+function ut(k){ var v = UIT[k] || {}; return v[UI] || v.nl || v.en || k; }
+
+/* Documentteksten in de taal van de factuur (zoals in Moneybird) */
+var DOC = {
+  nl:{ invoice:"Factuur", credit:"Creditfactuur", draft:"Concept", eyebrow:"Wholesale Supplements", billto:"Factuur aan", from:"Van", no:"Factuurnummer", date:"Factuurdatum", due:"Vervaldatum", ref:"Kenmerk", cust:"Klantnummer", vat:"Btw-nr.", kvk:"KvK", custvat:"Btw-nummer afnemer", qty:"Aantal", desc:"Omschrijving", price:"Prijs", total:"Totaal", tax:"Btw", subtotal:"Subtotaal", subtotal_incl:"Totaal incl. btw", discount:"Korting", over:"over", ofwhich:"waarvan", grand:"Totaal", paid:"Voldaan", paid_on:"Voldaan op", open:"Openstaand", late:"Vervallen", paidpart:"Reeds betaald", remaining:"Nog te betalen", payinfo:"Betalingsinformatie", iban:"IBAN", bic:"BIC", tnv:"T.n.v.", payref:"Kenmerk", credfor:"Creditering van factuur", notsent:"Concept — nog niet verstuurd", uncollectible:"Oninbaar", settle:"Te verrekenen", email:"E-mail" },
+  en:{ invoice:"Invoice", credit:"Credit note", draft:"Draft", eyebrow:"Wholesale Supplements", billto:"Invoice to", from:"From", no:"Invoice number", date:"Invoice date", due:"Due date", ref:"Reference", cust:"Customer no.", vat:"VAT no.", kvk:"CoC", custvat:"Customer VAT number", qty:"Qty", desc:"Description", price:"Price", total:"Total", tax:"VAT", subtotal:"Subtotal", subtotal_incl:"Total incl. VAT", discount:"Discount", over:"on", ofwhich:"of which", grand:"Total", paid:"Paid", paid_on:"Paid on", open:"Outstanding", late:"Overdue", paidpart:"Already paid", remaining:"Amount due", payinfo:"Payment details", iban:"IBAN", bic:"BIC", tnv:"Account holder", payref:"Reference", credfor:"Credit for invoice", notsent:"Draft — not sent yet", uncollectible:"Uncollectible", settle:"To be settled", email:"E-mail" },
+  de:{ invoice:"Rechnung", credit:"Gutschrift", draft:"Entwurf", eyebrow:"Wholesale Supplements", billto:"Rechnung an", from:"Von", no:"Rechnungsnummer", date:"Rechnungsdatum", due:"Fällig am", ref:"Referenz", cust:"Kundennummer", vat:"USt-IdNr.", kvk:"HR-Nr.", custvat:"USt-IdNr. Kunde", qty:"Menge", desc:"Beschreibung", price:"Preis", total:"Gesamt", tax:"MwSt.", subtotal:"Zwischensumme", subtotal_incl:"Gesamt inkl. MwSt.", discount:"Rabatt", over:"auf", ofwhich:"davon", grand:"Gesamt", paid:"Bezahlt", paid_on:"Bezahlt am", open:"Offen", late:"Überfällig", paidpart:"Bereits bezahlt", remaining:"Offener Betrag", payinfo:"Zahlungsinformationen", iban:"IBAN", bic:"BIC", tnv:"Kontoinhaber", payref:"Verwendungszweck", credfor:"Gutschrift zu Rechnung", notsent:"Entwurf — noch nicht versendet", uncollectible:"Uneinbringlich", settle:"Zu verrechnen", email:"E-Mail" },
+  fr:{ invoice:"Facture", credit:"Avoir", draft:"Brouillon", eyebrow:"Wholesale Supplements", billto:"Facturé à", from:"De", no:"Numéro de facture", date:"Date de facture", due:"Échéance", ref:"Référence", cust:"N° client", vat:"N° TVA", kvk:"N° CdC", custvat:"N° TVA client", qty:"Qté", desc:"Description", price:"Prix", total:"Total", tax:"TVA", subtotal:"Sous-total", subtotal_incl:"Total TTC", discount:"Remise", over:"sur", ofwhich:"dont", grand:"Total", paid:"Payée", paid_on:"Payée le", open:"Ouverte", late:"En retard", paidpart:"Déjà payé", remaining:"Reste à payer", payinfo:"Informations de paiement", iban:"IBAN", bic:"BIC", tnv:"Titulaire", payref:"Référence", credfor:"Avoir sur la facture", notsent:"Brouillon — pas encore envoyée", uncollectible:"Irrécouvrable", settle:"À régler", email:"E-mail" }
+};
+var LOC = { nl:"nl-NL", en:"en-IE", de:"de-DE", fr:"fr-FR" };
+
+function api(path){
+  var h = { "Content-Type":"application/json", "Accept":"application/json" };
+  if(token()) h["X-THHE-Token"] = token();
+  return fetch(API + path, { method:"POST", headers:h, body:"{}", credentials:"omit", cache:"no-store" })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { ok:r.ok, status:r.status, data:d }; }); })
+    .catch(function(){ return { ok:false, status:0, data:{} }; });
+}
+function state(title, text, link){
+  $("#app").innerHTML = '<div class="state"><h2>' + esc(title) + "</h2><p>" + esc(text) + "</p>" + (link ? '<p><a href="' + esc(link[0]) + '">' + esc(link[1]) + "</a></p>" : "") + "</div>";
+}
+
+/* ---------- start ---------- */
+if(ADMIN) document.body.classList.add("adm");
+$("#back").textContent = ADMIN ? ut("back_a") : ut("back");
+$("#back").href = ADMIN ? "./beheer.html#facturen" : "./#account";
+if(!ID){ state("THH Europe", ut("nf")); return; }
+if(!token()){ state("THH Europe", ut("login"), [ADMIN ? "./beheer.html" : "./#inloggen", ut("login_btn")]); return; }
+
+api((ADMIN ? "admin/" : "") + "invoices/" + ID).then(function(res){
+  if(res.status === 401){ state("THH Europe", ut("login"), [ADMIN ? "./beheer.html" : "./#inloggen", ut("login_btn")]); return; }
+  if(res.status === 404){ state("THH Europe", ut("nf")); return; }
+  if(!res.ok || !res.data || !res.data.invoice){ state("THH Europe", ut("err")); return; }
+  render(res.data);
+});
+
+function render(D){
+  var I = D.invoice, R = D.row || {}, C = I.contact || {}, ID_ = D.identity || {}, RATES = D.rates || {};
+  var L = DOC[I.lang] ? I.lang : "nl", T = DOC[L], loc = LOC[L];
+  var num = function(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; };
+  var r2 = function(n){ return Math.round((n + (n >= 0 ? 1e-9 : -1e-9)) * 100) / 100; };
+  var eur = function(v){ try{ return new Intl.NumberFormat(loc, { style:"currency", currency:I.currency || "EUR" }).format(num(v)); }catch(e){ return "€ " + num(v).toFixed(2); } };
+  var dt = function(s){ var m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return s || ""; return L === "de" ? m[3] + "." + m[2] + "." + m[1] : (L === "nl" ? m[3] + "-" + m[2] + "-" + m[1] : m[3] + "/" + m[2] + "/" + m[1]); };
+  var pct = function(p){ return (Math.round(p * 100) / 100).toLocaleString(loc) + "%"; };
+  var credit = num(I.incl) < 0, draft = I.state === "draft";
+  var title = draft ? T.draft : (credit ? T.credit : T.invoice);
+  document.documentElement.lang = L;
+  document.title = title + " " + (I.no || "") + " · THH Europe";
+
+  /* partijen */
+  var cname = C.company || ((C.firstname || "") + " " + (C.lastname || "")).trim();
+  var cl = [];
+  if(C.company && (C.attention || C.firstname || C.lastname)) cl.push(esc(C.attention || ((C.firstname || "") + " " + (C.lastname || "")).trim()));
+  if(C.address1) cl.push(esc(C.address1));
+  if(C.address2) cl.push(esc(C.address2));
+  var pc = [C.zipcode, C.city].filter(Boolean).join(" ");
+  if(pc) cl.push(esc(pc));
+  if(C.country && C.country !== "NL"){ var cn = C.country; try{ cn = new Intl.DisplayNames([loc], { type:"region" }).of(C.country) || C.country; }catch(e){} cl.push(esc(cn)); }
+  var cx = [];
+  if(C.tax_number) cx.push(esc(T.custvat) + ": " + esc(C.tax_number));
+  if(C.kvk) cx.push(esc(T.kvk) + ": " + esc(C.kvk));
+
+  var iban = String(ID_.bank_account_number || "").replace(/\s+/g, "").replace(/(.{4})/g, "$1 ").trim();
+  var sl = [];
+  if(ID_.address1) sl.push(esc(ID_.address1));
+  var spc = [String(ID_.zipcode || "").replace(/^(\d{4})\s*([A-Za-z]{2})$/, "$1 $2"), ID_.city].filter(Boolean).join(" ");
+  if(spc) sl.push(esc(spc));
+  if(ID_.email) sl.push(esc(ID_.email));
+  var sx = [];
+  if(ID_.chamber_of_commerce) sx.push(esc(T.kvk) + ": " + esc(ID_.chamber_of_commerce));
+  if(ID_.tax_number) sx.push(esc(T.vat) + ": " + esc(ID_.tax_number));
+
+  /* meta */
+  var meta = [];
+  meta.push([T.no, draft ? "—" : (I.no || "—")]);
+  meta.push([T.date, dt(I.date) || "—"]);
+  if(I.due && !credit) meta.push([T.due, dt(I.due)]);
+  if(I.reference) meta.push([T.ref, I.reference]);
+  if(C.customer_id) meta.push([T.cust, C.customer_id]);
+
+  /* regels */
+  var sub = 0, byRate = {};
+  var rows = (I.lines || []).map(function(l){
+    var tot = r2(num(l.qty) * num(l.price)); sub += tot;
+    byRate[l.tax] = (byRate[l.tax] || 0) + num(l.total);
+    var parts = String(l.desc || "").replace(/\*\*/g, "").split(/\r?\n/);
+    var d = '<div class="d1">' + esc(parts.shift() || "") + "</div>" + parts.filter(function(x){ return x.trim() !== ""; }).map(function(x){ return '<div class="dn">' + esc(x) + "</div>"; }).join("");
+    if(l.period){ var pm = String(l.period).match(/^(\d{8})\.\.(\d{8})$/); if(pm) d += '<div class="per">' + dt(pm[1].slice(0,4) + "-" + pm[1].slice(4,6) + "-" + pm[1].slice(6)) + " – " + dt(pm[2].slice(0,4) + "-" + pm[2].slice(4,6) + "-" + pm[2].slice(6)) + "</div>"; }
+    var rt = RATES[l.tax], tx = rt ? (rt.pct === null ? "–" : pct(rt.pct)) : "";
+    var amt = String(l.amount || "").trim().replace(/\s+x$/i, "x") || String(num(l.qty));
+    return '<tr><td class="q">' + esc(amt) + "</td><td>" + d + '</td><td class="n">' + eur(l.price) + '</td><td class="n">' + eur(tot) + '</td><td class="n">' + esc(tx) + "</td></tr>";
+  }).join("");
+  sub = r2(sub);
+
+  /* totalen */
+  var tr = [];
+  var incl = !!I.incl_prices;
+  tr.push('<tr class="sub"><td>' + esc(incl ? T.subtotal_incl : T.subtotal) + '</td><td class="n">' + eur(sub) + "</td></tr>");
+  if(num(I.total_discount) !== 0) tr.push("<tr><td>" + esc(T.discount) + (num(I.discount) ? " " + pct(num(I.discount)) : "") + '</td><td class="n">' + eur(-num(I.total_discount)) + "</td></tr>");
+  var shown = {};
+  (I.taxes || []).forEach(function(t){
+    shown[t.id] = 1; var rt = RATES[t.id], name = rt ? rt.name : T.tax;
+    tr.push("<tr><td>" + (incl ? esc(T.ofwhich) + " " : "") + esc(name) + ' <span style="color:#8A8A8A">' + esc(T.over) + " " + eur(t.taxable) + '</span></td><td class="n">' + eur(t.tax) + "</td></tr>");
+  });
+  Object.keys(byRate).forEach(function(id){
+    if(shown[id] || !RATES[id]) return;
+    tr.push("<tr><td>" + esc(RATES[id].name) + ' <span style="color:#8A8A8A">' + esc(T.over) + " " + eur(byRate[id]) + '</span></td><td class="n">' + eur(0) + "</td></tr>");
+  });
+  tr.push('<tr class="gap"><td colspan="2"></td></tr><tr class="grand"><td>' + esc(T.grand) + (incl ? "" : "") + '</td><td class="n">' + eur(I.incl) + "</td></tr>");
+  var paid = num(I.paid), unpaid = num(I.unpaid);
+  if(!credit && paid > 0 && unpaid > 0){
+    tr.push("<tr><td>" + esc(T.paidpart) + '</td><td class="n">' + eur(-paid) + '</td></tr><tr class="sub"><td><b>' + esc(T.remaining) + '</b></td><td class="n"><b>' + eur(unpaid) + "</b></td></tr>");
+  }
+  var chip = "";
+  if(I.state === "paid") chip = '<span class="chip ok">' + esc(I.paid_at ? T.paid_on + " " + dt(I.paid_at) : T.paid) + "</span>";
+  else if(credit && ["open","late","reminded","pending_payment"].indexOf(I.state) >= 0) chip = '<span class="chip warn">' + esc(T.settle) + "</span>";
+  else if(I.state === "late" || I.state === "reminded") chip = '<span class="chip bad">' + esc(T.late) + "</span>";
+  else if(I.state === "open" || I.state === "pending_payment") chip = '<span class="chip warn">' + esc(T.open) + "</span>";
+  else if(I.state === "uncollectible") chip = '<span class="chip grey">' + esc(T.uncollectible) + "</span>";
+
+  /* betaalinformatie */
+  var cond = String(I.pay_cond || "")
+    .replace(/\{document\.total_price\}/g, eur(I.incl))
+    .replace(/\{document\.due_date\}/g, dt(I.due))
+    .replace(/\{document\.payment_reference\}/g, I.pay_ref || "")
+    .replace(/\{[^}]*\}/g, "");
+  var pay = "";
+  if(!credit && !draft){
+    pay = '<div class="pay"><div class="lbl">' + esc(T.payinfo) + "</div>" + (cond ? "<div>" + esc(cond) + "</div>" : "") +
+      '<div class="kv">' + (iban ? "<span>" + esc(T.iban) + "</span><span>" + esc(iban) + "</span>" : "") + (ID_.bank_account_bic ? "<span>" + esc(T.bic) + "</span><span>" + esc(ID_.bank_account_bic) + "</span>" : "") +
+      "<span>" + esc(T.tnv) + "</span><span>" + esc(ID_.bank_account_name || ID_.company_name || "THH Europe B.V.") + "</span>" + (I.pay_ref ? "<span>" + esc(T.payref) + "</span><span>" + esc(I.pay_ref) + "</span>" : "") + "</div></div>";
+  }
+  var remark = "";
+  if(credit && D.orig_no) remark = '<div class="remark">' + esc(T.credfor) + " " + esc(D.orig_no) + "</div>";
+
+  var DEMO = !!D.demo;
+  $("#app").innerHTML =
+    (DEMO ? '<div class="demo-bar no-print">Illustratief voorbeeld — geen echte factuur. Staat niet in Moneybird en is niet zichtbaar voor klanten.</div>' : "") +
+    '<article class="doc">' +
+      (DEMO ? '<div class="wm"><span class="s2">Illustratief</span><span>Geen echte factuur</span><span class="s3">Illustratief</span></div>' : "") +
+      (draft ? '<div class="stamp">' + esc(T.draft) + "</div>" : "") +
+      '<header class="band"><span class="tgl-logo"><span class="tgl-badge">THHEU</span><span class="tgl-word"><span class="tgl-main">THH <span class="tgl-accent">EUROPE</span></span><span class="tgl-sub">' + esc(T.eyebrow) + "</span></span></span>" +
+        '<div class="title"><div class="eyebrow">B2B Sports Nutrition Wholesale</div><h1' + (title.length > 9 ? ' class="long"' : "") + '>' + esc(title) + "</h1>" + (I.no ? '<div class="no">' + esc(I.no) + (DEMO ? '<span class="dd" title="Illustratief — geen echte factuur"></span>' : "") + "</div>" : "") + "</div></header>" +
+      '<div class="inner">' +
+        '<div class="parties"><div class="party"><div class="lbl">' + esc(T.billto) + "</div><b>" + esc(cname) + "</b>" + cl.join("<br>") + (cx.length ? '<div class="extra">' + cx.join("<br>") + "</div>" : "") + "</div>" +
+          '<div class="party"><div class="lbl">' + esc(T.from) + "</div><b>" + esc(ID_.company_name || "THH Europe B.V.") + "</b>" + sl.join("<br>") + (sx.length ? '<div class="extra">' + sx.join("<br>") + "</div>" : "") + "</div></div>" +
+        '<div class="meta">' + meta.map(function(m){ return '<div><div class="lbl">' + esc(m[0]) + '</div><div class="v">' + esc(m[1]) + "</div></div>"; }).join("") + "</div>" +
+        '<div class="wrap-lines"><table class="lines"><thead><tr><th>' + esc(T.qty) + "</th><th>" + esc(T.desc) + '</th><th class="n">' + esc(T.price) + (incl ? "*" : "") + '</th><th class="n">' + esc(T.total) + '</th><th class="n">' + esc(T.tax) + "</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+        '<div class="foot-grid"><div>' + pay + remark + '</div><div><table class="totals">' + tr.join("") + "</table>" + chip + "</div></div>" +
+      "</div>" +
+      '<footer class="footer"><div><span class="brand">THH Europe</span><br><b>' + esc(ID_.company_name || "THH Europe B.V.") + "</b><br>" + sl.slice(0, 2).join("<br>") + "</div>" +
+        "<div>" + sx.join("<br>") + (iban ? "<br>" + esc(T.iban) + ": " + esc(iban) : "") + "</div>" +
+        "<div>" + (ID_.email ? esc(T.email) + ": " + esc(ID_.email) + "<br>" : "") + "thheurope.com</div></footer>" +
+    "</article>";
+
+  /* knoppen */
+  var bPdf = $("#bPdf"), bOrig = $("#bOrig"), bPay = $("#bPay");
+  bPdf.textContent = ut("pdf"); bOrig.textContent = ut("orig"); bPay.textContent = ut("pay");
+  bPdf.classList.remove("hidden"); bPdf.onclick = function(){ window.print(); };
+  if(DEMO){ document.title = "Illustratief · " + document.title; }
+  if(!draft && !DEMO){
+    bOrig.classList.remove("hidden");
+    bOrig.onclick = function(){
+      var w = window.open("", "_blank");
+      bOrig.disabled = true;
+      api((ADMIN ? "admin/" : "") + "invoices/" + ID + "/pdf").then(function(res){
+        bOrig.disabled = false;
+        if(res.ok && res.data && res.data.url){ if(w) w.location = res.data.url; else location.href = res.data.url; }
+        else { if(w) w.close(); alert(ut("pdf_err")); }
+      });
+    };
+  }
+  if(I.pay_url && !DEMO){ bPay.href = I.pay_url; bPay.classList.remove("hidden"); }
+  var note = $("#note"); note.textContent = DEMO ? "Illustratieve voorbeeldfactuur: bedoeld om het dashboard te vullen. Niet versturen, niet boeken, niet gebruiken als bewijsstuk." : ut("note"); note.classList.remove("hidden");
+}
+})();
+</script>
+</body>
+</html>
