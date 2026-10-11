@@ -174,7 +174,7 @@ function thhp_fields_from( $p ) {
 	return $f;
 }
 
-/** Eén product opslaan. $match: 'id' | 'slug' | 'wc_id'. Geeft [id, 'nieuw'|'bijgewerkt'|'ongewijzigd'] of WP_Error. */
+/** Eén product opslaan. $match: 'id' | 'slug' | 'wc_id' | 'new' (altijd nieuw). Geeft [id, 'nieuw'|'bijgewerkt'|'ongewijzigd'] of WP_Error. */
 function thhp_upsert( $p, $actor, $match = 'id' ) {
 	global $wpdb;
 	$t   = thhp_tbl();
@@ -315,6 +315,8 @@ function thhp_variants( $wc_id ) {
 			'item_id' => $it->get_id(), 'product_id' => (int) $wc_id, 'label' => thhe_item_label( $it ), 'sku' => (string) $it->get_sku(),
 			'price' => $rule ? $rule['price'] : null, 'cost' => $rule ? $rule['cost'] : null, 'cost_src' => $rule ? $rule['cost_src'] : '',
 			'retail' => $rule ? $rule['retail'] : null, 'floor' => $rule ? $rule['floor'] : null, 'flag' => $rule ? $rule['flag'] : '',
+			'vat' => $rule ? (float) $rule['vat'] : null, 'retail_ex' => $rule ? thhe_r2( $rule['retail'] / ( 1 + $rule['vat'] / 100 ) ) : null,
+			'margin' => ( $rule && $rule['price'] > 0 && null !== $rule['cost'] ) ? round( ( $rule['price'] - $rule['cost'] ) / $rule['price'] * 100, 1 ) : null,
 			'active' => 0, 'source' => '', 'stock' => $it->get_stock_status(), 'stock_qty' => $it->managing_stock() ? $it->get_stock_quantity() : null,
 			'cost_own' => null, 'in_prices' => 0,
 		);
@@ -374,7 +376,7 @@ function thhp_r_save( $req ) {
 	$b = thhe_body( $req );
 	$p = isset( $b['product'] ) && is_array( $b['product'] ) ? $b['product'] : array();
 	$actor = thhp_actor( $req );
-	$r = thhp_upsert( $p, $actor, ! empty( $p['pid'] ) ? 'id' : 'slug' );
+	$r = thhp_upsert( $p, $actor, ! empty( $p['pid'] ) ? 'id' : 'new' );
 	if ( is_wp_error( $r ) ) { return thhe_err( $r->get_error_code(), $r->get_error_message(), 400 ); }
 	list( $id, $state ) = $r;
 	global $wpdb;

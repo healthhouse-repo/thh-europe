@@ -168,6 +168,19 @@ svg.chart g.m:hover .hov{fill:rgba(255,255,255,.04)}
 .yr-list li:last-child{border-bottom:0}
 .bar-in{height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:5px;overflow:hidden}
 .bar-in span{display:block;height:100%;background:#fff}
+/* producten */
+img.pth{width:44px;height:44px;object-fit:contain;background:#fff;border-radius:4px;display:block}
+.pimg{width:100%;max-width:220px;aspect-ratio:1;object-fit:contain;background:#fff;border-radius:6px;display:block;margin:4px 0 10px}
+.pgal{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.pgal img{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:4px}
+.vt td input.pr{width:80px}
+.vt td{vertical-align:middle}
+.wcres{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:360px;overflow:auto}
+.wcres .it{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.wcres .it img{width:40px;height:40px;object-fit:contain;background:#fff;border-radius:4px;flex:none}
+.wcres .it .tx{flex:1;min-width:0;font-size:12.5px;line-height:1.35}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:700px){.f2{grid-template-columns:1fr}}
 /*@@CAMPCSS*/
 .camp-grid{display:grid;grid-template-columns:minmax(360px,1fr) 680px;gap:16px;align-items:start}
 .camp-grid>div{min-width:0}
@@ -239,6 +252,7 @@ h3.ch{font:900 13px/1.2 'Pilat Extended','Pilat',Arial,sans-serif;text-transform
       <a href="#klanten" data-v="klanten">Klanten <span class="cnt hidden" id="cntPending"></span></a>
       <a href="#orders" data-v="orders">Bestellingen <span class="cnt hidden" id="cntUnshipped"></span></a>
       <a href="#facturen" data-v="facturen">Facturen <span class="cnt hidden" id="cntLate"></span></a>
+      <a href="#producten" data-v="producten">Producten</a>
       <a href="#prijzen" data-v="prijzen">Prijzen</a>
       <a href="#campagnes" data-v="campagnes">Campagnes</a>
       <a href="#aanvragen" data-v="aanvragen">Aanvragen <span class="cnt hidden" id="cntReq"></span></a>
@@ -254,7 +268,7 @@ h3.ch{font:900 13px/1.2 'Pilat Extended','Pilat',Arial,sans-serif;text-transform
 "use strict";
 var API = "https://thehealthhouse.nl/wp-json/thhe/v1/";
 var TK = "thheAdminToken", AK = "thheAdminAccount";
-var S = { acc:null, stats:null, dashYear:0, inv:{state:"", year:"", q:"", contact:"", contactName:""}, orders:{status:"open", test:0, page:1}, prices:{q:"", flag:"", brand:"", page:1, rows:[], dirty:{}}, accounts:{status:"", q:""} };
+var S = { acc:null, stats:null, dashYear:0, inv:{state:"", year:"", q:"", contact:"", contactName:""}, orders:{status:"open", test:0, page:1}, prices:{q:"", flag:"", brand:"", page:1, rows:[], dirty:{}}, products:{q:"", brand:"", category:"", status:"actief", filter:"", page:1, facets:null}, accounts:{status:"", q:""} };
 var IS_TEST = !/^(www\.)?thheurope\.com$/.test(location.hostname);
 
 /* ---------- helpers ---------- */
@@ -344,10 +358,10 @@ function route(){
   if(!token()){ show("login"); return; }
   show("app");
   var parts = h.split("?")[0].split("/"), v = parts[0] || "dashboard", id = parts[1];
-  $$("#nav a").forEach(function(a){ a.classList.toggle("on", a.getAttribute("data-v") === v || (v === "klant" && a.getAttribute("data-v") === "klanten") || (v === "order" && a.getAttribute("data-v") === "orders") || (v === "mbklanten" && a.getAttribute("data-v") === "facturen") || (v === "campagne" && a.getAttribute("data-v") === "campagnes")); });
+  $$("#nav a").forEach(function(a){ a.classList.toggle("on", a.getAttribute("data-v") === v || (v === "klant" && a.getAttribute("data-v") === "klanten") || (v === "order" && a.getAttribute("data-v") === "orders") || (v === "mbklanten" && a.getAttribute("data-v") === "facturen") || (v === "campagne" && a.getAttribute("data-v") === "campagnes") || (v === "product" && a.getAttribute("data-v") === "producten")); });
   var m = $("#main"); m.innerHTML = '<p class="muted"><span class="spin"></span> Laden…</p>';
   window.scrollTo(0, 0);
-  ({ dashboard:vDash, klanten:vAccounts, klant:vAccount, nieuw:vAccountNew, orders:vOrders, order:vOrder, prijzen:vPrices, facturen:vInvoices, mbklanten:vInvContacts, aanvragen:vRequests, campagnes:vCamps, campagne:vCamp, instellingen:vSettings, log:vLog }[v] || vDash)(m, id);
+  ({ dashboard:vDash, klanten:vAccounts, klant:vAccount, nieuw:vAccountNew, orders:vOrders, order:vOrder, prijzen:vPrices, producten:vProducts, product:vProduct, facturen:vInvoices, mbklanten:vInvContacts, aanvragen:vRequests, campagnes:vCamps, campagne:vCamp, instellingen:vSettings, log:vLog }[v] || vDash)(m, id);
 }
 window.addEventListener("hashchange", route);
 
@@ -678,6 +692,315 @@ function vPrices(m){
       });
     })();
   };
+  load();
+}
+
+/* ---------- producten (catalogus thheurope.com) ---------- */
+var P_ST = { actief:["Actief","ok"], verborgen:["Verborgen","grey"], concept:["Concept","warn"], verwijderd:["Verwijderd","bad"] };
+var COST_SRC = { inkoop:"inkoopveld", "inkoop-ouder":"inkoop hoofdproduct", jennah:"Jennah (vast)", schatting:"geschat" };
+var STOCK_ST = { instock:["Op voorraad","ok"], outofstock:["Uitverkocht","bad"], onbackorder:["Nabestelling","warn"] };
+function siteUrl(slug){ return (IS_TEST ? location.origin + "/" : "https://thheurope.com/") + "#product?id=" + encodeURIComponent(slug); }
+function lines(v){ return String(v || "").split("\n").map(function(x){ return x.trim(); }).filter(Boolean); }
+function prodFacets(){
+  if(S.products.facets) return Promise.resolve(S.products.facets);
+  return api("admin/products/list", { per:10, status:"" }).then(function(res){ if(res.ok) S.products.facets = res.data.facets; return S.products.facets || { brands:[], categories:[], counts:[] }; });
+}
+function priceCell(r){
+  if(!r.wc_id) return '<span class="b grey">Niet gekoppeld</span>';
+  if(!r.variants) return '<span class="b warn">Niet in prijslijst</span>';
+  if(!r.active) return '<span class="b warn">Geen actieve prijs</span>';
+  return eur(r.pmin) + (r.pmax > r.pmin + 0.004 ? " – " + eur(r.pmax) : "");
+}
+
+function vProducts(m){
+  var st = S.products;
+  m.innerHTML = '<div class="row"><h1 style="margin:0">Producten</h1><span class="sp"></span><button class="btn sec" id="prCost">Inkoopprijzen invoeren</button><a class="btn blue" href="#product/nieuw">+ Nieuw product</a></div>' +
+    '<p class="small muted">Dit is de productlijst van thheurope.com. Wat je hier wijzigt, staat direct op de site. Prijs en voorraad lopen per variant via WooCommerce en de prijslijst; een product zonder koppeling staat op de site als "prijs op aanvraag".</p>' +
+    '<div id="prCostBox"></div><div class="tabs" id="prTabs"></div>' +
+    '<div class="row" style="margin:4px 0 10px"><input type="search" id="prQ" placeholder="Zoek naam, merk, slug of ID…" value="' + esc(st.q) + '" style="width:260px" /><select id="prB"><option value="">Alle merken</option></select><select id="prC"><option value="">Alle categorieën</option></select>' +
+    '<select id="prF"><option value="">Alles</option><option value="zonder_prijs">Zonder actieve prijs</option><option value="zonder_koppeling">Niet gekoppeld aan WooCommerce</option><option value="inkoop_geschat">Inkoop geschat</option><option value="signaal">Met prijssignaal</option></select><span class="sp"></span><span class="small muted" id="prTot"></span></div><div id="prList"></div>';
+  $("#prF").value = st.filter;
+  function facets(f){
+    if(!f) return;
+    st.facets = f;
+    $("#prB").innerHTML = '<option value="">Alle merken</option>' + f.brands.map(function(b){ return '<option' + (b === st.brand ? " selected" : "") + ">" + esc(b) + "</option>"; }).join("");
+    $("#prC").innerHTML = '<option value="">Alle categorieën</option>' + f.categories.map(function(c){ return '<option' + (c === st.category ? " selected" : "") + ">" + esc(c) + "</option>"; }).join("");
+    var cnt = {}, all = 0; (f.counts || []).forEach(function(c){ cnt[c.status] = +c.n; if(c.status !== "verwijderd") all += +c.n; });
+    $("#prTabs").innerHTML = [["actief","Actief"],["concept","Concept"],["verborgen","Verborgen"],["","Alle"],["verwijderd","Verwijderd"]].map(function(t){
+      var n = t[0] ? (cnt[t[0]] || 0) : all;
+      return '<button data-st="' + t[0] + '" class="' + (st.status === t[0] ? "on" : "") + '">' + t[1] + " (" + n + ")</button>";
+    }).join("");
+    $$("#prTabs button").forEach(function(b){ b.onclick = function(){ st.status = b.getAttribute("data-st"); st.page = 1; load(); }; });
+  }
+  function load(){
+    var l = $("#prList"); if(!l) return;
+    l.innerHTML = '<p class="muted"><span class="spin"></span></p>';
+    api("admin/products/list", { q:st.q, brand:st.brand, category:st.category, status:st.status, filter:st.filter, page:st.page, per:50 }).then(function(res){
+      l = $("#prList"); if(!l) return;
+      if(!res.ok){ msg(l, "bad", errMsg(res)); return; }
+      facets(res.data.facets);
+      var rows = res.data.rows || [], tot = res.data.total || 0, pages = Math.max(1, Math.ceil(tot / 50));
+      $("#prTot").textContent = tot + " product" + (tot === 1 ? "" : "en");
+      if(!rows.length){ l.innerHTML = '<p class="muted">Geen producten gevonden.</p>'; return; }
+      l.innerHTML = '<table><thead><tr><th></th><th>Product</th><th>Categorie</th><th class="num">Varianten</th><th class="num">Prijs excl.</th><th>Signalen</th><th>Status</th></tr></thead><tbody>' + rows.map(function(r){
+        var sig = (r.est ? '<span class="b warn" title="Inkoop is geschat (geen echte inkoopprijs)">Inkoop geschat (' + r.est + ")</span> " : "") + (r.flags ? '<span class="b bad" title="Prijs op/onder ondergrens of te controleren">Signaal (' + r.flags + ")</span>" : "");
+        return '<tr class="click" data-href="#product/' + r.pid + '"><td style="width:56px"><img class="pth" loading="lazy" src="' + esc(r.img) + '" alt="" /></td><td><b>' + esc(r.name) + '</b><div class="small muted">' + esc(r.brand) + (r.unit ? " · " + esc(r.unit) : "") + (r.wc_id ? " · WC #" + r.wc_id : "") + '</div></td><td class="small">' + esc(r.category) + '</td><td class="num">' + (r.variants ? r.active + " / " + r.variants : "—") + '</td><td class="num">' + priceCell(r) + "</td><td>" + (sig || '<span class="muted">—</span>') + "</td><td>" + badge(P_ST, r.status) + "</td></tr>";
+      }).join("") + '</tbody></table><div class="pager"><button class="btn sec sm" id="prP" ' + (st.page <= 1 ? "disabled" : "") + '>← Vorige</button><span class="small">Pagina ' + st.page + " van " + pages + '</span><button class="btn sec sm" id="prN" ' + (st.page >= pages ? "disabled" : "") + ">Volgende →</button></div>";
+      bindRows(l);
+      $("#prP").onclick = function(){ st.page--; load(); };
+      $("#prN").onclick = function(){ st.page++; load(); };
+    });
+  }
+  var tm; function deb(fn){ clearTimeout(tm); tm = setTimeout(fn, 300); }
+  $("#prQ").oninput = function(e){ deb(function(){ st.q = e.target.value.trim(); st.page = 1; load(); }); };
+  $("#prB").onchange = function(e){ st.brand = e.target.value; st.page = 1; load(); };
+  $("#prC").onchange = function(e){ st.category = e.target.value; st.page = 1; load(); };
+  $("#prF").onchange = function(e){ st.filter = e.target.value; st.page = 1; load(); };
+  $("#prCost").onclick = function(){ var box = $("#prCostBox"); if(box.innerHTML){ box.innerHTML = ""; return; } costImport(box, load); };
+  facets(st.facets);
+  load();
+}
+
+/* Inkoopprijzen in bulk: plakken uit Excel of CSV. Eerst controle, dan pas opslaan. */
+function splitRow(l, d){
+  var out = [], cur = "", q = false;
+  for(var i = 0; i < l.length; i++){
+    var ch = l[i];
+    if(ch === '"'){ if(q && l[i + 1] === '"'){ cur += '"'; i++; } else q = !q; }
+    else if(ch === d && !q){ out.push(cur.trim()); cur = ""; }
+    else cur += ch;
+  }
+  out.push(cur.trim());
+  return out;
+}
+function parseCostTable(txt){
+  var ls_ = String(txt || "").replace(/^﻿/, "").replace(/\r/g, "").split("\n").filter(function(l){ return l.trim(); });
+  if(ls_.length < 2) return { err:"Geen regels gevonden. Zet bovenaan een kopregel, bijvoorbeeld: artikelnummer;inkoop" };
+  var d = ls_[0].indexOf("\t") > -1 ? "\t" : ls_[0].indexOf(";") > -1 ? ";" : ",";
+  var head = splitRow(ls_[0], d).map(function(h){ return h.toLowerCase().replace(/[^a-z0-9_]/g, ""); });
+  var ix = { item_id:-1, sku:-1, art:-1, cost:-1 };
+  head.forEach(function(h, i){
+    if(/^(itemid|item_id|id|variatieid|variationid|variation_id)$/.test(h)) ix.item_id = i;
+    else if(h === "sku") ix.sku = i;
+    else if(/^(art|artnr|artikel|artikelnr|artikelnummer|article|articlenumber|leveranciersartikel)$/.test(h)) ix.art = i;
+    else if(ix.cost < 0 && /^(inkoop|inkoopprijs|inkoopexcl|inkoopexclbtw|inkoop_excl|cost|kostprijs|price|prijs|prijsexcl|nettoprijs)/.test(h)) ix.cost = i;
+  });
+  if(ix.cost < 0 || (ix.item_id < 0 && ix.sku < 0 && ix.art < 0)) return { err:"Kolommen niet herkend. Gebruik als kopregel bijvoorbeeld: artikelnummer;inkoop  of  sku;inkoop  of  item_id;inkoop" };
+  var rows = [];
+  ls_.slice(1).forEach(function(l){
+    var c = splitRow(l, d), o = { cost:c[ix.cost] || "" };
+    if(ix.item_id > -1 && /^\d+$/.test(c[ix.item_id] || "")) o.item_id = +c[ix.item_id];
+    else if(ix.sku > -1 && c[ix.sku]) o.sku = c[ix.sku];
+    else if(ix.art > -1 && c[ix.art]) o.art = c[ix.art];
+    if(o.cost && (o.item_id || o.sku || o.art)) rows.push(o);
+  });
+  if(!rows.length) return { err:"Geen bruikbare regels gevonden (elke regel heeft een referentie en een inkoopprijs nodig)." };
+  return { rows:rows, key:ix.item_id > -1 ? "item_id" : ix.sku > -1 ? "sku" : "artikelnummer" };
+}
+function costImport(box, after){
+  box.innerHTML = '<div class="card" style="margin:10px 0 14px"><h3 class="ch">Inkoopprijzen invoeren</h3>' +
+    '<p class="small muted" style="margin-top:0">Plak uit Excel of kies een CSV. Kolommen: <b>artikelnummer</b> (van de leverancier, zoals XXL 9229), <b>sku</b> of <b>item_id</b>, plus <b>inkoop</b> (per stuk, excl. btw). Je krijgt eerst een controle; er wordt pas iets opgeslagen als je op Doorvoeren klikt. Daarna worden de prijzen van die producten opnieuw berekend; handmatige prijzen blijven staan.</p>' +
+    '<textarea id="ciTxt" rows="7" style="width:100%" placeholder="artikelnummer;inkoop&#10;9229;12,50&#10;9230;8,95"></textarea>' +
+    '<div class="row" style="margin-top:8px"><label class="btn sec sm" style="margin:0">CSV kiezen<input type="file" id="ciFile" class="hidden" accept=".csv,.txt,text/csv,text/plain" /></label><span class="small muted" id="ciInfo"></span><span class="sp"></span><button class="btn sec sm" id="ciClose">Sluiten</button><button class="btn blue sm" id="ciCheck">Controleren</button></div><div id="ciRes"></div></div>';
+  $("#ciClose").onclick = function(){ box.innerHTML = ""; };
+  $("#ciFile").onchange = function(e){ var f = e.target.files[0]; if(!f) return; var rd = new FileReader(); rd.onload = function(){ $("#ciTxt").value = String(rd.result); $("#ciInfo").textContent = f.name; }; rd.readAsText(f, "utf-8"); e.target.value = ""; };
+  $("#ciCheck").onclick = function(){
+    var p = parseCostTable($("#ciTxt").value), res = $("#ciRes"), b = this;
+    if(p.err){ msg(res, "bad", p.err); return; }
+    if(p.rows.length > 5000){ msg(res, "bad", "Maximaal 5.000 regels per keer."); return; }
+    busy(b, true); msg(res, "info", p.rows.length + " regels controleren (op " + p.key + ")…");
+    api("admin/prices/cost", { rows:p.rows, dry:1 }).then(function(r){
+      busy(b, false);
+      if(!r.ok){ msg(res, "bad", errMsg(r)); return; }
+      var s = r.data.stats || {}, ch = (r.data.rows || []).filter(function(x){ return x.item_id; }), unk = (r.data.rows || []).filter(function(x){ return !x.item_id; });
+      res.innerHTML = '<div class="msg ' + (s.gewijzigd ? "info" : "warn") + '"><b>Controle:</b> ' + (s.gewijzigd || 0) + " wijzigen, " + (s.ongewijzigd || 0) + " ongewijzigd, " + (s.onbekend || 0) + " niet gevonden, " + (s.ongeldig || 0) + " ongeldig." + (s.buiten_prijstabel ? " " + s.buiten_prijstabel + " daarvan staan (nog) niet in de prijslijst: alleen de inkoop wordt opgeslagen." : "") + "</div>" +
+        (ch.length ? '<div class="tscroll"><table><thead><tr><th>Ref</th><th>Product</th><th class="num">Inkoop nu</th><th class="num">Nieuw</th><th class="num">Verschil</th><th></th></tr></thead><tbody>' + ch.slice(0, 300).map(function(x){
+          var dif = x.oud ? (x.nieuw - x.oud) / x.oud * 100 : null;
+          return "<tr><td class=\"small\">" + esc(x.ref) + "</td><td>" + esc(x.name) + '<div class="small muted">' + esc(x.sku || "") + " · #" + x.item_id + '</div></td><td class="num">' + eur(x.oud) + '</td><td class="num"><b>' + eur(x.nieuw) + '</b></td><td class="num" style="color:' + (dif === null ? "inherit" : dif > 0 ? "var(--bad)" : "var(--ok)") + '">' + (dif === null ? "nieuw" : (dif > 0 ? "+" : "") + num(dif, 1) + "%") + '</td><td class="small muted">' + (x.status === "gewijzigd" ? "" : "niet in prijslijst") + "</td></tr>";
+        }).join("") + "</tbody></table></div>" + (ch.length > 300 ? '<p class="small muted">… en nog ' + (ch.length - 300) + " regels.</p>" : "") : "") +
+        (unk.length ? '<p class="small muted">Niet gevonden of ongeldig: ' + esc(unk.slice(0, 40).map(function(x){ return x.ref + (x.waarde ? " (" + x.waarde + ")" : ""); }).join(" · ")) + (unk.length > 40 ? " …" : "") + "</p>" : "") +
+        (s.gewijzigd ? '<div class="row" style="margin-top:8px"><span class="sp"></span><button class="btn ok sm" id="ciGo">' + s.gewijzigd + " inkoopprijzen doorvoeren</button></div>" : "");
+      var go = $("#ciGo");
+      if(go) go.onclick = function(){
+        busy(go, true);
+        api("admin/prices/cost", { rows:p.rows, dry:0 }).then(function(r2){
+          busy(go, false);
+          if(!r2.ok){ msg(res, "bad", errMsg(r2)); return; }
+          var s2 = r2.data.stats || {}, rb = r2.data.rebuild || {};
+          msg(res, "ok", (s2.gewijzigd || 0) + " inkoopprijzen opgeslagen." + (rb.items ? " Prijzen herberekend voor " + rb.items + " varianten" + (rb.handmatig_bewaard ? " (" + rb.handmatig_bewaard + " handmatige prijzen bewaard)" : "") + (rb.ondergrens ? ", " + rb.ondergrens + " op de ondergrens" : "") + (rb.controle ? ", " + rb.controle + " te controleren (offline gezet)" : "") + "." : ""));
+          S.products.facets = null;
+          if(after) after();
+        });
+      };
+    });
+  };
+}
+
+/* Eén product: gegevens, foto's, koppeling met WooCommerce en de varianten met inkoop, prijs en voorraad. */
+function vProduct(m, id){
+  var isNew = id === "nieuw", st = { p:null, vars:[], dirty:{}, wcPick:null, changed:false };
+  function load(){
+    if(isNew){ st.p = { name:"", brand:"", category:"", unit:"", status:"actief", sort:0, descr:"", slug:"", img:"", gallery:[], flavors:[], flavorImages:{}, wc_id:null, wc:null }; st.vars = []; return prodFacets().then(render); }
+    return api("admin/products/get", { pid:+id }).then(function(res){
+      if(!res.ok){ m.innerHTML = '<a class="back" href="#producten">← Producten</a><div class="msg bad">' + esc(errMsg(res)) + "</div>"; return; }
+      st.p = res.data.product; st.vars = res.data.variants || []; st.dirty = {}; st.wcPick = null; st.changed = false;
+      return prodFacets().then(render);
+    });
+  }
+  function render(f){
+    var p = st.p, gal = (p.gallery || []).join("\n"), fl = (p.flavors || []).join("\n");
+    var fi = Object.keys(p.flavorImages || {}).map(function(k){ return k + " | " + p.flavorImages[k]; }).join("\n");
+    m.innerHTML = '<a class="back" href="#producten">← Producten</a>' +
+      '<div class="row" style="margin-bottom:14px"><h1 style="margin:0">' + (isNew ? "Nieuw product" : esc(p.name)) + "</h1>" + (isNew ? "" : " " + badge(P_ST, p.status)) + '<span class="sp"></span>' +
+      (isNew ? "" : '<a class="btn sec" target="_blank" rel="noopener" href="' + esc(siteUrl(p.slug)) + '">Bekijk op site ↗</a>') +
+      (isNew ? "" : p.status === "verwijderd" ? '<button class="btn sec" id="pdRestore">Herstellen</button>' : '<button class="btn bad" id="pdDel">Verwijderen</button>') +
+      '<button class="btn blue" id="pdSave">' + (isNew ? "Product aanmaken" : "Opslaan") + '</button></div><div id="pdMsg"></div>' +
+      '<datalist id="dlBrands">' + (f.brands || []).map(function(b){ return '<option value="' + esc(b) + '">'; }).join("") + '</datalist><datalist id="dlCats">' + (f.categories || []).map(function(c){ return '<option value="' + esc(c) + '">'; }).join("") + "</datalist>" +
+      '<div class="g32"><div>' +
+        '<div class="card"><h3 class="ch">Product</h3>' +
+          '<label class="f">Naam<input type="text" data-f="name" value="' + esc(p.name) + '" required /></label>' +
+          '<div class="f2"><label class="f">Merk<input type="text" data-f="brand" list="dlBrands" value="' + esc(p.brand) + '" /></label><label class="f">Categorie<input type="text" data-f="category" list="dlCats" value="' + esc(p.category) + '" /></label></div>' +
+          '<div class="f2"><label class="f">Inhoud (bv. 900 gram, 120 caps)<input type="text" data-f="unit" value="' + esc(p.unit) + '" /></label><label class="f">Status<select data-f="status">' + ["actief","concept","verborgen"].concat(p.status === "verwijderd" ? ["verwijderd"] : []).map(function(s){ return '<option value="' + s + '"' + (p.status === s ? " selected" : "") + ">" + P_ST[s][0] + (s === "actief" ? " (op de site)" : s === "verwijderd" ? "" : " (niet op de site)") + "</option>"; }).join("") + "</select></label></div>" +
+          '<label class="f">Omschrijving (leeg = standaardtekst van de site)<textarea data-f="descr" rows="4">' + esc(p.descr || "") + "</textarea></label>" +
+          '<div class="f2"><label class="f">Volgorde (lager = eerder in de lijst)<input type="number" data-f="sort" value="' + esc(p.sort || 0) + '" /></label><label class="f">Adres op de site (slug)<input type="text" data-f="slug" value="' + esc(p.slug) + '" placeholder="wordt automatisch gemaakt" /></label></div>' +
+        "</div>" +
+        '<div class="card" style="margin-top:14px" id="pdVars"></div>' +
+      "</div><div>" +
+        '<div class="card"><h3 class="ch">Foto’s</h3>' +
+          '<img class="pimg" id="pdImgPrev" src="' + esc(p.img) + '" alt="" ' + (p.img ? "" : 'style="display:none"') + " />" +
+          '<label class="f">Hoofdfoto (URL)<input type="text" data-f="img" value="' + esc(p.img) + '" placeholder="https://…" /></label>' +
+          '<label class="f">Extra foto’s (één URL per regel)<textarea data-f="gallery" rows="3">' + esc(gal) + '</textarea></label><div class="pgal" id="pdGal"></div>' +
+          '<label class="f" style="margin-top:12px">Smaken (één per regel, alleen getoond zolang er geen prijslijst-varianten zijn)<textarea data-f="flavors" rows="3">' + esc(fl) + "</textarea></label>" +
+          '<label class="f">Foto per smaak (smaak | URL, één per regel)<textarea data-f="flavorImages" rows="2">' + esc(fi) + "</textarea></label>" +
+        "</div>" +
+        '<div class="card" style="margin-top:14px" id="pdWc"></div>' +
+        (isNew ? "" : '<p class="small muted" style="margin-top:10px">Product #' + p.pid + " · laatst gewijzigd " + esc(dt(p.updated_at)) + (p.updated_by ? " door " + esc(p.updated_by) : "") + "</p>") +
+      "</div></div>";
+    $$("[data-f]", m).forEach(function(el){ el.addEventListener("input", function(){ st.changed = true; if(el.getAttribute("data-f") === "img"){ var i = $("#pdImgPrev"); i.src = el.value.trim(); i.style.display = el.value.trim() ? "" : "none"; } if(el.getAttribute("data-f") === "gallery") galPrev(); }); });
+    galPrev(); renderWc(); renderVars();
+    $("#pdSave").onclick = save;
+    var del = $("#pdDel"); if(del) del.onclick = function(){
+      if(!confirm("Dit product van de site halen? Het blijft bewaard onder Verwijderd en je kunt het herstellen. WooCommerce en de prijslijst blijven ongewijzigd.")) return;
+      busy(del, true);
+      api("admin/products/delete", { pid:p.pid }).then(function(res){ busy(del, false); if(!res.ok){ toast(errMsg(res)); return; } S.products.facets = null; toast("Verwijderd"); location.hash = "#producten"; });
+    };
+    var rs = $("#pdRestore"); if(rs) rs.onclick = function(){ $("[data-f=status]", m).value = "actief"; save(); };
+  }
+  function galPrev(){ var g = $("#pdGal"); if(g) g.innerHTML = lines($("[data-f=gallery]", m).value).slice(0, 12).map(function(u){ return '<img src="' + esc(u) + '" alt="" />'; }).join(""); }
+
+  /* WooCommerce-koppeling: hier komen varianten, prijs, voorraad en bestellen vandaan. */
+  function renderWc(){
+    var p = st.p, box = $("#pdWc"), cur = st.wcPick ? st.wcPick : (p.wc_id ? { wc_id:p.wc_id, name:p.wc ? p.wc.name : "(niet gevonden in WooCommerce)", status:p.wc ? p.wc.status : "", type:p.wc ? p.wc.type : "", edit:p.wc ? p.wc.edit : "" } : null);
+    box.innerHTML = '<h3 class="ch">Koppeling met WooCommerce</h3>' +
+      (cur && cur.wc_id ? '<div class="kv"><div>Product</div><div><b>' + esc(cur.name) + "</b> · #" + cur.wc_id + "</div><div>Soort</div><div>" + esc(cur.type || "—") + (cur.status && cur.status !== "publish" ? ' <span class="b warn">' + esc(cur.status) + "</span>" : "") + "</div></div>" +
+        (st.wcPick ? '<div class="msg warn">Nog niet opgeslagen. Sla het product op om de varianten en prijzen te laden.</div>' : "") +
+        '<div class="row" style="margin-top:10px">' + (cur.edit ? '<a class="btn sec sm" target="_blank" rel="noopener" href="' + esc(cur.edit) + '">Openen in WordPress ↗</a>' : "") + '<button class="btn sec sm" id="wcChange">Andere koppeling</button><button class="btn bad sm" id="wcOff">Ontkoppelen</button></div>'
+      : (st.wcPick === false ? '<div class="msg warn">Wordt ontkoppeld bij opslaan. Het product staat dan op de site als "prijs op aanvraag".</div>' : '<p class="small muted" style="margin-top:0">Niet gekoppeld. Klanten zien "prijs op aanvraag" en kunnen een offerte aanvragen. Koppel een WooCommerce-product om varianten, prijzen, voorraad en direct bestellen te gebruiken.</p>')) +
+      '<div id="wcFind" class="' + (cur && cur.wc_id ? "hidden" : "") + '" style="margin-top:10px"><input type="search" id="wcQ" placeholder="Zoek in WooCommerce op naam, SKU of ID…" style="width:100%" /><div class="wcres" id="wcRes"></div></div>';
+    var ch = $("#wcChange"); if(ch) ch.onclick = function(){ $("#wcFind").classList.remove("hidden"); $("#wcQ").focus(); };
+    var off = $("#wcOff"); if(off) off.onclick = function(){ st.wcPick = false; st.changed = true; renderWc(); renderVars(); };
+    var tm, q = $("#wcQ");
+    q.oninput = function(){ clearTimeout(tm); var v = q.value.trim(); if(v.length < 2){ $("#wcRes").innerHTML = ""; return; } tm = setTimeout(function(){ find(v); }, 350); };
+    if(!cur && st.wcPick === null && !isNew && st.p.name){ q.value = st.p.name.split(" ").slice(0, 4).join(" "); find(q.value); }
+  }
+  function find(v){
+    var r = $("#wcRes"); r.innerHTML = '<p class="muted small"><span class="spin"></span></p>';
+    api("admin/products/wc-search", { q:v }).then(function(res){
+      r = $("#wcRes"); if(!r) return;
+      if(!res.ok){ msg(r, "bad", errMsg(res)); return; }
+      var list = res.data.results || [];
+      if(!list.length){ r.innerHTML = '<p class="small muted">Niets gevonden.</p>'; return; }
+      r.innerHTML = list.map(function(x, i){
+        var other = x.linked_to && String(x.linked_to) !== String(st.p.pid || "");
+        return '<div class="it">' + (x.img ? '<img src="' + esc(x.img) + '" alt="" />' : "") + '<div class="tx"><b>' + esc(x.name) + '</b><div class="small muted">' + esc(x.brand || "") + (x.sku ? " · " + esc(x.sku) : "") + " · #" + x.wc_id + " · " + esc(x.type) + (x.status !== "publish" ? " · " + esc(x.status) : "") + " · " + x.items + " variant" + (x.items === 1 ? "" : "en") + (x.in_prices ? " · in prijslijst" : "") + "</div>" + (other ? '<div class="small" style="color:var(--warn)">Al gekoppeld aan product #' + esc(x.linked_to) + "</div>" : "") + '</div><button class="btn sec sm" data-pick="' + i + '">Koppelen</button></div>';
+      }).join("");
+      $$("[data-pick]", r).forEach(function(b){ b.onclick = function(){
+        var x = list[+b.getAttribute("data-pick")];
+        if(x.linked_to && String(x.linked_to) !== String(st.p.pid || "") && !confirm("Dit WooCommerce-product is al gekoppeld aan product #" + x.linked_to + ". Toch ook hieraan koppelen?")) return;
+        st.wcPick = { wc_id:x.wc_id, name:x.name, status:x.status, type:x.type, edit:"" }; st.changed = true;
+        var set = function(k, v){ var el = $("[data-f=" + k + "]", m); if(el && !el.value.trim() && v){ el.value = v; el.dispatchEvent(new Event("input")); } };
+        set("name", x.name); set("brand", x.brand); set("img", x.img ? x.img.replace(/-\d+x\d+(\.\w+)$/, "$1") : "");
+        renderWc(); renderVars();
+      }; });
+    });
+  }
+
+  /* Varianten: inkoop (productveld in WooCommerce), groothandelsprijs, aan/uit op de site, voorraad. */
+  function renderVars(){
+    var box = $("#pdVars"), p = st.p;
+    if(!p.wc_id || st.wcPick !== null){ box.innerHTML = '<h3 class="ch">Varianten, prijs en voorraad</h3><p class="small muted" style="margin:0">' + (st.wcPick ? "Sla eerst op; daarna verschijnen hier de varianten van het gekoppelde WooCommerce-product." : "Komen uit WooCommerce. Koppel hiernaast een product om ze te zien.") + "</p>"; return; }
+    var vs = st.vars, missing = vs.filter(function(v){ return !v.in_prices; }).length;
+    if(!vs.length){ box.innerHTML = '<h3 class="ch">Varianten, prijs en voorraad</h3><p class="small muted" style="margin:0">Het gekoppelde WooCommerce-product heeft geen verkoopbare varianten (gepubliceerd).</p>'; return; }
+    box.innerHTML = '<div class="row"><h3 class="ch" style="margin:0">Varianten, prijs en voorraad</h3><span class="sp"></span>' + (missing ? '<button class="btn sec sm" id="pdAdd">' + (missing === vs.length ? "Toevoegen aan prijslijst" : missing + " ontbrekende varianten toevoegen") + "</button>" : "") + "</div>" +
+      '<p class="small muted">Per stuk, <b>exclusief btw</b>, vóór staffelkorting. Inkoop wordt opgeslagen in het WooCommerce-product (zelfde veld als de webshop); daarna rekent de prijsregel de groothandelsprijs opnieuw uit, behalve bij een handmatige prijs. Ondergrens = inkoop + minimale marge.</p>' +
+      '<div class="tscroll"><table class="vt"><thead><tr><th>Variant</th><th>Voorraad</th><th class="num">Advies excl.</th><th class="num">Inkoop excl.</th><th class="num">Ondergrens</th><th class="num">Prijs excl.</th><th class="num">Marge</th><th>Op site</th><th>Bron</th></tr></thead><tbody>' +
+      vs.map(function(v){
+        var d = st.dirty[v.item_id] || {}, pr = d.price !== undefined ? d.price : v.price, ac = d.active !== undefined ? d.active : v.active;
+        var costVal = d.cost !== undefined ? d.cost : v.cost_own, src = COST_SRC[v.cost_src] || v.cost_src || "";
+        var stk = badge(STOCK_ST, v.stock) + (v.stock_qty !== null && v.stock_qty !== undefined ? ' <span class="small muted">' + v.stock_qty + " st.</span>" : "");
+        var loss = v.cost !== null && pr !== null && pr < v.cost;
+        return '<tr data-id="' + v.item_id + '" class="' + (st.dirty[v.item_id] ? "dirty" : "") + '"><td>' + esc(v.label || "—") + '<div class="small muted">' + esc(v.sku || "") + " · #" + v.item_id + "</div></td><td>" + stk + '</td><td class="num">' + eur(v.retail_ex) + "</td>" +
+          '<td class="num"><input class="pr" data-k="cost" value="' + (costVal === null || costVal === undefined ? "" : num(costVal)) + '" placeholder="' + (v.cost !== null ? num(v.cost) : "") + '" title="' + esc(src ? "Nu: " + eur(v.cost) + " (" + src + ")" : "") + '" /><div class="small ' + (v.cost_src === "schatting" ? "" : "muted") + '" style="' + (v.cost_src === "schatting" ? "color:var(--warn)" : "") + '">' + esc(src) + "</div></td>" +
+          '<td class="num">' + eur(v.floor) + "</td>" +
+          '<td class="num">' + (v.in_prices ? '<input class="pr" data-k="price" value="' + num(pr) + '" style="' + (loss ? "color:var(--bad)" : "") + '" />' : '<span class="muted">' + eur(v.price) + '</span><div class="small muted">voorstel</div>') + "</td>" +
+          '<td class="num">' + (v.margin === null || v.margin === undefined ? "—" : num(v.margin, 1) + "%") + "</td>" +
+          "<td>" + (v.in_prices ? '<input type="checkbox" data-k="active" ' + (+ac ? "checked" : "") + " />" : '<span class="small muted">niet in prijslijst</span>') + "</td>" +
+          '<td class="small">' + esc(v.source || "") + (v.flag ? " " + badge(FLAG, v.flag) : "") + (v.source === "handmatig" ? ' <button class="btn sec sm" data-reset="' + v.item_id + '" title="Terug naar berekende prijs">Regel</button>' : "") + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+    $$("tr[data-id]", box).forEach(function(tr){
+      var iid = +tr.getAttribute("data-id"), v = vs.filter(function(x){ return x.item_id === iid; })[0];
+      $$("input[data-k]", tr).forEach(function(i){ i.addEventListener(i.type === "checkbox" ? "change" : "input", function(){
+        var d = st.dirty[iid] || {}, k = i.getAttribute("data-k");
+        if(k === "active") d.active = i.checked ? 1 : 0;
+        else { var val = parseNum(i.value); if(val === null) delete d[k]; else d[k] = val; }
+        if(d.price !== undefined && Math.abs(d.price - v.price) < 0.005) delete d.price;
+        if(d.active !== undefined && d.active === +v.active) delete d.active;
+        if(d.cost !== undefined && v.cost_own !== null && Math.abs(d.cost - v.cost_own) < 0.005) delete d.cost;
+        if(Object.keys(d).length) st.dirty[iid] = d; else delete st.dirty[iid];
+        tr.classList.toggle("dirty", !!st.dirty[iid]);
+        if(k === "price"){ var pv = d.price !== undefined ? d.price : v.price; i.style.color = (v.cost !== null && pv < v.cost) ? "var(--bad)" : (v.floor !== null && pv < v.floor) ? "var(--warn)" : ""; }
+      }); });
+    });
+    $$("button[data-reset]", box).forEach(function(b){ b.onclick = function(){ busy(b, true); api("admin/products/save", { product:{ pid:st.p.pid }, variants:[{ item_id:+b.getAttribute("data-reset"), reset:1 }] }).then(function(res){ busy(b, false); if(!res.ok){ toast(errMsg(res)); return; } toast("Teruggezet naar berekende prijs"); load(); }); }; });
+    var add = $("#pdAdd"); if(add) add.onclick = function(){
+      if(!confirm("Varianten van dit product toevoegen aan de prijslijst? De prijs wordt berekend met de prijsregel en ze worden zichtbaar en bestelbaar voor klanten (behalve varianten die gecontroleerd moeten worden).")) return;
+      busy(add, true);
+      api("admin/products/save", { product:{ pid:st.p.pid }, add_prices:1 }).then(function(res){ busy(add, false); if(!res.ok){ toast(errMsg(res)); return; } toast("Toegevoegd aan de prijslijst"); load(); });
+    };
+  }
+
+  function collect(){
+    var g = function(k){ var el = $("[data-f=" + k + "]", m); return el ? el.value : ""; };
+    var fi = {};
+    lines(g("flavorImages")).forEach(function(l){ var i = l.indexOf("|"); if(i > 0){ var k = l.slice(0, i).trim(), u = l.slice(i + 1).trim(); if(k && u) fi[k] = u; } });
+    var o = { name:g("name").trim(), brand:g("brand").trim(), category:g("category").trim() || "Other", unit:g("unit").trim(), status:g("status"), descr:g("descr").trim(), sort:parseInt(g("sort"), 10) || 0,
+      img:g("img").trim(), gallery:lines(g("gallery")), flavors:lines(g("flavors")), flavorImages:fi };
+    var slug = g("slug").trim(); if(slug) o.slug = slug;
+    if(!o.gallery.length && o.img) o.gallery = [o.img];
+    if(!isNew) o.pid = st.p.pid;
+    if(st.wcPick) o.wc_id = st.wcPick.wc_id; else if(st.wcPick === false) o.wc_id = 0;
+    return o;
+  }
+  function save(){
+    var b = $("#pdSave"), box = $("#pdMsg"), prod = collect();
+    if(!prod.name){ msg(box, "bad", "Naam is verplicht."); return; }
+    var rows = Object.keys(st.dirty).map(function(k){ var d = st.dirty[k], o = { item_id:+k }; ["cost","price","active"].forEach(function(x){ if(d[x] !== undefined) o[x] = d[x]; }); return o; });
+    var loss = rows.filter(function(x){ var v = st.vars.filter(function(y){ return y.item_id === x.item_id; })[0]; var c = x.cost !== undefined ? x.cost : v && v.cost; return v && x.price !== undefined && c !== null && x.price < c; });
+    if(loss.length && !confirm(loss.length + " prijs/prijzen liggen ONDER de inkoop (verlies). Toch opslaan?")) return;
+    var under = rows.filter(function(x){ var v = st.vars.filter(function(y){ return y.item_id === x.item_id; })[0]; return v && x.price !== undefined && v.floor !== null && x.price < v.floor; });
+    if(!loss.length && under.length && !confirm(under.length + " prijs/prijzen liggen onder de ondergrens (inkoop + minimale marge). Toch opslaan?")) return;
+    if(!isNew && prod.status !== "actief" && st.p.status === "actief" && !confirm("Status " + P_ST[prod.status][0] + ": het product verdwijnt van de site. Doorgaan?")) return;
+    busy(b, true); msg(box);
+    api("admin/products/save", { product:prod, variants:rows }).then(function(res){
+      busy(b, false);
+      if(!res.ok){ msg(box, "bad", errMsg(res)); return; }
+      var warn = Object.keys(res.data.variants || {}).map(function(k){ var r = res.data.variants[k]; return (r && r !== "ok" && r !== "inkoop" && r !== "regel") ? "#" + k + ": " + r : ""; }).filter(Boolean);
+      S.products.facets = null;
+      toast(res.data.state === "nieuw" ? "Product aangemaakt" : res.data.state === "ongewijzigd" && !rows.length ? "Geen wijzigingen" : "Opgeslagen");
+      if(isNew){ location.hash = "#product/" + res.data.pid; return; }
+      load().then(function(){ if(warn.length) msg($("#pdMsg"), "warn", "Let op: " + warn.join(" · ")); });
+    });
+  }
   load();
 }
 
