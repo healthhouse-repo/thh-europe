@@ -109,7 +109,10 @@ function thhp_json_map( $v ) {
 }
 
 function thhp_slugify( $s ) {
-	$s = sanitize_title( remove_accents( (string) $s ) );
+	$s = (string) $s;
+	// Bestaande, al nette slugs exact bewaren (ook met een streepje aan het eind): links en winkelwagens gebruiken ze.
+	if ( preg_match( '/^[a-z0-9][a-z0-9-]*$/', $s ) ) { return substr( $s, 0, 190 ); }
+	$s = sanitize_title( remove_accents( $s ) );
 	return substr( $s, 0, 190 );
 }
 function thhp_unique_slug( $slug, $except_id = 0 ) {
