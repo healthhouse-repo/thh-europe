@@ -514,15 +514,15 @@ function thhp_r_cost( $req ) {
 			$pid  = $p->get_parent_id() ? (int) $p->get_parent_id() : (int) $item;
 			$own  = get_post_meta( $item, '_thh_inkoopprijs_excl_btw', true );
 			$ownf = ( '' === $own || null === $own ) ? null : (float) str_replace( ',', '.', (string) $own );
-			$tbl  = $wpdb->get_var( $wpdb->prepare( "SELECT cost FROM $pt WHERE item_id=%d", $item ) );
-			if ( null !== $tbl ) { $eff = (float) $tbl; } else { list( $c ) = thhe_cost_for( $p ); $eff = ( null === $c ) ? null : (float) $c; }
+			$tbl  = $wpdb->get_row( $wpdb->prepare( "SELECT cost, cost_src FROM $pt WHERE item_id=%d", $item ) );
+			if ( $tbl && null !== $tbl->cost ) { $eff = (float) $tbl->cost; $esrc = (string) $tbl->cost_src; } else { list( $c, $esrc ) = thhe_cost_for( $p ); $eff = ( null === $c ) ? null : (float) $c; }
 			// Ongewijzigd: gelijk aan het eigen inkoopveld, of (zonder eigen veld) gelijk aan de inkoop die nu gebruikt
 			// wordt. Zo schrijft een terug-geïmporteerde export geen geschatte inkoop weg als echte inkoop.
 			if ( ( null !== $ownf && abs( $ownf - $cost ) < 0.005 ) || ( null === $ownf && null !== $eff && abs( $eff - $cost ) < 0.005 ) ) { $st['ongewijzigd']++; continue; }
 			$in = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $pt WHERE product_id=%d", $pid ) );
 			$st['gewijzigd']++;
 			if ( ! $in ) { $st['buiten_prijstabel']++; }
-			$res[] = array( 'ref' => $ref, 'item_id' => (int) $item, 'name' => html_entity_decode( $p->get_name(), ENT_QUOTES, 'UTF-8' ), 'sku' => (string) $p->get_sku(), 'oud' => $eff, 'nieuw' => thhe_r2( $cost ), 'status' => $in ? 'gewijzigd' : 'gewijzigd, niet in prijstabel' );
+			$res[] = array( 'ref' => $ref, 'item_id' => (int) $item, 'name' => html_entity_decode( $p->get_name(), ENT_QUOTES, 'UTF-8' ), 'sku' => (string) $p->get_sku(), 'oud' => $eff, 'oud_bron' => $esrc, 'nieuw' => thhe_r2( $cost ), 'status' => $in ? 'gewijzigd' : 'gewijzigd, niet in prijstabel' );
 			if ( ! $dry ) {
 				update_post_meta( $item, '_thh_inkoopprijs_excl_btw', number_format( thhe_r2( $cost ), 2, '.', '' ) );
 				if ( $in ) { $rebuild[ $pid ] = 1; }

@@ -816,7 +816,7 @@ function costImport(box, after){
       res.innerHTML = '<div class="msg ' + (s.gewijzigd ? "info" : "warn") + '"><b>Controle:</b> ' + (s.gewijzigd || 0) + " wijzigen, " + (s.ongewijzigd || 0) + " ongewijzigd, " + (s.onbekend || 0) + " niet gevonden, " + (s.ongeldig || 0) + " ongeldig." + (s.buiten_prijstabel ? " " + s.buiten_prijstabel + " daarvan staan (nog) niet in de prijslijst: alleen de inkoop wordt opgeslagen." : "") + "</div>" +
         (ch.length ? '<div class="tscroll"><table><thead><tr><th>Ref</th><th>Product</th><th class="num">Inkoop nu</th><th class="num">Nieuw</th><th class="num">Verschil</th><th></th></tr></thead><tbody>' + ch.slice(0, 300).map(function(x){
           var dif = x.oud ? (x.nieuw - x.oud) / x.oud * 100 : null;
-          return "<tr><td class=\"small\">" + esc(x.ref) + "</td><td>" + esc(x.name) + '<div class="small muted">' + esc(x.sku || "") + " · #" + x.item_id + '</div></td><td class="num">' + eur(x.oud) + '</td><td class="num"><b>' + eur(x.nieuw) + '</b></td><td class="num" style="color:' + (dif === null ? "inherit" : dif > 0 ? "var(--bad)" : "var(--ok)") + '">' + (dif === null ? "nieuw" : (dif > 0 ? "+" : "") + num(dif, 1) + "%") + '</td><td class="small muted">' + (x.status === "gewijzigd" ? "" : "niet in prijslijst") + "</td></tr>";
+          return "<tr><td class=\"small\">" + esc(x.ref) + "</td><td>" + esc(x.name) + '<div class="small muted">' + esc(x.sku || "") + " · #" + x.item_id + '</div></td><td class="num">' + eur(x.oud) + (x.oud_bron === "schatting" ? '<div class="small" style="color:var(--warn)">geschat</div>' : "") + '</td><td class="num"><b>' + eur(x.nieuw) + '</b></td><td class="num" style="color:' + (dif === null ? "inherit" : dif > 0 ? "var(--bad)" : "var(--ok)") + '">' + (dif === null ? "nieuw" : (dif > 0 ? "+" : "") + num(dif, 1) + "%") + '</td><td class="small muted">' + (x.status === "gewijzigd" ? "" : "niet in prijslijst") + "</td></tr>";
         }).join("") + "</tbody></table></div>" + (ch.length > 300 ? '<p class="small muted">… en nog ' + (ch.length - 300) + " regels.</p>" : "") : "") +
         (unk.length ? '<p class="small muted">Niet gevonden of ongeldig: ' + esc(unk.slice(0, 40).map(function(x){ return x.ref + (x.waarde ? " (" + x.waarde + ")" : ""); }).join(" · ")) + (unk.length > 40 ? " …" : "") + "</p>" : "") +
         (s.gewijzigd ? '<div class="row" style="margin-top:8px"><span class="sp"></span><button class="btn ok sm" id="ciGo">' + s.gewijzigd + " inkoopprijzen doorvoeren</button></div>" : "");
@@ -864,7 +864,6 @@ function vProduct(m, id){
           '<label class="f">Omschrijving (leeg = standaardtekst van de site)<textarea data-f="descr" rows="4">' + esc(p.descr || "") + "</textarea></label>" +
           '<div class="f2"><label class="f">Volgorde (lager = eerder in de lijst)<input type="number" data-f="sort" value="' + esc(p.sort || 0) + '" /></label><label class="f">Adres op de site (slug)<input type="text" data-f="slug" value="' + esc(p.slug) + '" placeholder="wordt automatisch gemaakt" /></label></div>' +
         "</div>" +
-        '<div class="card" style="margin-top:14px" id="pdVars"></div>' +
       "</div><div>" +
         '<div class="card"><h3 class="ch">Foto’s</h3>' +
           '<img class="pimg" id="pdImgPrev" src="' + esc(p.img) + '" alt="" ' + (p.img ? "" : 'style="display:none"') + " />" +
@@ -875,7 +874,8 @@ function vProduct(m, id){
         "</div>" +
         '<div class="card" style="margin-top:14px" id="pdWc"></div>' +
         (isNew ? "" : '<p class="small muted" style="margin-top:10px">Product #' + p.pid + " · laatst gewijzigd " + esc(dt(p.updated_at)) + (p.updated_by ? " door " + esc(p.updated_by) : "") + "</p>") +
-      "</div></div>";
+      "</div></div>" +
+      '<div class="card" style="margin-top:14px" id="pdVars"></div>';
     $$("[data-f]", m).forEach(function(el){ el.addEventListener("input", function(){ st.changed = true; if(el.getAttribute("data-f") === "img"){ var i = $("#pdImgPrev"); i.src = el.value.trim(); i.style.display = el.value.trim() ? "" : "none"; } if(el.getAttribute("data-f") === "gallery") galPrev(); }); });
     galPrev(); renderWc(); renderVars();
     $("#pdSave").onclick = save;
