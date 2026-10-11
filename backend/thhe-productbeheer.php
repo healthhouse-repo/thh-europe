@@ -82,7 +82,7 @@ function thhp_actor( $req ) {
 }
 
 function thhp_flush() {
-	delete_option( 'thhp_cat_v' );
+	delete_transient( 'thhp_cat_v' );
 	if ( function_exists( 'thhe_catalog_flush' ) ) { thhe_catalog_flush(); }
 }
 
@@ -213,15 +213,32 @@ function thhp_upsert( $p, $actor, $match = 'id' ) {
 /* Publieke catalogus voor de site                                     */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Versie van de publieke catalogus: verandert als producten óf vanaf-prijzen veranderen.
+ * Kort bewaard (5 min) en direct vervallen bij wijzigingen hier of in de prijslijst van snippet 369.
+ */
 function thhp_cat_version() {
-	$v = get_option( 'thhp_cat_v' );
+	$v = get_transient( 'thhp_cat_v' );
 	if ( $v ) { return $v; }
 	global $wpdb;
 	$t   = thhp_tbl();
+	$pt  = thhe_tbl( 'prices' );
 	$sig = $wpdb->get_row( "SELECT COUNT(*) n, MAX(updated_at) m, SUM(id) s FROM $t WHERE status='actief'" );
-	$v   = substr( md5( wp_json_encode( $sig ) . THHP_DB_VER ), 0, 12 );
-	update_option( 'thhp_cat_v', $v, false );
+	$prs = $wpdb->get_row( "SELECT COUNT(*) n, SUM(active) a, ROUND(SUM(CASE WHEN active=1 THEN price ELSE 0 END),2) p, MAX(updated_at) m FROM $pt" );
+	$v   = substr( md5( wp_json_encode( array( $sig, $prs ) ) . THHP_DB_VER . 'f1' ), 0, 12 );
+	set_transient( 'thhp_cat_v', $v, 5 * MINUTE_IN_SECONDS );
 	return $v;
+}
+add_action( 'delete_transient_thhe_catalog_v2', function () { delete_transient( 'thhp_cat_v' ); } );
+
+/** Vanaf-prijs per WooCommerce-product: laagste actieve groothandelsprijs (excl. btw, zonder staffelkorting). */
+function thhp_from_prices() {
+	global $wpdb;
+	$out = array();
+	foreach ( $wpdb->get_results( 'SELECT product_id, MIN(price) p FROM ' . thhe_tbl( 'prices' ) . ' WHERE active=1 AND price>0 GROUP BY product_id' ) as $r ) {
+		$out[ (int) $r->product_id ] = round( (float) $r->p, 2 );
+	}
+	return $out;
 }
 
 function thhp_r_catalog( $req ) {
@@ -233,8 +250,13 @@ function thhp_r_catalog( $req ) {
 	$list = get_transient( $key );
 	if ( ! is_array( $list ) ) {
 		$rows = $wpdb->get_results( 'SELECT * FROM ' . thhp_tbl() . " WHERE status='actief' ORDER BY sort, brand, name" );
+		$from = thhp_from_prices();
 		$list = array();
-		foreach ( $rows as $r ) { $list[] = thhp_public_shape( $r ); }
+		foreach ( $rows as $r ) {
+			$o = thhp_public_shape( $r );
+			if ( $r->wc_id && isset( $from[ (int) $r->wc_id ] ) ) { $o['from'] = $from[ (int) $r->wc_id ]; }
+			$list[] = $o;
+		}
 		set_transient( $key, $list, DAY_IN_SECONDS );
 	}
 	return thhe_ok( array( 'v' => $v, 'products' => $list ) );
