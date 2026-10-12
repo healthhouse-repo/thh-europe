@@ -558,6 +558,55 @@ function thhp_r_cost( $req ) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Prijsregel: korting op adviesprijs aanpassen + alles herberekenen   */
+/* ------------------------------------------------------------------ */
+
+function thhp_perm_wp_admin() {
+	return ( is_user_logged_in() && current_user_can( 'manage_woocommerce' ) ) ? true : new WP_Error( 'thhe_auth', 'Geen beheerder', array( 'status' => 401 ) );
+}
+
+/**
+ * Lezen: huidige prijsregel. Met base_discount: eerst een kopie van de prijslijst bewaren (optie thhp_prices_backup_<datum>),
+ * dan de korting opslaan. Met rebuild_offset: prijzen in delen herberekenen (handmatige prijzen blijven staan; ondergrens blijft gelden).
+ */
+function thhp_r_prijsregel( $req ) {
+	global $wpdb;
+	@set_time_limit( 300 );
+	$b   = thhe_body( $req );
+	$pt  = thhe_tbl( 'prices' );
+	$out = array( 'base_discount' => (float) thhe_s( 'base_discount' ), 'min_margin' => (float) thhe_s( 'min_margin' ), 'est_cost_pct' => (float) thhe_s( 'est_cost_pct' ) );
+	if ( isset( $b['base_discount'] ) ) {
+		$bd = (float) $b['base_discount'];
+		if ( $bd < 0 || $bd > 60 ) { return thhe_err( 'range', 'Korting moet tussen 0 en 60% liggen', 400 ); }
+		$key = 'thhp_prices_backup_' . gmdate( 'Ymd' );
+		if ( ! get_option( $key ) ) {
+			update_option( $key, array( 'at' => current_time( 'mysql' ), 'settings' => $out, 'rows' => $wpdb->get_results( "SELECT item_id, product_id, price, cost, floor, flag, active, source, cost_src FROM $pt", ARRAY_A ) ), false );
+		}
+		$saved = get_option( 'thhe_settings', array() );
+		if ( ! is_array( $saved ) ) { $saved = array(); }
+		$old = $out['base_discount'];
+		$saved['base_discount'] = $bd;
+		update_option( 'thhe_settings', $saved );
+		if ( function_exists( 'thhe_settings' ) ) { thhe_settings( true ); }
+		if ( function_exists( 'thhe_log' ) ) { thhe_log( 'instellingen_opgeslagen', 'base_discount', $old . ' -> ' . $bd . ' (productbeheer)', 0, thhp_actor( $req ) ); }
+		$out['base_discount'] = (float) thhe_s( 'base_discount' );
+		$out['backup'] = $key;
+	}
+	if ( isset( $b['rebuild_offset'] ) ) {
+		$all = array_map( 'intval', (array) $wpdb->get_col( "SELECT DISTINCT product_id FROM $pt ORDER BY product_id" ) );
+		$off = max( 0, (int) $b['rebuild_offset'] );
+		$lim = max( 1, min( 200, (int) ( isset( $b['limit'] ) ? $b['limit'] : 100 ) ) );
+		$ids = array_slice( $all, $off, $lim );
+		$out['total'] = count( $all );
+		$out['count'] = count( $ids );
+		$out['stats'] = $ids ? thhe_prices_build( $ids, false, thhp_actor( $req ) ) : null;
+		$out['done']  = ( $off + count( $ids ) >= count( $all ) ) ? 1 : 0;
+		thhp_flush();
+	}
+	return thhe_ok( $out );
+}
+
+/* ------------------------------------------------------------------ */
 /* Routes                                                              */
 /* ------------------------------------------------------------------ */
 
@@ -576,4 +625,5 @@ add_action( 'rest_api_init', function () {
 	$r( '/admin/products/wc-search', 'thhp_r_wc_search', 'thhp_perm_admin' );
 	$r( '/admin/prices/add', 'thhp_r_prices_add', 'thhp_perm_admin' );
 	$r( '/admin/prices/cost', 'thhp_r_cost', 'thhp_perm_admin' );
+	$r( '/admin/prijsregel', 'thhp_r_prijsregel', 'thhp_perm_wp_admin' );
 }, 20 );
