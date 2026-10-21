@@ -419,7 +419,10 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   .page{display:none;}
-  .page.active{display:block;}
+  .page.active{display:block;animation:thhPageIn .28s ease both;}
+  @keyframes thhPageIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){.page.active{animation:none;}}
+  .nav-item.has-mega.mega-closed .dropdown.mega{opacity:0 !important;pointer-events:none !important;transform:translateY(-6px) !important;transition-delay:0s !important;}
 
   @media(max-width:700px){
     .pd-layout{gap:32px;}
@@ -1660,6 +1663,13 @@
     closeMobileMenu();
   }
   window.addEventListener("hashchange", router);
+  /* Merkenmenu: na het kiezen van een merk direct dicht; weer open zodra de muis het menu verlaat en terugkomt. */
+  (function(){
+    var mi = document.querySelector(".nav-item.has-mega");
+    if(!mi) return;
+    mi.addEventListener("click", function(e){ if(e.target.closest("a")){ mi.classList.add("mega-closed"); if(document.activeElement) document.activeElement.blur(); window.scrollTo({top:0, behavior:"smooth"}); } });
+    mi.addEventListener("mouseleave", function(){ mi.classList.remove("mega-closed"); });
+  })();
 
   /* ---------- NAV ---------- */
   var navbar = byId("navbar");
