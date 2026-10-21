@@ -541,6 +541,27 @@
   .tgl-logo.muted .tgl-main{color:#E4E4E4;}
   .tgl-logo.muted .tgl-sub{color:rgba(255,255,255,0.4);}
   @media(max-width:420px){ .tgl-word .tgl-main{font-size:16px;} .tgl-word .tgl-sub{font-size:7px;letter-spacing:0.22em;} }
+  /* Mobiel: kop past altijd in het scherm (inloggen staat dan in het menu) */
+  @media(max-width:640px){
+    .nav-left{gap:12px;min-width:0;}
+    .nav-right{gap:2px;flex-shrink:0;}
+    .account-link{display:none;}
+    .tgl-logo{gap:8px;min-width:0;}
+    .tgl-badge{font-size:11px;padding:5px 6px;}
+    .tgl-word{min-width:0;overflow:hidden;}
+  }
+  @media(max-width:420px){ .tgl-word .tgl-main{font-size:14px;} .tgl-word .tgl-sub{font-size:6.5px;letter-spacing:0.18em;} }
+  @media(max-width:350px){ .tgl-word{display:none;} }
+  @media(max-width:640px){
+    .tgl-logo.lg .tgl-main{font-size:20px;}
+    .tgl-logo.lg .tgl-sub{font-size:7px;letter-spacing:0.22em;}
+    .tgl-logo.lg .tgl-badge{font-size:13px;padding:6px 8px;}
+  }
+  @media(max-width:420px){
+    .hero-text{max-width:100%;min-width:0;}
+    .hero h1{font-size:clamp(20px,7.6vw,30px);}
+    .form-row .form-group{min-width:100%;}
+  }
 
   /* ---------- MERKENBALK ---------- */
   .brand-strip{background:#0F0F0F;padding:38px 0;}
