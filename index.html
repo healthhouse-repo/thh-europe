@@ -985,7 +985,9 @@
   /* ---------- MERK-PRESENTATIE (dynamisch) ---------- */
   /* Merklogo's: zelfde logo's als thehealthhouse.nl/merken (repo healthhouse-repo/thh-xxl-images). Geen logo = naam. */
   var LOGO_BASE = "https://cdn.jsdelivr.net/gh/healthhouse-repo/thh-xxl-images@main/brand-logos/";
-  var LOGO_ALIAS = {"huge supplements":"huge","nutri+":"nutri","lenny & larry's":"lenny-larrys"};
+  var LOGO_ALIAS = {"huge supplements":"huge","nutri+":"nutri","lenny & larry's":"lenny-larrys","5% nutrition rich piana":"5-nutrition","doctor's best":"docters-best"};
+  var LOGO_URL = {"qnt":"https://www.qntsport.com/cdn/shop/files/LOGO_QNT_CMYK_BLACK_2_e37c9f5c-f907-425f-94c2-10323c5085c6.svg"};
+  function brandLogoSrc(n){ var k = String(n || "").toLowerCase().trim(); return LOGO_URL[k] || (LOGO_BASE + brandSlug(n) + ".png"); }
   function brandSlug(n){
     var k = String(n || "").toLowerCase().trim();
     if(LOGO_ALIAS[k]) return LOGO_ALIAS[k];
@@ -1041,7 +1043,7 @@
     var tot = byId("brandTotal"); if(tot) tot.textContent = t("mk_total", {n: all.length});
     var list = q ? all.filter(function(b){ return String(b.name).toLowerCase().indexOf(q) !== -1; }) : all;
     brandBlockGrid.innerHTML = list.map(function(b){
-      return '<div class="brand-tile" data-merk="' + esc(b.name) + '" title="' + esc(b.name) + '"><div class="bt-logo"><img src="' + LOGO_BASE + brandSlug(b.name) + '.png" alt="' + esc(b.name) + '" data-name="' + esc(b.name) + '" loading="lazy" onerror="thhLogoFail(this)" /></div>' +
+      return '<div class="brand-tile" data-merk="' + esc(b.name) + '" title="' + esc(b.name) + '"><div class="bt-logo"><img src="' + brandLogoSrc(b.name) + '" alt="' + esc(b.name) + '" data-name="' + esc(b.name) + '" loading="lazy" onerror="thhLogoFail(this)" /></div>' +
         '<div class="bt-count">' + t(b.count === 1 ? "bb_count_one" : "bb_count_many", {n:b.count}) + '</div></div>';
     }).join("");
   }
