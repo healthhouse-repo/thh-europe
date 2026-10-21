@@ -419,7 +419,6 @@ function vDash(m){
     if(R){
       var yrs = (R.years || []).map(function(x){ return x.year; }); if(yrs.indexOf(R.current_year) < 0) yrs.unshift(R.current_year);
       h += '<select id="dYear" aria-label="Jaar">' + yrs.map(function(v){ return '<option value="' + v + '"' + (v === R.year ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>";
-      if(R.demo && R.demo.count) h += '<label class="demo-tgl" title="' + DEMO_T + '"><input type="checkbox" id="dDemo"' + (R.demo.show ? " checked" : "") + ' /> Illustratieve facturen <span class="dd"></span></label>';
     }
     h += "</div>";
     if(!R){ h += '<div class="msg bad">Omzet kon niet worden geladen: ' + esc(errMsg(r[1])) + "</div>"; }
