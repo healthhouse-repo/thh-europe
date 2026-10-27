@@ -1180,6 +1180,56 @@
       });
   }
 
+  /* Klantactiviteit: alleen voor ingelogde, goedgekeurde accounts. Events gaan gebundeld naar thhe/v1/track. */
+  var TRK = (function(){
+    var q = [], timer = null, lastInput = Date.now(), sess = "", started = false;
+    function sid(){
+      if(sess) return sess;
+      try{ sess = sessionStorage.getItem("thheTrkSess") || ""; }catch(e){}
+      if(!sess){ sess = Date.now().toString(36) + Math.random().toString(36).slice(2, 10); try{ sessionStorage.setItem("thheTrkSess", sess); }catch(e){} }
+      return sess;
+    }
+    function flush(beacon){
+      if(timer){ clearTimeout(timer); timer = null; }
+      var tok = getToken();
+      if(!q.length || !tok) { if(!tok) q = []; return; }
+      var batch = q.splice(0, 50);
+      try{
+        fetch(API + "track", { method: "POST", keepalive: !!beacon, credentials: "omit", cache: "no-store",
+          headers: { "Content-Type": "application/json", "X-THHE-Token": tok },
+          body: JSON.stringify({ session: sid(), events: batch }) }).catch(function(){});
+      }catch(e){}
+      if(q.length) timer = setTimeout(flush, 2000);
+    }
+    function ev(name, ref, detail){
+      if(!getToken()) return;
+      if(!started){ started = true; start(); }
+      q.push({ e: name, r: ref ? String(ref).slice(0, 180) : "", d: detail || null, p: (location.hash || "#home").slice(0, 180), t: Date.now() });
+      if(q.length >= 20) flush(); else if(!timer) timer = setTimeout(flush, 8000);
+    }
+    function start(){
+      var nav = performance && performance.getEntriesByType ? performance.getEntriesByType("navigation")[0] : null;
+      q.push({ e: "session_start", r: document.referrer ? document.referrer.slice(0, 180) : "", d: { lang: (navigator.language || "").slice(0, 10), w: window.innerWidth, h: window.innerHeight, nav: nav ? nav.type : "", sitelang: (typeof LANG !== "undefined" ? LANG : "") }, p: (location.hash || "#home").slice(0, 180), t: Date.now() });
+    }
+    ["click", "keydown", "scroll", "touchstart", "mousemove"].forEach(function(n){ window.addEventListener(n, function(){ lastInput = Date.now(); }, { passive: true }); });
+    setInterval(function(){
+      if(document.visibilityState === "visible" && Date.now() - lastInput < 60000) ev("active", "", null);
+    }, 60000);
+    document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") flush(true); });
+    window.addEventListener("pagehide", function(){ flush(true); });
+    document.addEventListener("click", function(e){
+      var a = e.target.closest ? e.target.closest("a, button") : null;
+      if(!a) return;
+      var href = a.getAttribute("href") || "";
+      var label = (a.textContent || a.getAttribute("aria-label") || "").replace(/\s+/g, " ").trim().slice(0, 80);
+      if(/^(tel:|mailto:)|wa\.me|whatsapp/i.test(href)) ev("contact_click", href.slice(0, 120), { label: label });
+      else if(/\.(pdf|xlsx?|csv|zip)(\?|$)/i.test(href) || a.hasAttribute("download")) ev("download", href.slice(0, 180), { label: label });
+      else if(/^https?:/i.test(href) && href.indexOf(location.host) < 0) ev("click", href.slice(0, 180), { label: label, extern: 1 });
+      else if(a.tagName === "BUTTON" && label) ev("click", label, null);
+    }, true);
+    return { ev: ev, flush: flush };
+  })();
+
   function loadCatalog(force){
     if(!getToken()) return Promise.resolve(null);
     if(PORTAL.catalog && !force && Date.now() - PORTAL.catalogAt < 10 * 60 * 1000) return Promise.resolve(PORTAL.catalog);
@@ -1335,6 +1385,7 @@
   function loadInvoices(){
     var el = byId("acctInvoicesBody"), sm = byId("acctInvSummary"); if(!el) return;
     if(ACCT.invoices === null) el.innerHTML = '<tr><td colspan="8">' + t("loading") + '</td></tr>';
+    TRK.ev("invoice_view", "", null);
     api("invoices").then(function(res){
       if(!res.ok) return;
       ACCT.invoices = res.data.invoices || [];
@@ -1403,6 +1454,7 @@
       });
       renderCart(); showToast(t("reorder_done", {n: n})); openCart();
     };
+    TRK.ev("click", "herbestellen " + no, null);
     if(d && d !== "loading") go(d); else api("orders/" + encodeURIComponent(no)).then(function(res){ if(res.ok){ ACCT.detail[no] = res.data.order; go(res.data.order); } });
   }
   function findPidForItem(itemId){
@@ -1416,6 +1468,7 @@
     return v ? v.l : "";
   }
   function payOrder(no){
+    TRK.ev("payment_method", no, { actie: "betalen" });
     api("orders/" + encodeURIComponent(no) + "/pay").then(function(res){
       if(res.ok && res.data.checkout){ showToast(t("redirecting")); window.location.href = res.data.checkout; }
       else if(res.ok){ loadOrders(); }
@@ -1534,6 +1587,7 @@
     byId("checkoutSubmit").textContent = sel && sel.value === "invoice" ? t("co_submit_invoice") : t("co_submit");
   }
   function sendUnavailableRequest(lines){
+    TRK.ev("quote_request", "", { regels: lines.length });
     return api("request", { lines: lines.map(function(l){ return { id: l.id, qty: l.qty, name: l.name, label: l.label || "" }; }), message: "" })
       .then(function(res){ showToast(res.ok ? t("request_sent") : t("msg_error")); return res.ok; });
   }
@@ -1543,6 +1597,7 @@
     var sel = document.querySelector('#checkoutMethods input[name="pm"]:checked');
     var method = sel ? sel.value : "mollie";
     btn.disabled = true; msg.textContent = "";
+    TRK.ev("checkout_submit", method, { totaal: q.total, regels: (q.lines || []).length });
     api("checkout", { lines: (q.lines || []).map(function(l){ return { id: l.id, qty: l.qty }; }), expected_total: q.total, po: byId("coPo").value, note: byId("coNote").value, method: method })
       .then(function(res){
         if(res.ok && res.data.checkout){
@@ -1634,6 +1689,7 @@
       if(p.slug !== state.slug){ state.flavorIndex = 0; state.quantity = 1; }
       state.slug = p.slug;
       renderProductPage();
+      TRK.ev("product_view", p.slug, { naam: (typeof fullName === "function" ? fullName(p) : p.slug), merk: p.brand || "" });
     } else {
       pageId = PAGE_MAP[base] || "page-home";
       if(pageId === "page-catalogus"){
@@ -1641,6 +1697,8 @@
         state.filterCat = params.cat && CATEGORIES.indexOf(params.cat) > -1 ? params.cat : "Alle categorie\u00ebn";
         renderFilters();
         renderCatalog();
+        if(params.merk) TRK.ev("brand", params.merk, null);
+        if(params.cat) TRK.ev("category", params.cat, null);
       }
       if(pageId === "page-account" || pageId === "page-afrekenen" || pageId === "page-betaald"){
         if(!getSession()){
@@ -1659,6 +1717,7 @@
     document.querySelectorAll(".page").forEach(function(el){ el.classList.remove("active"); });
     var target = byId(pageId);
     if(target){ target.classList.add("active"); }
+    TRK.ev(pageId === "page-afrekenen" ? "checkout_view" : "page", pageId.replace("page-", ""), null);
     window.scrollTo({ top: 0, behavior: "auto" });
     closeMobileMenu();
   }
@@ -1985,9 +2044,10 @@
   function addToCart(item, quiet){
     var ex = state.cart.filter(function(c){ return item.id ? c.id === item.id : (!c.id && c.slug === item.slug && c.flavor === item.flavor); })[0];
     if(ex){ ex.qty += item.qty; } else { state.cart.push(item); }
+    TRK.ev("cart_add", item.slug || item.name || item.id, { naam: item.name || "", smaak: item.flavor || "", aantal: item.qty, id: item.id || "" });
     if(!quiet) renderCart();
   }
-  function removeFromCart(i){ state.cart.splice(i,1); renderCart(); }
+  function removeFromCart(i){ var it = state.cart[i]; if(it) TRK.ev("cart_remove", it.slug || it.name || it.id, { naam: it.name || "", aantal: it.qty }); state.cart.splice(i,1); renderCart(); }
   function updateCartQty(i, d){
     var item = state.cart[i];
     item.qty += d;
@@ -2059,7 +2119,7 @@
     else if(e.target.classList.contains("cart-plus")) updateCartQty(idx,1);
     else if(e.target.classList.contains("cart-remove")) removeFromCart(idx);
   });
-  function openCart(){ cartOverlay.classList.add("open"); cartPanel.classList.add("open"); }
+  function openCart(){ TRK.ev("cart_open", "", { regels: state.cart.length }); cartOverlay.classList.add("open"); cartPanel.classList.add("open"); }
   function closeCart(){ cartOverlay.classList.remove("open"); cartPanel.classList.remove("open"); }
   byId("cartToggle").addEventListener("click", openCart);
   byId("cartClose").addEventListener("click", closeCart);
@@ -2121,10 +2181,13 @@
   function closeSearch(){
     searchPanel.classList.remove("open"); searchOverlay.classList.remove("open"); searchInput.value = "";
   }
+  var trkSearchT = null;
   function renderSearch(q){
     q = (q||"").trim().toLowerCase();
     var list = q ? SEARCH_INDEX.filter(function(i){ return (i.t + " " + i.s + " " + i.k).toLowerCase().indexOf(q) > -1; })
                  : SEARCH_INDEX.slice(0,6);
+    if(trkSearchT) clearTimeout(trkSearchT);
+    if(q.length >= 2){ var nres = list.length; trkSearchT = setTimeout(function(){ TRK.ev("search", q, { resultaten: nres }); }, 1200); }
     searchCur = list; searchSel = 0;
     if(!list.length){
       searchResults.innerHTML = '<div class="search-empty">' + t("search_empty", {q: esc(q)}) + '</div>';
@@ -2284,6 +2347,7 @@
       var no = ob.getAttribute("data-order");
       if(ACCT.detail[no]){ delete ACCT.detail[no]; renderOrders(); return; }
       ACCT.detail[no] = "loading"; renderOrders();
+      TRK.ev("order_view", no, null);
       api("orders/" + encodeURIComponent(no)).then(function(res){ ACCT.detail[no] = res.ok ? res.data.order : { lines: [] }; renderOrders(); });
       return;
     }

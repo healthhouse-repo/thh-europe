@@ -83,6 +83,12 @@ b,strong{color:#fff}
 .b.bad{background:var(--bad-soft);color:var(--bad)}
 .b.info{background:rgba(255,255,255,.08);color:#DADADA}
 .b.grey{background:rgba(255,255,255,.05);color:var(--muted2)}
+.funnel{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin:12px 0 16px}
+.funnel .card{padding:10px 12px}.funnel .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.funnel .v{font-size:22px;font-weight:700;margin-top:2px}
+.tl{list-style:none;margin:0;padding:0}.tl li{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}.tl li:last-child{border:0}
+.tl .ev{font-weight:700}.tl .sys .ev{color:var(--warn)}
+.flag{display:block;margin:2px 0}
+@media(max-width:900px){.funnel{grid-template-columns:repeat(4,1fr)}.tl li{grid-template-columns:1fr}}
 .b.test{background:var(--red);color:#fff}
 /* illustratief: klein rood rondje */
 .dd{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-left:6px;vertical-align:1px;box-shadow:0 0 0 2px rgba(225,6,0,.22);flex:none}
@@ -255,6 +261,7 @@ h3.ch{font:900 13px/1.2 'Pilat Extended','Pilat',Arial,sans-serif;text-transform
       <a href="#producten" data-v="producten">Producten</a>
       <a href="#prijzen" data-v="prijzen">Prijzen</a>
       <a href="#campagnes" data-v="campagnes">Campagnes</a>
+      <a href="#activiteit" data-v="activiteit">Klantactiviteit <span class="cnt hidden" id="cntAct"></span></a>
       <a href="#aanvragen" data-v="aanvragen">Aanvragen <span class="cnt hidden" id="cntReq"></span></a>
       <a href="#instellingen" data-v="instellingen">Instellingen</a>
       <a href="#log" data-v="log">Logboek</a>
@@ -358,10 +365,10 @@ function route(){
   if(!token()){ show("login"); return; }
   show("app");
   var parts = h.split("?")[0].split("/"), v = parts[0] || "dashboard", id = parts[1];
-  $$("#nav a").forEach(function(a){ a.classList.toggle("on", a.getAttribute("data-v") === v || (v === "klant" && a.getAttribute("data-v") === "klanten") || (v === "order" && a.getAttribute("data-v") === "orders") || (v === "mbklanten" && a.getAttribute("data-v") === "facturen") || (v === "campagne" && a.getAttribute("data-v") === "campagnes") || (v === "product" && a.getAttribute("data-v") === "producten")); });
+  $$("#nav a").forEach(function(a){ a.classList.toggle("on", a.getAttribute("data-v") === v || (v === "klant" && a.getAttribute("data-v") === "klanten") || (v === "order" && a.getAttribute("data-v") === "orders") || (v === "mbklanten" && a.getAttribute("data-v") === "facturen") || (v === "campagne" && a.getAttribute("data-v") === "campagnes") || (v === "product" && a.getAttribute("data-v") === "producten") || (v === "lead" && a.getAttribute("data-v") === "activiteit")); });
   var m = $("#main"); m.innerHTML = '<p class="muted"><span class="spin"></span> Laden…</p>';
   window.scrollTo(0, 0);
-  ({ dashboard:vDash, klanten:vAccounts, klant:vAccount, nieuw:vAccountNew, orders:vOrders, order:vOrder, prijzen:vPrices, producten:vProducts, product:vProduct, facturen:vInvoices, mbklanten:vInvContacts, aanvragen:vRequests, campagnes:vCamps, campagne:vCamp, instellingen:vSettings, log:vLog }[v] || vDash)(m, id);
+  ({ dashboard:vDash, klanten:vAccounts, klant:vAccount, nieuw:vAccountNew, orders:vOrders, order:vOrder, prijzen:vPrices, producten:vProducts, product:vProduct, facturen:vInvoices, mbklanten:vInvContacts, aanvragen:vRequests, campagnes:vCamps, campagne:vCamp, instellingen:vSettings, log:vLog, activiteit:vActivity, lead:vLead }[v] || vDash)(m, id);
 }
 window.addEventListener("hashchange", route);
 
@@ -1140,6 +1147,92 @@ function vInvContacts(m){
     $$("[data-sel]", l).forEach(function(s){ s.onchange = function(){ if(!s.value) return; var cid = s.getAttribute("data-sel"); var txt = s.options[s.selectedIndex].text; if(!confirm("Account " + txt + " koppelen aan dit Moneybird-contact? De klant ziet daarna alle facturen van dit contact.")){ s.value = ""; return; } api("admin/invoices/link", { account:+s.value, contact_id:cid }).then(function(res){ done(res, "Gekoppeld"); }); }; });
     $$("[data-unlink]", l).forEach(function(b){ b.onclick = function(){ if(!confirm("Koppeling verwijderen? De klant ziet deze facturen dan niet meer.")) return; busy(b, true); api("admin/invoices/link", { account:+b.getAttribute("data-unlink"), contact_id:"" }).then(function(res){ busy(b, false); done(res, "Ontkoppeld"); }); }; });
     $$("[data-new]", l).forEach(function(b){ b.onclick = function(){ if(!confirm("Portaalaccount aanmaken voor deze Moneybird-klant? Status wordt Actief, er gaat GEEN mail uit; uitnodigen doe je daarna zelf.")) return; busy(b, true); api("admin/invoices/contact-account", { contact_id:b.getAttribute("data-new") }).then(function(res){ busy(b, false); if(!res.ok){ msg($("#cMsg"), "bad", errMsg(res)); window.scrollTo(0, 0); return; } toast(res.data.linked_existing ? "Bestaand account gekoppeld" : "Account aangemaakt (niet uitgenodigd)"); location.hash = "#klant/" + res.data.account.id; }); }; });
+  });
+}
+/* ---------- klantactiviteit ---------- */
+var STAGES = [["aangemeld","Aangemeld"],["goedgekeurd","Goedgekeurd"],["ingelogd","Ingelogd"],["bekijkt","Bekijkt assortiment"],["winkelwagen","Winkelwagen"],["offerte_aangevraagd","Offerte aangevraagd"],["besteld","Besteld"],["betaald","Betaald"]];
+var STAGE_CLS = { aangemeld:"grey", goedgekeurd:"warn", ingelogd:"info", bekijkt:"info", winkelwagen:"info", offerte_aangevraagd:"warn", besteld:"ok", betaald:"ok", rejected:"grey", blocked:"bad" };
+function stageB(s){ var l = (STAGES.filter(function(x){ return x[0] === s; })[0] || [s, s === "rejected" ? "Afgewezen" : s === "blocked" ? "Geblokkeerd" : s])[1]; return '<span class="b ' + (STAGE_CLS[s] || "grey") + '">' + esc(l) + "</span>"; }
+function ago(s){ if(!s) return "—"; var t = Date.parse(String(s).replace(" ", "T") + "Z"); if(isNaN(t)) return dt(s); var m = Math.round((Date.now() - t) / 60000); if(m < 60) return m + " min geleden"; var h = Math.round(m / 60); if(h < 48) return h + " uur geleden"; return Math.round(h / 24) + " dagen geleden"; }
+function localDt(s){ if(!s) return "—"; var t = new Date(String(s).replace(" ", "T") + "Z"); if(isNaN(t)) return dt(s); var p = function(n){ return (n < 10 ? "0" : "") + n; }; return p(t.getDate()) + "-" + p(t.getMonth() + 1) + "-" + t.getFullYear() + " " + p(t.getHours()) + ":" + p(t.getMinutes()); }
+var EV_NL = { session_start:"Bezoek gestart", page:"Pagina", product_view:"Product bekeken", search:"Gezocht", brand:"Merk gefilterd", category:"Categorie gefilterd", cart_add:"In winkelwagen", cart_remove:"Uit winkelwagen", cart_open:"Winkelwagen geopend", checkout_view:"Afrekenpagina", checkout_submit:"Bestelling geplaatst (poging)", quote_request:"Aanvraag niet-leverbaar", payment_method:"Betalen gestart", click:"Klik", download:"Download", contact_click:"Contact-klik", invoice_view:"Facturen bekeken", order_view:"Bestelling bekeken", login:"Ingelogd", login_fout:"Inlog mislukt", offerteaanvraag:"Offerte aangevraagd", order_aangemaakt:"Bestelling aangemaakt", account_aangemaakt:"Account aangemaakt", wachtwoord_gezet:"Wachtwoord ingesteld", reset_aangevraagd:"Wachtwoord-reset aangevraagd" };
+function evText(e){
+  var d = e.detail && typeof e.detail === "object" ? e.detail : null, extra = "";
+  if(d){ extra = Object.keys(d).filter(function(k){ return d[k] !== "" && d[k] !== null; }).map(function(k){ return k + ": " + d[k]; }).join(" · "); }
+  else if(e.detail) extra = String(e.detail).slice(0, 200);
+  return '<span class="ev">' + esc(EV_NL[e.event] || e.event) + "</span>" + (e.ref ? " " + esc(e.ref) : "") + (extra ? '<div class="small muted">' + esc(extra) + "</div>" : "");
+}
+function vActivity(m){
+  S.act = S.act || { filter:"flag", q:"", days:30 };
+  var st = S.act;
+  m.innerHTML = '<div class="row"><h1 style="margin:0">Klantactiviteit</h1><span class="sp"></span><button class="btn sec sm" id="actKey">API-sleutel voor Claude</button><button class="btn sec sm" id="actCsv">CSV</button></div>' +
+    '<p class="muted small" style="margin:6px 0 0">Wat elke klant doet na goedkeuring: inloggen, bekijken, zoeken, winkelwagen, offerte, bestellen, betalen. Gemeten alleen als de klant is ingelogd.</p>' +
+    '<div id="actKeyBox"></div><div class="funnel" id="actFunnel"></div>' +
+    '<div class="row" style="margin:0 0 10px"><div class="tabs" id="actTabs" style="margin:0">' + [["flag","Actie nodig"],["all","Alle leads"],["active","Actief laatste 7 dagen"]].map(function(t){ return '<button data-f="' + t[0] + '" class="' + (st.filter === t[0] ? "on" : "") + '">' + t[1] + "</button>"; }).join("") + '</div><span class="sp"></span><input type="search" id="actQ" placeholder="Zoek bedrijf of e-mail" value="' + esc(st.q) + '" style="width:240px" /></div><div id="actList"><p class="muted"><span class="spin"></span> Laden…</p></div>';
+  $("#actKey").onclick = function(){ apiKeyPanel(); };
+  api("admin/activity", { days: st.days }).then(function(res){
+    if(!res.ok){ $("#actList").innerHTML = '<div class="msg bad">' + esc(errMsg(res)) + "</div>"; return; }
+    var leads = res.data.leads || [];
+    S.actData = leads;
+    var cnt = $("#cntAct"); if(cnt){ cnt.textContent = res.data.flagged || ""; cnt.classList.toggle("hidden", !res.data.flagged); }
+    var order = STAGES.map(function(x){ return x[0]; });
+    $("#actFunnel").innerHTML = STAGES.map(function(sg, i){ var n = leads.filter(function(l){ return order.indexOf(l.stage) >= i; }).length; return '<div class="card"><div class="k">' + esc(sg[1]) + '</div><div class="v">' + n + "</div></div>"; }).join("");
+    function draw(){
+      var q = st.q.toLowerCase();
+      var list = leads.filter(function(l){
+        if(q && (String(l.company) + " " + l.email + " " + (l.contact || "")).toLowerCase().indexOf(q) < 0) return false;
+        if(st.filter === "flag") return l.flags && l.flags.length;
+        if(st.filter === "active") return l.last_seen && (Date.now() - Date.parse(l.last_seen.replace(" ", "T") + "Z")) < 7 * 864e5;
+        return true;
+      });
+      if(!list.length){ $("#actList").innerHTML = '<p class="muted">Geen leads in deze selectie.</p>'; return; }
+      $("#actList").innerHTML = "<table><thead><tr><th>Klant</th><th>Fase</th><th>Laatst actief</th><th class=\"num\">Logins</th><th class=\"num\">Bezoeken</th><th class=\"num\">Producten</th><th class=\"num\">Winkelw.</th><th class=\"num\">Offertes</th><th class=\"num\">Orders</th><th class=\"num\">Omzet</th><th>Actie nodig</th></tr></thead><tbody>" +
+        list.map(function(l){ var c = l.counts || {};
+          return '<tr><td><a href="#lead/' + l.id + '"><b>' + esc(l.company || l.email) + '</b></a><div class="small muted">' + esc(l.contact || "") + " · " + esc(l.email) + "</div></td><td>" + stageB(l.stage) + "</td><td class=\"small\">" + esc(ago(l.last_seen || l.last_login)) + '</td><td class="num">' + c.logins + '</td><td class="num">' + c.sessions + '</td><td class="num">' + c.product_views + '</td><td class="num">' + c.cart_adds + '</td><td class="num">' + c.quote_requests + '</td><td class="num">' + c.paid_orders + "/" + c.orders + '</td><td class="num">' + eur(c.revenue) + '</td><td class="small">' + (l.flags || []).map(function(f){ return '<span class="flag"><span class="b warn">!</span> ' + esc(f.tekst) + "</span>"; }).join("") + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    }
+    $$("#actTabs button").forEach(function(b){ b.onclick = function(){ st.filter = b.getAttribute("data-f"); $$("#actTabs button").forEach(function(x){ x.classList.toggle("on", x === b); }); draw(); }; });
+    $("#actQ").oninput = function(){ st.q = this.value; draw(); };
+    $("#actCsv").onclick = function(){
+      var rows = [["id","bedrijf","contact","email","telefoon","land","status","fase","goedgekeurd","laatst_ingelogd","laatst_actief","logins","bezoeken","actieve_min","paginas","producten","zoekopdrachten","winkelwagen","offertes","orders","betaald","omzet","actie_nodig"]];
+      leads.forEach(function(l){ var c = l.counts || {}; rows.push([l.id, l.company, l.contact, l.email, l.phone, l.country, l.status, l.stage, l.approved_at, l.last_login, l.last_seen, c.logins, c.sessions, c.active_minutes, c.page_views, c.product_views, c.searches, c.cart_adds, c.quote_requests, c.orders, c.paid_orders, c.revenue, (l.flags || []).map(function(f){ return f.tekst; }).join(" | ")]); });
+      download("klantactiviteit.csv", rows.map(function(r){ return r.map(function(v){ v = v === null || v === undefined ? "" : String(v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(";"); }).join("\n"));
+    };
+    draw();
+  });
+}
+function apiKeyPanel(){
+  var box = $("#actKeyBox");
+  if(box.innerHTML){ box.innerHTML = ""; return; }
+  box.innerHTML = '<div class="card" style="margin-top:12px"><p class="muted"><span class="spin"></span></p></div>';
+  function render(d){
+    box.innerHTML = '<div class="card" style="margin-top:12px"><b>Toegang voor Claude (alleen lezen)</b>' +
+      '<div class="kv" style="margin-top:8px"><div>Basis-URL</div><div class="mono small">' + esc(d.base_url) + ' <button class="btn sec sm" id="cpUrl">Kopieer</button></div>' +
+      "<div>Header</div><div class=\"mono small\">" + esc(d.header) + "</div>" +
+      '<div>API-sleutel</div><div><span class="mono small" id="kVal">••••••••••••••••</span> <button class="btn sec sm" id="kShow">Toon</button> <button class="btn sec sm" id="cpKey">Kopieer</button> <button class="btn bad sm" id="kNew">Nieuwe sleutel</button></div></div>' +
+      '<p class="small muted" style="margin:8px 0 0">Parameters (GET of POST): <span class="mono">only_flagged=1</span> alleen leads met actie nodig · <span class="mono">account=&lt;id of e-mail&gt;</span> met tijdlijn · <span class="mono">timeline=1</span> tijdlijn voor iedereen · <span class="mono">days=30</span> periode van de tijdlijn · <span class="mono">include_test=1</span>. Een nieuwe sleutel maakt de oude direct ongeldig.</p></div>';
+    $("#cpUrl").onclick = function(){ copy(d.base_url); };
+    $("#cpKey").onclick = function(){ copy(d.key); };
+    $("#kShow").onclick = function(){ $("#kVal").textContent = d.key; };
+    $("#kNew").onclick = function(){ if(!confirm("Nieuwe sleutel maken? De huidige sleutel werkt dan niet meer.")) return; api("admin/activity/key", { regenerate:1 }).then(function(r){ if(r.ok){ toast("Nieuwe sleutel gemaakt"); render(r.data); } else toast(errMsg(r)); }); };
+  }
+  api("admin/activity/key", {}).then(function(r){ if(r.ok) render(r.data); else box.innerHTML = '<div class="msg bad">' + esc(errMsg(r)) + "</div>"; });
+}
+function vLead(m, id){
+  api("admin/activity", { account: +id, days: 365, timeline_limit: 500, include_test: 1 }).then(function(res){
+    var l = res.ok && res.data.leads && res.data.leads[0];
+    if(!l){ m.innerHTML = '<a class="back" href="#activiteit">← Klantactiviteit</a><div class="msg bad">' + esc(res.ok ? "Lead niet gevonden." : errMsg(res)) + "</div>"; return; }
+    var c = l.counts || {};
+    var h = '<a class="back" href="#activiteit">← Klantactiviteit</a><div class="row"><h1 style="margin:0">' + esc(l.company || l.email) + "</h1>" + stageB(l.stage) + '<span class="sp"></span><a class="btn sec sm" href="#klant/' + l.id + '">Klantkaart</a></div>' +
+      '<div class="row small muted" style="margin:6px 0 14px">' + esc(l.contact || "") + " · " + esc(l.email) + (l.phone ? " · " + esc(l.phone) : "") + " · aangemeld " + esc(localDt(l.created_at)) + " · goedgekeurd " + esc(localDt(l.approved_at)) + " · laatst actief " + esc(ago(l.last_seen || l.last_login)) + "</div>";
+    if(l.flags && l.flags.length) h += '<div class="msg warn">' + l.flags.map(function(f){ return esc(f.tekst); }).join("<br>") + "</div>";
+    h += '<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr));margin:12px 0">' + [["Logins", c.logins], ["Bezoeken", c.sessions], ["Actieve minuten", c.active_minutes], ["Pagina's", c.page_views], ["Producten bekeken", c.product_views], ["Zoekopdrachten", c.searches], ["In winkelwagen", c.cart_adds], ["Contact-kliks", c.contact_clicks], ["Offertes", c.quote_requests], ["Orders", c.orders], ["Betaald", c.paid_orders], ["Omzet", eur(c.revenue)]].map(function(x){ return stat(x[0], x[1] === undefined ? 0 : x[1]); }).join("") + "</div>";
+    h += '<div class="grid" style="grid-template-columns:2fr 1fr;align-items:start"><div class="card"><h2 style="margin-top:0">Tijdlijn</h2><ul class="tl">' +
+      ((l.timeline || []).map(function(e){ return '<li class="' + (e.bron === "systeem" ? "sys" : "") + '"><div class="small muted">' + esc(localDt(e.at)) + (e.device ? "<br>" + esc(e.device) : "") + "</div><div>" + evText(e) + "</div></li>"; }).join("") || '<li><div></div><div class="muted">Nog geen activiteit gemeten.</div></li>') + "</ul></div><div>" +
+      '<div class="card"><h2 style="margin-top:0">Meeste aandacht</h2>' + ((l.top_products || []).map(function(p){ return '<div class="row small"><span>' + esc(p.product) + '</span><span class="sp"></span><b>' + p.n + "×</b></div>"; }).join("") || '<p class="muted small">—</p>') + "</div>" +
+      '<div class="card" style="margin-top:12px"><h2 style="margin-top:0">Zocht op</h2>' + ((l.recent_searches || []).map(function(s){ return '<span class="b info" style="margin:2px">' + esc(s) + "</span>"; }).join(" ") || '<p class="muted small">—</p>') + "</div>" +
+      '<div class="card" style="margin-top:12px"><h2 style="margin-top:0">Bestellingen</h2>' + ((l.orders || []).map(function(o){ return '<div class="row small"><a href="#order/' + esc(o.id) + '">' + esc(o.no) + "</a> " + badge(ORD_ST, o.status) + '<span class="sp"></span>' + eur(o.total) + "</div>"; }).join("") || '<p class="muted small">Nog geen bestellingen.</p>') + "</div></div></div>";
+    m.innerHTML = h;
   });
 }
 function vLog(m){ api("admin/log").then(function(res){ m.innerHTML = "<h1>Logboek</h1>" + (res.ok ? logTable(res.data.log || []) : '<div class="msg bad">' + esc(errMsg(res)) + "</div>"); }); }
