@@ -233,7 +233,7 @@ add_action( 'wp_footer', function () {
 	if ( ! is_front_page() || ! thh_ddp_ok() ) { return; }
 	echo thh_ddp_css(); // phpcs:ignore
 	?>
-<script>(function(){fetch("<?php echo esc_url_raw( rest_url( 'thh/v1/dagdeal-blok' ) ); ?>",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.html)return;var w=document.createElement("div");w.innerHTML=j.html;var el=w.firstChild;var main=document.querySelector("main, #content, .site-main, .elementor-location-single, .elementor")||document.body;var hdr=document.querySelector("header, .elementor-location-header");if(hdr&&hdr.parentNode&&!main.contains(hdr)){hdr.parentNode.insertBefore(el,hdr.nextSibling)}else{main.insertBefore(el,main.firstChild)}var s=document.createElement("script");s.textContent=<?php echo wp_json_encode( preg_replace( '#^<script>|</script>$#', '', thh_ddp_timer_js() ) ); ?>;document.body.appendChild(s)}).catch(function(){})})();</script>
+<script>(function(){fetch("<?php echo esc_url_raw( rest_url( 'thh/v1/dagdeal-blok' ) ); ?>",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.html)return;var w=document.createElement("div");w.innerHTML=j.html;var el=w.firstChild;var hdr=document.querySelector(".elementor-location-header")||document.querySelector("body > header, #masthead, .site-header");if(hdr&&hdr.parentNode){hdr.parentNode.insertBefore(el,hdr.nextSibling)}else{var main=document.querySelector("main, #content, .site-main")||document.body;main.insertBefore(el,main.firstChild)}var s=document.createElement("script");s.textContent=<?php echo wp_json_encode( preg_replace( '#^<script>|</script>$#', '', thh_ddp_timer_js() ) ); ?>;document.body.appendChild(s)}).catch(function(){})})();</script>
 	<?php
 }, 50 );
 
