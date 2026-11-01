@@ -50,7 +50,7 @@ add_shortcode('thh_over_v2', function ($a) {
 	</section>
 
 	<section class="ov-gal" aria-label="Foto's uit onze winkels">
-		<figure class="ov-g1"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies.webp" alt="Medewerker van The Health House geeft advies in de winkel" loading="lazy"></figure>
+		<figure class="ov-g1"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-winkel-klant.webp" alt="Klant in een winkel van The Health House" loading="lazy"></figure>
 		<figure class="ov-g2"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-kiosk-vier-meren.webp" alt="The Health House kiosk in winkelcentrum Vier Meren" loading="lazy"></figure>
 		<figure class="ov-g3"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies-2.webp" alt="Klant krijgt advies over supplementen" loading="lazy"></figure>
 		<figure class="ov-g4"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-winkel-binnen.webp" alt="Binnenkant van een The Health House winkel" loading="lazy"></figure>
