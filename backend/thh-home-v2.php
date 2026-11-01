@@ -302,7 +302,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-deal h3{color:#fff;font-size:24px;font-weight:700}.h2-deal p{margin:0;font-size:13px;color:rgba(255,255,255,.75)}
 .h2-dealprice{font-size:28px;font-weight:700;display:flex;align-items:center;gap:10px}.h2-dealprice s{color:rgba(255,255,255,.55);font-size:16px;font-weight:400}.h2-dealprice .h2-badge{position:static}
 .h2-timer{display:flex;gap:8px}.h2-timer span{background:rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;min-width:56px;text-align:center;display:flex;flex-direction:column}.h2-timer b{font-size:20px;font-weight:600}.h2-timer small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
-.h2-dealimg{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:37%;height:72%;object-fit:contain;filter:drop-shadow(0 24px 30px rgba(0,0,0,.45))}
+.h2-dealimg{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:37%;height:72%;object-fit:contain;filter:drop-shadow(0 18px 24px rgba(0,0,0,.28))}
 /* banner */
 .h2-bannersec{margin-top:40px}.h2-banner{display:block;border-radius:20px;overflow:hidden}.h2-banner img{display:block;width:100%;height:auto}.h2-banner picture{display:block}
 /* band */
@@ -352,7 +352,7 @@ add_shortcode('thh_home_v2', function ($a) {
 		src.src=biggest(img);
 	}
 	function run(img){ if(img.complete&&img.naturalWidth)cut(img); else img.addEventListener('load',function(){cut(img);},{once:true}); }
-	function all(){ document.querySelectorAll('.h2-cimg img,.h2-catpic img,.h2-dealimg').forEach(run); }
+	function all(){ document.querySelectorAll('.h2-cimg img,.h2-catpic img').forEach(run); }
 	if(document.readyState!=='loading')all(); else document.addEventListener('DOMContentLoaded',all);
 })();
 </script>
