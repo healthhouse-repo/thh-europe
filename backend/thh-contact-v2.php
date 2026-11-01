@@ -43,7 +43,8 @@ add_shortcode('thh_contact_v2', function () {
 <div class="ct">
 	<section class="ct-top">
 		<div class="ct-intro">
-			<h1>Contact</h1>
+			<span class="ct-kicker">Klantenservice</span>
+			<h1>Contact <em>We helpen je graag</em></h1>
 			<p>Een vraag over je bestelling, een product of je doelen? We helpen je graag. Via WhatsApp heb je meestal het snelst antwoord.</p>
 			<ul class="ct-list">
 				<li><a href="https://wa.me/31611789629" target="_blank" rel="noopener nofollow"><span class="ct-ic ct-ic-wa"><?php echo $svg($wa, true); ?></span><strong>WhatsApp</strong><span>06 11 78 96 29</span><?php echo $arr; ?></a></li>
@@ -85,17 +86,20 @@ add_shortcode('thh_contact_v2', function () {
 <style>
 .ct{--nv:#14204a;--rd:#e2373f;--bg:#f5f6fa;--tx:#1b1f2e;--mut:#5a6072;max-width:1240px;margin:0 auto;padding:24px 20px 56px;color:var(--tx);font-family:inherit;overflow-x:clip}
 .ct a{text-decoration:none}.ct h1,.ct h2,.ct h3{margin:0;color:var(--nv);line-height:1.15;letter-spacing:-.01em;text-transform:none}
-.ct-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
-.ct-intro{display:flex;flex-direction:column;gap:16px}
-.ct .ct-intro h1{font-size:clamp(36px,4.4vw,56px);font-weight:800}
-.ct-intro>p{margin:0;font-size:16px;line-height:1.6;color:var(--mut);max-width:520px}
-.ct-list{list-style:none;margin:8px 0 0;padding:6px 20px;background:var(--bg);border-radius:18px}
-.ct-list li+li{border-top:1px solid #e1e4ee}
-.ct .ct-list a{display:grid;grid-template-columns:36px 120px minmax(0,1fr) 18px;align-items:center;gap:12px;padding:16px 0;color:var(--nv)}
-.ct-list strong{font-size:15px;font-weight:600}.ct-list span:not(.ct-ic){font-size:15px;overflow-wrap:anywhere}
+.ct-top{background:var(--nv);color:#fff;border-radius:24px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:32px;min-height:460px;padding:48px 56px;position:relative;overflow:hidden}
+.ct-top:before{content:"";position:absolute;left:30%;top:-20%;width:40%;height:140%;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.05) 40%,rgba(255,255,255,.05) 55%,transparent 55%);pointer-events:none}
+.ct-intro{display:flex;flex-direction:column;justify-content:center;gap:16px;position:relative;z-index:2}
+.ct-kicker{display:inline-block;align-self:flex-start;background:rgba(255,255,255,.14);color:#fff;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:6px}
+.ct .ct-intro h1{color:#fff;font-size:clamp(38px,5vw,64px);font-weight:900;text-transform:uppercase;line-height:1.02}
+.ct-intro h1 em{display:block;font-style:normal;color:transparent;-webkit-text-stroke:2px #fff;font-size:.62em;margin-top:.15em}
+.ct-intro>p{margin:0;font-size:16px;line-height:1.6;color:rgba(255,255,255,.85);max-width:520px}
+.ct-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;max-width:540px}
+.ct .ct-list a{display:grid;grid-template-columns:36px 110px minmax(0,1fr) 18px;align-items:center;gap:12px;padding:12px 16px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;transition:background .15s}
+.ct .ct-list a:hover{background:rgba(255,255,255,.15);color:#fff}
+.ct-list strong{font-size:15px;font-weight:600}.ct-list span:not(.ct-ic){font-size:14.5px;overflow-wrap:anywhere;color:rgba(255,255,255,.85)}
 .ct-arr{width:18px;height:18px;opacity:.7}.ct .ct-list a:hover .ct-arr{opacity:1}
-.ct-ic{width:36px;height:36px;border-radius:50%;background:var(--nv);color:#fff;display:grid;place-items:center}.ct-ic svg{width:18px;height:18px}.ct-ic-wa{background:#25D366}.ct-ic-wa svg{width:20px;height:20px}
-.ct-foto{margin:0;border-radius:20px;overflow:hidden;aspect-ratio:4/3;background:var(--bg)}.ct-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.ct-ic{width:36px;height:36px;border-radius:50%;background:#fff;color:var(--nv);display:grid;place-items:center}.ct-ic svg{width:18px;height:18px}.ct-ic-wa{background:#25D366;color:#fff}.ct-ic-wa svg{width:20px;height:20px}
+.ct-foto{position:relative;z-index:1;margin:-48px -56px -48px 0;background:var(--bg)}.ct-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
 .ct-sec{margin-top:56px}.ct .ct-sec h2{font-size:24px;font-weight:700;margin-bottom:18px}
 .ct-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .ct .ct-tiles a{display:flex;align-items:center;gap:12px;border:1px solid #e1e4ee;border-radius:14px;padding:16px 16px;color:var(--nv);background:#fff;transition:border-color .15s,box-shadow .15s}
@@ -112,7 +116,7 @@ add_shortcode('thh_contact_v2', function () {
 .ct-formcard{background:var(--nv);border-radius:24px;padding:36px 40px;color:#fff}
 .ct .ct-formcard h2{color:#fff;margin-bottom:8px}.ct-formcard>p{margin:0 0 20px;color:rgba(255,255,255,.8);font-size:15px;line-height:1.6}
 .ct-side{display:flex;flex-direction:column;gap:12px}
-.ct-box{border:1px solid #e1e4ee;border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;gap:8px}
+.ct-box{background:var(--bg);border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;gap:8px}
 .ct .ct-box h3{font-size:17px;font-weight:700}.ct-box p{margin:0;font-size:14.5px;line-height:1.6;color:var(--tx)}.ct-box small{font-size:13px;color:var(--mut);line-height:1.5}.ct .ct-box small a{color:var(--nv);text-decoration:underline}
 .ct .ct-link{color:var(--nv);font-weight:600;font-size:14.5px}
 /* Gravity Forms in de donkere kaart */
@@ -125,8 +129,8 @@ add_shortcode('thh_contact_v2', function () {
 .ct-formcard .gform_wrapper .gform_footer input[type=submit],.ct-formcard .gform_wrapper .gform_footer button{background:var(--rd)!important;color:#fff!important;border:0!important;border-radius:999px!important;padding:14px 30px!important;font-weight:600!important;font-size:15px!important;text-transform:none!important;letter-spacing:0!important;cursor:pointer;width:auto!important}
 .ct-formcard .gform_wrapper .gform_footer input[type=submit]:hover{background:#c92c33!important}
 .ct-formcard .gform_confirmation_message{color:#fff;font-size:16px}
-@media(max-width:900px){.ct-top{grid-template-columns:minmax(0,1fr);gap:24px}.ct-foto{order:-1;aspect-ratio:16/9}.ct-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.ct-faq{grid-template-columns:minmax(0,1fr)}.ct-split{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:640px){.ct{padding:12px 14px 36px}.ct .ct-list a{grid-template-columns:36px minmax(0,1fr) 18px;row-gap:2px}.ct-list a>span:nth-of-type(2){grid-column:2}.ct-list a>.ct-arr{grid-column:3;grid-row:1}.ct-list{padding:4px 16px}.ct-sec{margin-top:40px}.ct-tiles{gap:8px}.ct .ct-tiles a{padding:12px;gap:10px}.ct-tic{width:34px;height:34px}.ct-tiles strong{font-size:14px}.ct-tiles a>svg{display:none}.ct-formcard{padding:26px 20px;border-radius:18px}.ct-faq details{padding:0 16px}}
+@media(max-width:900px){.ct-top{grid-template-columns:minmax(0,1fr);gap:24px;padding:32px 28px;min-height:0}.ct-foto{order:-1;margin:-32px -28px 0;height:260px}.ct-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.ct-faq{grid-template-columns:minmax(0,1fr)}.ct-split{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.ct{padding:12px 14px 36px}.ct-top{border-radius:18px;padding:24px 18px}.ct-foto{margin:-24px -18px 0;height:200px}.ct .ct-intro h1{font-size:34px}.ct-intro h1 em{-webkit-text-stroke:1.2px #fff}.ct .ct-list a{grid-template-columns:36px minmax(0,1fr) 18px;row-gap:2px}.ct-list a>span:nth-of-type(2){grid-column:2}.ct-list a>.ct-arr{grid-column:3;grid-row:1}.ct-list{padding:4px 16px}.ct-sec{margin-top:40px}.ct-tiles{gap:8px}.ct .ct-tiles a{padding:12px;gap:10px}.ct-tic{width:34px;height:34px}.ct-tiles strong{font-size:14px}.ct-tiles a>svg{display:none}.ct-formcard{padding:26px 20px;border-radius:18px}.ct-faq details{padding:0 16px}}
 </style>
 <?php
 	return ob_get_clean();
