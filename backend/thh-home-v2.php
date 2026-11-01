@@ -130,7 +130,7 @@ add_shortcode('thh_home_v2', function ($a) {
 			if ($pid) {
 				$ck = 'thh_ddcut_' . $pid;
 				$cu = get_transient($ck);
-				if ($cu === false) { $a = get_page_by_path('dagdeal-cutout-' . $pid, OBJECT, 'attachment'); $cu = $a ? (string) wp_get_attachment_url($a->ID) : ''; set_transient($ck, $cu, HOUR_IN_SECONDS); }
+				if ($cu === false) { $att = get_page_by_path('dagdeal-cutout-' . $pid, OBJECT, 'attachment'); $cu = $att ? (string) wp_get_attachment_url($att->ID) : ''; set_transient($ck, $cu, HOUR_IN_SECONDS); }
 				if ($cu) { $i['img'] = $cu; }
 				else { $pp = wc_get_product($pid); $iid = $pp ? $pp->get_image_id() : 0; if ($iid) { $full = wp_get_attachment_url($iid); if ($full) $i['img'] = $full; } }
 			}
