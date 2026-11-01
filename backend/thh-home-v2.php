@@ -149,7 +149,7 @@ add_shortcode('thh_home_v2', function ($a) {
 	<section class="h2-band">
 		<div class="h2-bandtxt"><span class="h2-kicker">Meer dan een webshop</span><h2>Echte winkels, eerlijk advies, <em>geen onzin</em></h2><p>Van één winkel naar winkels door heel Nederland en een webshop met ruim 1.800 producten. Onze specialisten denken met je mee — online of in de winkel. Advies dat past bij jouw doel, je niveau en je budget.</p><div class="h2-ctas"><a class="h2-btn h2-btn-red" href="<?php echo $u('/advies/'); ?>">Gratis advies</a><a class="h2-btn h2-btn-ghost" href="<?php echo $u('/locaties/'); ?>">Vind een winkel</a></div></div>
 		<div class="h2-bandcards">
-			<a href="<?php echo $u('/locaties/'); ?>"><strong>Winkels</strong><span>Amsterdam, Hoofddorp, Heerhugowaard en Uithoorn</span></a>
+			<a href="<?php echo $u('/locaties/'); ?>"><strong>Winkels</strong><span>Amsterdam, Hoofddorp, Heerhugowaard, Uithoorn en binnenkort Halfweg (outlet)</span></a>
 			<a href="<?php echo $u('/loyalty/'); ?>"><strong>THH Club</strong><span>Voor elke € 10 een punt. 10 punten = € 5 korting</span></a>
 			<a href="<?php echo $u('/gratis-tools/'); ?>"><strong>Gratis tools</strong><span>Caloriebehoefte, eiwitbehoefte en meer</span></a>
 		</div>
