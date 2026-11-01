@@ -84,8 +84,8 @@ add_shortcode('thh_home_v2', function ($a) {
 	$goals = [
 		['Spieropbouw', 'Meer eiwit, creatine en gainers', '/product-category/spieropbouw/', $up . '2026/08/supplementenstack-spiermassa.jpg'],
 		['Afvallen', 'Fatburners, eiwit en slimme snacks', '/product-category/afvallen/', $up . '2026/08/afvallen-zonder-spierverlies.jpg'],
-		['Conditie & duursport', 'Energie, elektrolyten en herstel', '/product-category/duursport/', $up . '2026/10/trainen-hardlopen-kou-winter-header.jpg'],
-		['Vechtsport', 'Fightgear, kleding en bescherming', '/product-category/fightgear/', $up . '2026/10/vechtsport-fitness-gym-amsterdam-vergeleken-header.jpg'],
+		['Conditie & duursport', 'Energie, elektrolyten en herstel', '/product-category/duursport/', $up . '2026/10/trainen-hardlopen-kou-winter-1.jpg'],
+		['Vechtsport', 'Fightgear, kleding en bescherming', '/product-category/fightgear/', $up . '2026/10/vechtsport-fitness-gym-amsterdam-vergeleken-1.jpg'],
 	];
 	$goal_html = '';
 	foreach ($goals as [$n, $s, $l, $im]) $goal_html .= '<a class="h2-goal" href="' . $u($l) . '" style="background-image:url(' . esc_url($im) . ')"><span><strong>' . esc_html($n) . '</strong><em>' . esc_html($s) . '</em></span></a>';
