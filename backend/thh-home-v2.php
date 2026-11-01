@@ -93,7 +93,9 @@ add_shortcode('thh_home_v2', function ($a) {
 	$best_html = '';
 	foreach (thh_h2_products(['limit' => 8, 'orderby' => 'popularity']) as $p) $best_html .= thh_h2_card($p);
 	$new_html = '';
-	foreach (thh_h2_products(['limit' => 4, 'orderby' => 'date', 'order' => 'DESC']) as $p) $new_html .= thh_h2_card($p, 'Nieuw');
+	$nw = thh_h2_products(['category' => ['nieuw'], 'limit' => 4, 'orderby' => 'date', 'order' => 'DESC']);
+	if (count($nw) < 4) $nw = thh_h2_products(['limit' => 4, 'orderby' => 'date', 'order' => 'DESC']);
+	foreach ($nw as $p) $new_html .= thh_h2_card($p, 'Nieuw');
 
 	$brands = get_terms(['taxonomy' => 'pa_merk', 'orderby' => 'count', 'order' => 'DESC', 'number' => 14, 'hide_empty' => true]);
 	$brand_html = '';
