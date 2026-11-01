@@ -87,14 +87,14 @@ add_shortcode('thh_home_v2', function ($a) {
 		'accessoires-shakers' => '<path d="M9 3h6l-1 2H10zM8 5h8l1 15a1 1 0 01-1 1H8a1 1 0 01-1-1z"/><path d="M8 11h8M8 15h8"/>',
 	];
 	$cats = [
-		['Eiwitten', 'eiwitten'], ['Creatine', 'creatine'], ['Pre-workout', 'pre-workout'], ['Repen & snacks', 'eiwitrepen'],
+		['Eiwitten', 'eiwitten'], ['Creatine', 'creatine'], ['Pre-workout', 'pre-workout'], ['Repen', 'eiwitrepen'],
 		['Vitamines', 'vitamines'], ['Afvallen', 'fatburners'], ['Vechtsport', 'fightgear'], ['Shakers', 'accessoires-shakers'],
 	];
 	$cat_html = '';
-	$catimg = get_transient('thh_h2_catimg_v1');
+	$catimg = get_transient('thh_h2_catimg_v2');
 	if (!is_array($catimg)) {
 		$catimg = [];
-		$over = (array) get_option('thh_h2_cat_img', []); // handmatig: [slug => product-id]
+		$over = array_merge(['vitamines' => 45972, 'eiwitrepen' => 49365, 'accessoires-shakers' => 53697], (array) get_option('thh_h2_cat_img', [])); // handmatig: [slug => product-id]
 		foreach ($cats as [$name, $slug]) {
 			$pick = null;
 			if (!empty($over[$slug])) $pick = wc_get_product((int) $over[$slug]);
@@ -106,7 +106,7 @@ add_shortcode('thh_home_v2', function ($a) {
 			}
 			$catimg[$slug] = $pick ? (int) $pick->get_image_id() : 0;
 		}
-		set_transient('thh_h2_catimg_v1', $catimg, 12 * HOUR_IN_SECONDS);
+		set_transient('thh_h2_catimg_v2', $catimg, 12 * HOUR_IN_SECONDS);
 	}
 	foreach ($cats as [$name, $slug]) {
 		$t = get_term_by('slug', $slug, 'product_cat');
@@ -246,9 +246,9 @@ add_shortcode('thh_home_v2', function ($a) {
 /* categorie-tegels */
 .h2-cats{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px;margin-top:16px}
 .h2 .h2-cat{color:#111827;background:#f5f5f6;border:0;border-radius:10px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-decoration:none;transition:background .15s}
-.h2 .h2-cat:hover{background:#ececee}.h2-catpic{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-catimg{max-width:82%;max-height:82%;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transition:transform .25s}.h2-cat:hover .h2-catimg{transform:scale(1.05)}
+.h2 .h2-cat:hover{background:#ececee}.h2-catpic{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-catimg{max-width:96%;max-height:96%;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transition:transform .25s}.h2-cat:hover .h2-catimg{transform:scale(1.05)}
 .h2-catico{width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--nv)}.h2-catico svg{width:24px;height:24px}
-.h2-catname{display:flex;justify-content:space-between;align-items:center;width:100%;font-weight:600;font-size:16px;color:#111827;padding:0 4px;line-height:1.2}.h2-catname svg{color:#111827;flex:none}
+.h2-catname{display:flex;justify-content:space-between;align-items:center;gap:4px;width:100%;font-weight:600;font-size:15px;color:#111827;padding:0 4px;line-height:1.2;white-space:nowrap}.h2-catname svg{color:#111827;flex:none}
 /* usp */
 .h2-usps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:48px;background:var(--bg);border-radius:18px;padding:18px 22px}
 .h2-usps div{display:grid;grid-template-columns:30px 1fr;grid-template-rows:22px 20px;column-gap:12px;align-items:center}.h2-usps svg{width:26px;height:26px;grid-row:1/3;color:var(--rd)}
