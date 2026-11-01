@@ -26,7 +26,8 @@ body.page section.page-hero{margin-bottom:40px!important}
 body.page section.page-hero>.elementor-container{align-items:center!important}
 body.page section.page-hero>.elementor-container>.elementor-column>.elementor-widget-wrap{align-content:center!important;position:static!important}
 body.page section.page-hero .elementor-inner-section.hero-inner{position:absolute!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;width:46%!important;margin:0!important;padding:0!important;z-index:0}
-body.page section.page-hero .elementor-inner-section.hero-inner>.elementor-container{height:100%!important;max-width:none!important}
+body.page section.page-hero .elementor-inner-section.hero-inner>.elementor-container{height:100%!important;max-width:none!important;position:static!important;padding:0!important}body.page section.page-hero .elementor-inner-section.hero-inner .elementor-column{position:static!important;padding:0!important}
+body.page section.page-hero .elementor-column.hero-inner{position:relative!important;top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;transform:none!important;width:100%!important}
 body.page section.page-hero .hero-image{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background-size:cover!important;background-position:center!important;clip-path:none!important;transform:none!important}
 body.page section.page-hero .hero-image:before,body.page section.page-hero .hero-image:after,body.page section.page-hero .hero-image>.elementor-background-overlay{display:none!important}
 body.page section.page-hero:has(.hero-image) .hero-title{max-width:50%;position:relative;z-index:1}
