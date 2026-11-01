@@ -90,29 +90,21 @@ add_shortcode('thh_home_v2', function ($a) {
 		['Eiwitten', 'eiwitten'], ['Creatine', 'creatine'], ['Pre-workout', 'pre-workout'], ['Repen', 'eiwitrepen'],
 		['Vitamines', 'vitamines'], ['Afvallen', 'fatburners'], ['Vechtsport', 'fightgear'], ['Shakers', 'accessoires-shakers'],
 	];
+	$vec = [
+		'eiwitten' => '<rect x="22" y="22" width="40" height="10" rx="3" fill="#14204A"/><path d="M24 32h36v42a6 6 0 0 1-6 6H30a6 6 0 0 1-6-6z" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="24" y="44" width="36" height="20" fill="#E63946"/><path d="M30 51h24M30 57h16" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><path d="M66 58h10a6 6 0 0 1-6 7h-1a6 6 0 0 1-6-7z" fill="#dfe3ee" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M76 61l8-6" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+		'creatine' => '<path d="M28 22h40l-2 6 4 46a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6l4-46z" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 28h36" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="31" y="42" width="34" height="18" rx="2" fill="#14204A"/><path d="M37 49h22M37 54h14" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><circle cx="40" cy="68" r="2.5" fill="#E63946"/><circle cx="48" cy="70" r="2.5" fill="#E63946"/><circle cx="56" cy="68" r="2.5" fill="#E63946"/>',
+		'pre-workout' => '<rect x="24" y="24" width="48" height="10" rx="3" fill="#14204A"/><path d="M26 34h44v38a8 8 0 0 1-8 8H34a8 8 0 0 1-8-8z" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M51 40l-12 18h9l-3 14 13-19h-9z" fill="#E63946" stroke="#14204A" stroke-width="2.5" stroke-linejoin="round"/>',
+		'vitamines' => '<rect x="30" y="18" width="30" height="10" rx="3" fill="#14204A"/><path d="M28 28h34v46a6 6 0 0 1-6 6H34a6 6 0 0 1-6-6z" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="28" y="42" width="34" height="18" fill="#14204A"/><path d="M41 51h8M45 47v8" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/><g transform="rotate(35 74 66)"><rect x="66" y="60" width="18" height="10" rx="5" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M75 60v10" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M66 65a5 5 0 0 1 5-5h4v10h-4a5 5 0 0 1-5-5z" fill="#E63946"/></g>',
+		'fatburners' => '<path d="M48 16c4 10 16 16 16 32a16 16 0 0 1-32 0c0-8 4-12 6-16 2 6 4 8 7 8-1-10 1-17 3-24z" fill="#E63946" stroke="#14204A" stroke-width="3" stroke-linejoin="round"/><path d="M48 50c3 4 6 6 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z" fill="#ffffff" stroke="#14204A" stroke-width="2.5" stroke-linejoin="round"/><path d="M14 80c10-8 24-8 34-4s24 4 34-4" fill="none" stroke="#14204A" stroke-width="7" stroke-linecap="round"/><path d="M24 76v4M34 73v4M44 74v4M54 77v4M64 77v4M74 74v4" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>',
+		'fightgear' => '<path d="M30 40c0-12 8-20 22-20h4c12 0 18 8 18 20v12c0 8-4 14-10 16v10H38V68c-5-3-8-9-8-16z" fill="#E63946" stroke="#14204A" stroke-width="3" stroke-linejoin="round"/><path d="M30 46c-6-1-10 3-10 9 0 7 5 11 12 11" fill="#E63946" stroke="#14204A" stroke-width="3" stroke-linejoin="round"/><rect x="36" y="74" width="30" height="10" rx="2" fill="#14204A"/><path d="M44 34c4-4 12-4 18 0" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none"/>',
+		'accessoires-shakers' => '<path d="M34 14h22l2 8H32z" fill="#14204A"/><rect x="30" y="22" width="30" height="8" rx="2" fill="#14204A"/><path d="M31 30h28l-3 48a4 4 0 0 1-4 4H38a4 4 0 0 1-4-4z" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 56h24l-1.5 22a4 4 0 0 1-4 4H38.5a4 4 0 0 1-4-4z" fill="#E63946"/><path d="M38 40h8M38 47h5" stroke="#14204A" stroke-width="2.5" stroke-linecap="round"/><path d="M60 24c8 0 10 6 6 10" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+		'eiwitrepen' => '<g transform="rotate(-18 48 48)"><rect x="18" y="30" width="58" height="16" rx="4" fill="#14204A"/><path d="M18 34l-5-4v16l5-4M76 34l5-4v16l-5-4" fill="#14204A"/><path d="M30 38h22" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></g><g transform="rotate(-18 48 48)"><rect x="18" y="52" width="58" height="16" rx="4" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 56l-5-4v16l5-4M76 56l5-4v16l-5-4" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="40" y="52" width="14" height="16" fill="#E63946"/></g>',
+	];
 	$cat_html = '';
-	$catimg = get_transient('thh_h2_catimg_v2');
-	if (!is_array($catimg)) {
-		$catimg = [];
-		$over = array_merge(['vitamines' => 45972, 'eiwitrepen' => 49365, 'accessoires-shakers' => 53697], (array) get_option('thh_h2_cat_img', [])); // handmatig: [slug => product-id]
-		foreach ($cats as [$name, $slug]) {
-			$pick = null;
-			if (!empty($over[$slug])) $pick = wc_get_product((int) $over[$slug]);
-			if (!$pick) {
-				$ps = wc_get_products(['status' => 'publish', 'category' => [$slug], 'stock_status' => 'instock', 'limit' => 12, 'orderby' => 'meta_value_num', 'meta_key' => 'total_sales', 'order' => 'DESC', 'return' => 'objects']);
-				$ps = array_values(array_filter($ps, function ($p) { return $p->get_image_id() && !preg_match('/sample|bundel|bundle|pakket|cadeau/i', $p->get_name()); }));
-				foreach ($ps as $p) { if (has_term('the-health-house', 'product_brand', $p->get_id())) { $pick = $p; break; } }
-				if (!$pick && $ps) $pick = $ps[0];
-			}
-			$catimg[$slug] = $pick ? (int) $pick->get_image_id() : 0;
-		}
-		set_transient('thh_h2_catimg_v2', $catimg, 12 * HOUR_IN_SECONDS);
-	}
 	foreach ($cats as [$name, $slug]) {
 		$t = get_term_by('slug', $slug, 'product_cat');
 		if (!$t) continue;
-		$img = !empty($catimg[$slug]) ? wp_get_attachment_image($catimg[$slug], 'woocommerce_thumbnail', false, ['loading' => 'lazy', 'alt' => '', 'class' => 'h2-catimg']) : '';
-		if (!$img) $img = '<span class="h2-catico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $ico[$slug] . '</svg></span>';
+		$img = isset($vec[$slug]) ? '<svg class="h2-catvec" viewBox="0 0 96 96" aria-hidden="true">' . $vec[$slug] . '</svg>' : '<span class="h2-catico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $ico[$slug] . '</svg></span>';
 		$cat_html .= '<a class="h2-cat" href="' . esc_url(get_term_link($t)) . '"><span class="h2-catpic">' . $img . '</span><span class="h2-catname">' . esc_html($name) . '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></a>';
 	}
 
@@ -246,7 +238,7 @@ add_shortcode('thh_home_v2', function ($a) {
 /* categorie-tegels */
 .h2-cats{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px;margin-top:16px}
 .h2 .h2-cat{color:#111827;background:#f5f5f6;border:0;border-radius:10px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-decoration:none;transition:background .15s}
-.h2 .h2-cat:hover{background:#ececee}.h2-catpic{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-catimg{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transform:scale(1.3);transition:transform .25s}.h2-cat:hover .h2-catimg{transform:scale(1.38)}
+.h2 .h2-cat:hover{background:#ececee}.h2-catpic{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-catimg{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transform:scale(1.3);transition:transform .25s}.h2-cat:hover .h2-catimg{transform:scale(1.38)}.h2-catvec{width:72%;height:72%;transition:transform .25s}.h2-cat:hover .h2-catvec{transform:scale(1.06) rotate(-3deg)}
 .h2-catico{width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--nv)}.h2-catico svg{width:24px;height:24px}
 .h2-catname{display:flex;justify-content:space-between;align-items:center;gap:4px;width:100%;font-weight:600;font-size:15px;color:#111827;padding:0 4px;line-height:1.2;white-space:nowrap}.h2-catname svg{color:#111827;flex:none}
 /* usp */
