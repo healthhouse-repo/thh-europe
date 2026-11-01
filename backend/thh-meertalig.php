@@ -130,6 +130,36 @@ function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$m
 		return $a[0] . htmlspecialchars($t, ENT_NOQUOTES, 'UTF-8') . $b[0];
 	}, $html);
 	if ($out === null) return $html; // regex-limiet: liever onvertaald dan kapot
+	// Teksten die pas via JavaScript op de pagina komen (bijv. stappen in de checkout):
+	// vertalingen meegeven aan de browser, die ze na het opbouwen vervangt.
+	$js = [];
+	if (preg_match_all('~<script\b(?![^>]*\bsrc=)(?![^>]*application/(?:ld\+)?json)[^>]*>(.*?)</script\s*>~is', $html, $sm)) {
+		$code = implode("\n", $sm[1]);
+		if (strlen($code) < 3000000 && preg_match_all('~"((?:[^"\\\\\n]|\\\\.){3,600})"|\'((?:[^\'\\\\\n]|\\\\.){3,600})\'~', $code, $lm, PREG_SET_ORDER)) {
+			foreach ($lm as $l) {
+				$single = isset($l[2]) && $l[2] !== '';
+				$lit = $single ? $l[2] : $l[1];
+				if (!preg_match('/\p{L}{3,}/u', $lit)) continue;
+				if ($single) $lit = str_replace(["\\'", '"'], ["'", '\\"'], $lit);
+				$dec = json_decode('"' . $lit . '"');
+				if (!is_string($dec)) $dec = stripslashes($lit);
+				foreach (preg_split('~<[^>]*>~', $dec) as $seg) {
+					$n = thh_i18n_norm($seg);
+					if (!thh_i18n_translatable($n)) continue;
+					$h = md5($n);
+					if (isset($dict[$h])) { $js[$n] = $dict[$h]; }
+					elseif (!isset($known[$h]) && strpos($n, ' ') !== false && preg_match('/^[^{}();=<>$]+$/', $n) && count($miss) < 400) { $miss[$h] = $n; }
+					if (count($js) > 600) break 2;
+				}
+			}
+		}
+	}
+	if ($js) {
+		$payload = wp_json_encode($js, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP);
+		$script = '<script id="thh-i18n-js">(function(){var M=' . $payload . ';function n(s){return s.replace(/\\s+/g," ").trim()}function t(el){var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null),x;while(x=w.nextNode()){var p=x.parentNode;if(!p||/^(SCRIPT|STYLE|TEXTAREA)$/.test(p.nodeName))continue;var k=n(x.nodeValue);if(k&&M.hasOwnProperty(k)){var m=x.nodeValue.match(/^\\s*/)[0],e=x.nodeValue.match(/\\s*$/)[0];x.nodeValue=m+M[k]+e}}if(el.querySelectorAll)el.querySelectorAll("[placeholder],[aria-label],input[type=submit],button[value]").forEach(function(a){["placeholder","aria-label","value"].forEach(function(b){var v=a.getAttribute(b);if(v&&M.hasOwnProperty(n(v)))a.setAttribute(b,M[n(v)])})})}function r(){t(document.body)}if(document.readyState!=="loading")r();else document.addEventListener("DOMContentLoaded",r);var q=0,Q=[];new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(a){Q.push(a)})});if(q)return;q=1;requestAnimationFrame(function(){q=0;var L=Q;Q=[];L.forEach(function(a){if(a.nodeType===1)t(a);else if(a.nodeType===3&&a.parentNode)t(a.parentNode)})})}).observe(document.documentElement,{childList:true,subtree:true})})();</script>';
+		$pos = strripos($out, '</body>');
+		$out = $pos === false ? $out . $script : substr_replace($out, $script, $pos, 0);
+	}
 	$L = THH_I18N_LANGS[$lang];
 	$out = preg_replace('~(<html\b[^>]*\blang=")[^"]*"~i', '${1}' . $L[0] . '"', $out, 1);
 	$out = preg_replace('~(<meta\b[^>]*property="og:locale"[^>]*content=")[^"]*"~i', '${1}' . $L[1] . '"', $out, 1);
