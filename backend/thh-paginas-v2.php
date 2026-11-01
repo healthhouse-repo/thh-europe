@@ -5,7 +5,7 @@
  * Het franchiseformulier post naar het bestaande Elementor-formulier (zelfde mail naar klantenservice@).
  */
 
-function thh_pv2_ids() { return [41993 => 'thh_franchise_v2', 41090 => 'thh_terugroep_v2']; }
+function thh_pv2_ids() { return [41993 => 'thh_franchise_v2', 41090 => 'thh_terugroep_v2', 3430 => 'thh_locaties_v2']; }
 
 add_filter('elementor/frontend/the_content', function ($c) {
 	if (!is_page()) return $c;
@@ -18,10 +18,12 @@ add_filter('the_content', function ($c) {
 	return (isset($ids[$id]) && in_the_loop() && !did_action('elementor/frontend/before_render')) ? do_shortcode('[' . $ids[$id] . ']') : $c;
 }, 999);
 
+add_action('wp_head', function () { if (is_page(3430)) echo '<style>body.page-id-3430 .site-main>.page-header{display:none!important}</style>'; });
+
 function thh_pv2_css() {
 	static $done = false; if ($done) return ''; $done = true;
 	return '<style>
-body.page-id-41993 .site-main>.page-header,body.page-id-41090 .site-main>.page-header{display:none!important}
+body.page-id-41993 .site-main>.page-header,body.page-id-41090 .site-main>.page-header,body.page-id-3430 .site-main>.page-header{display:none!important}
 .pv{--nv:#14204a;--rd:#e2373f;--bg:#f5f6fa;--tx:#1b1f2e;--mut:#5a6072;max-width:1240px;margin:0 auto;padding:16px 20px 56px;color:var(--tx);font-family:inherit;overflow-x:clip}
 .pv *{box-sizing:border-box}.pv a,.pv a:hover{text-decoration:none!important}.pv h1,.pv h2,.pv h3{margin:0;color:var(--nv);line-height:1.15;letter-spacing:-.01em;text-transform:none}
 .pv-hero{background:var(--nv);color:#fff;border-radius:24px;padding:52px 56px;position:relative;overflow:hidden}
