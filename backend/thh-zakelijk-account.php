@@ -62,7 +62,7 @@ add_action('rest_api_init', function () {
 			$data[$k] = $v;
 		}
 		if ($data['email'] !== '' && !is_email($data['email'])) $err[] = 'E-mailadres (ongeldig)';
-		if (!isset(thh_zak_countries()[$data['country']])) $err[] = 'Land';
+		if ($data['country'] !== '' && !isset(thh_zak_countries()[$data['country']])) $err[] = 'Land (ongeldig)';
 		if (empty($p['privacy'])) $err[] = 'Akkoord privacyverklaring';
 		if ($err) return new WP_Error('velden', 'Vul deze velden in: ' . implode(', ', $err), ['status' => 400]);
 		set_transient($key, $n + 1, HOUR_IN_SECONDS);
