@@ -5,7 +5,7 @@
  * Het franchiseformulier post naar het bestaande Elementor-formulier (zelfde mail naar klantenservice@).
  */
 
-function thh_pv2_ids() { return [41993 => 'thh_franchise_v2', 41090 => 'thh_terugroep_v2', 3430 => 'thh_locaties_v2']; }
+function thh_pv2_ids() { return [41993 => 'thh_franchise_v2', 41090 => 'thh_terugroep_v2', 3430 => 'thh_locaties_v2', 5913 => 'thh_over_v2', 5996 => 'thh_contact_v2']; }
 
 add_filter('elementor/frontend/the_content', function ($c) {
 	if (!is_page()) return $c;
@@ -18,7 +18,7 @@ add_filter('the_content', function ($c) {
 	return (isset($ids[$id]) && in_the_loop() && !did_action('elementor/frontend/before_render')) ? do_shortcode('[' . $ids[$id] . ']') : $c;
 }, 999);
 
-add_action('wp_head', function () { if (is_page(3430)) echo '<style>body.page-id-3430 .site-main>.page-header{display:none!important}</style>'; });
+add_action('wp_head', function () { if (is_page([3430, 5913, 5996])) echo '<style>body.page .site-main>.page-header{display:none!important}</style>'; });
 
 function thh_pv2_css() {
 	static $done = false; if ($done) return ''; $done = true;
