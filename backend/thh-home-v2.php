@@ -137,13 +137,6 @@ add_shortcode('thh_home_v2', function ($a) {
 
 	<section class="h2-cats"><?php echo $cat_html; ?></section>
 
-	<section class="h2-usps">
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg><strong>Gratis verzending vanaf € 60</strong><span>Voor 16:00 besteld, snel in huis</span></div>
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><strong>Winkels in heel Nederland</strong><span>Online bestellen, gratis ophalen</span></div>
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 21l1.9-5.4A8 8 0 1121 12z"/></svg><strong>Persoonlijk advies</strong><span>Via WhatsApp, chat of in de winkel</span></div>
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.6 6.8L12 16.9 5.8 20.4l1.6-6.8L2.2 9l6.9-.7z"/></svg><strong>Spaar punten bij elke bestelling</strong><span>Gratis lid van de THH Club</span></div>
-	</section>
-
 	<?php if ($deals_html || $wk_html) : ?>
 	<section class="h2-sec">
 		<div class="h2-sechead"><h2>Deals van vandaag</h2><a href="<?php echo $u('/deals/'); ?>">Alle deals →</a></div>
@@ -151,11 +144,23 @@ add_shortcode('thh_home_v2', function ($a) {
 	</section>
 	<?php endif; ?>
 
-	<?php if ($a['banner']) : ?><section class="h2-sec h2-bannersec"><a class="h2-banner" href="<?php echo $u($a['banner_url']); ?>"><img src="<?php echo esc_url($a['banner']); ?>" alt="<?php echo esc_attr($a['banner_alt']); ?>" loading="lazy"></a></section><?php endif; ?>
-
 	<section class="h2-sec">
 		<div class="h2-sechead"><h2>Populair bij onze klanten</h2><a href="<?php echo $u('/product-category/best-verkocht/'); ?>">Bekijk de top 25 →</a></div>
 		<div class="h2-grid h2-grid4"><?php echo $best_html; ?></div>
+	</section>
+
+	<?php if ($a['banner']) : ?><section class="h2-sec h2-bannersec"><a class="h2-banner" href="<?php echo $u($a['banner_url']); ?>"><img src="<?php echo esc_url($a['banner']); ?>" alt="<?php echo esc_attr($a['banner_alt']); ?>" loading="lazy"></a></section><?php endif; ?>
+
+	<section class="h2-sec">
+		<div class="h2-sechead"><h2>Nieuw binnen</h2><a href="<?php echo $u('/product-category/nieuw/'); ?>">Alle nieuwe producten →</a></div>
+		<div class="h2-grid h2-grid4"><?php echo $new_html; ?></div>
+	</section>
+
+	<section class="h2-usps">
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg><strong>Gratis verzending vanaf € 60</strong><span>Voor 16:00 besteld, snel in huis</span></div>
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><strong>Winkels in heel Nederland</strong><span>Online bestellen, gratis ophalen</span></div>
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 21l1.9-5.4A8 8 0 1121 12z"/></svg><strong>Persoonlijk advies</strong><span>Via WhatsApp, chat of in de winkel</span></div>
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.6 6.8L12 16.9 5.8 20.4l1.6-6.8L2.2 9l6.9-.7z"/></svg><strong>Spaar punten bij elke bestelling</strong><span>Gratis lid van de THH Club</span></div>
 	</section>
 
 	<section class="h2-band">
@@ -167,12 +172,8 @@ add_shortcode('thh_home_v2', function ($a) {
 		</div>
 	</section>
 
-	<section class="h2-sec">
-		<div class="h2-sechead"><h2>Nieuw binnen</h2><a href="<?php echo $u('/product-category/nieuw/'); ?>">Alle nieuwe producten →</a></div>
-		<div class="h2-grid h2-grid4"><?php echo $new_html; ?></div>
-	</section>
-
 	<?php if ($brand_html) : ?><section class="h2-sec"><div class="h2-sechead"><h2>Onze merken</h2></div><div class="h2-brands"><?php echo $brand_html; ?></div><div class="h2-center"><a class="h2-btn h2-btn-nv" href="<?php echo $u('/merken/'); ?>">Bekijk alle merken</a></div></section><?php endif; ?>
+
 
 </div>
 <style>
@@ -199,7 +200,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-catico{width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--nv)}.h2-catico svg{width:24px;height:24px}
 .h2-catname{display:flex;justify-content:space-between;align-items:center;width:100%;font-weight:500;font-size:14px;color:var(--nv)}.h2-catname svg{color:var(--mut)}
 /* usp */
-.h2-usps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px;background:var(--bg);border-radius:18px;padding:18px 22px}
+.h2-usps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:48px;background:var(--bg);border-radius:18px;padding:18px 22px}
 .h2-usps div{display:grid;grid-template-columns:30px 1fr;grid-template-rows:22px 20px;column-gap:12px;align-items:center}.h2-usps svg{width:26px;height:26px;grid-row:1/3;color:var(--rd)}
 .h2-usps strong{font-size:14px;font-weight:600;color:var(--nv);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.h2-usps span{font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* secties */
