@@ -69,7 +69,30 @@ function thh_kp_card($p) {
 		'van' => ($reg > $prijs) ? number_format($reg, 2, ',', '.') : '',
 		'vanaf' => $vanaf,
 		'direct' => !$var && $p->is_purchasable() && $p->is_in_stock(),
+		'varianten' => $var ? thh_kp_varianten($p) : [],
 	];
+}
+
+/* Leverbare varianten (zonder samples) voor de keuzelijst; meest verkochte/goedkoopste eerst. */
+function thh_kp_varianten($p) {
+	$out = [];
+	foreach ($p->get_children() as $vid) {
+		$v = wc_get_product($vid);
+		if (!$v || !$v->is_purchasable() || !$v->is_in_stock() || (float) $v->get_price() <= 0) continue;
+		$attrs = array_values(array_filter(array_map('strval', $v->get_attributes())));
+		$lbl = [];
+		foreach ($v->get_attributes() as $tax => $val) {
+			if ($val === '') continue;
+			$t = taxonomy_exists($tax) ? get_term_by('slug', $val, $tax) : null;
+			$lbl[] = $t ? $t->name : $val;
+		}
+		$label = implode(' · ', $lbl);
+		if (preg_match('/sample|proef|tester|30\\s*gram|1\\s*portie|single serv/i', $label . ' ' . $v->get_name())) continue;
+		$out[] = ['id' => $v->get_id(), 'label' => $label ?: $v->get_name(), 'prijs' => number_format((float) $v->get_price(), 2, ',', '.'), 'p' => (float) $v->get_price(), 's' => (int) $v->get_total_sales()];
+	}
+	usort($out, function ($a, $b) { return [$a['p'], -$a['s']] <=> [$b['p'], -$b['s']]; });
+	// standaard: goedkoopste maat, en daarbinnen de best verkochte smaak
+	return array_map(function ($x) { unset($x['p'], $x['s']); return $x; }, array_slice($out, 0, 60));
 }
 
 function thh_kp_advies($a) {
@@ -145,7 +168,7 @@ add_action('rest_api_init', function () {
 		$ok = ['doel' => ['spier', 'afvallen', 'fit', 'duur', 'herstel'], 'freq' => ['laag', 'mid', 'hoog'], 'sport' => ['kracht', 'vecht', 'cardio', 'mix'], 'dieet' => ['geen', 'lactose', 'vegan'], 'budget' => ['basis', 'compleet']];
 		$a = [];
 		foreach ($ok as $k => $vals) $a[$k] = in_array($p[$k] ?? '', $vals, true) ? $p[$k] : $vals[0];
-		$key = 'thh_kp3_' . md5(wp_json_encode($a));
+		$key = 'thh_kp4_' . md5(wp_json_encode($a));
 		$res = get_transient($key);
 		if (!$res) { $res = thh_kp_advies($a); set_transient($key, $res, 2 * HOUR_IN_SECONDS); }
 		return $res;
@@ -221,6 +244,9 @@ add_action('wp_footer', function () {
 	.tkh-add{align-self:flex-start;margin-top:4px;border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;line-height:1.2}
 	.tkh-total{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg);border-radius:14px;padding:14px 16px;margin:4px 0 14px}
 	.tkh-total span{font-size:13.5px;color:#374151}.tkh-total strong{font-size:20px;color:var(--nv)}
+	.tkh-note{font-size:12.5px;color:var(--mut);margin:-6px 0 14px}
+	.tkh-var{width:100%;height:34px;border:1.5px solid var(--bd);border-radius:8px;padding:0 8px;font-size:12.5px;background:#fff;color:#111827;margin-top:4px;max-width:260px}
+	.tkh-var:focus{outline:0;border-color:var(--nv)}
 	.tkh-end{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 	.tkh-btn{border-radius:999px;padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;line-height:1.2}
 	.tkh-load{padding:50px 0;text-align:center;color:var(--mut)}
@@ -242,6 +268,8 @@ add_action('wp_footer', function () {
 	#tkhOv .tkh-add.is-ok,#tkhOv .tkh-add.is-ok:hover{background:#16a34a!important}
 	#tkhOv .tkh-btn-nv,#tkhOv .tkh-btn-nv:hover,#tkhOv .tkh-btn-nv:visited,#tkhOv .tkh-btn-nv:focus{background:#25D366!important;color:#fff!important;text-decoration:none!important;border:0!important}
 	#tkhOv .tkh-btn-nv:hover{background:#1eb85a!important}
+	#tkhOv .tkh-btn-all,#tkhOv .tkh-btn-all:hover,#tkhOv .tkh-btn-all:focus{background:var(--rd)!important;color:#fff!important;border:0!important;white-space:nowrap}
+	#tkhOv .tkh-btn-all:hover{background:#c92f3b!important}#tkhOv .tkh-btn-all.is-ok{background:#16a34a!important}
 	#tkhOv .tkh-btn-gh,#tkhOv .tkh-btn-gh:hover,#tkhOv .tkh-btn-gh:focus{background:var(--bg)!important;color:var(--nv)!important;border:0!important;box-shadow:none!important}
 	#tkhOv .tkh-btn-gh:hover{background:#e7e9f0!important}
 	#tkhOv .tkh-naam,#tkhOv .tkh-naam:hover,#tkhOv .tkh-naam:visited{color:#111827!important}#tkhOv .tkh-naam:hover{text-decoration:underline!important}
@@ -273,7 +301,10 @@ add_action('wp_footer', function () {
 		}
 		function card(p,i){
 			var pr=(p.van?'<del>€ '+esc(p.van)+'</del>':'')+(p.vanaf?'<small>vanaf </small>':'')+'€ '+esc(p.prijs);
-			var btn=p.direct?'<button type="button" class="tkh-add" data-id="'+p.id+'">In winkelwagen</button>':'<a class="tkh-add" href="'+esc(p.url)+'">Kies je smaak</a>';
+			var vs=p.varianten||[], btn='';
+			if(p.direct) btn='<button type="button" class="tkh-add" data-id="'+p.id+'">In winkelwagen</button>';
+			else if(vs.length) btn='<select class="tkh-var" aria-label="Kies smaak of maat">'+vs.map(function(v){return '<option value="'+v.id+'">'+esc(v.label)+' · € '+esc(v.prijs)+'</option>';}).join('')+'</select><button type="button" class="tkh-add" data-var="1">In winkelwagen</button>';
+			else btn='<a class="tkh-add" href="'+esc(p.url)+'">Bekijk product</a>';
 			return '<div class="tkh-card '+(i===0?'is-top':'is-alt')+'"><span class="tkh-tag">'+(i===0?'Onze keuze':'Of kies')+'</span><a class="tkh-img" href="'+esc(p.url)+'"><img src="'+esc(p.img)+'" alt="" loading="lazy"></a><div class="tkh-info">'+(p.merk?'<span class="tkh-merk">'+esc(p.merk)+'</span>':'')+'<a class="tkh-naam" href="'+esc(p.url)+'" style="color:inherit;text-decoration:none">'+esc(p.naam)+'</a><span class="tkh-prijs">'+pr+'</span>'+btn+'</div></div>';
 		}
 		function result(){
@@ -285,7 +316,7 @@ add_action('wp_footer', function () {
 				var tot=0;
 				(d.secties||[]).forEach(function(s,i){ if(s.producten[0]) tot+=parseFloat(String(s.producten[0].prijs).replace(/\./g,'').replace(',','.'))||0; h+='<div class="tkh-sec"><div class="tkh-sech"><span class="tkh-num">'+(i+1)+'</span><h3>'+esc(s.titel)+'</h3></div><p>'+esc(s.waarom)+'</p><div class="tkh-prods">'+s.producten.map(card).join('')+'</div></div>'; });
 				if(!(d.secties||[]).length) h+='<p class="tkh-sub">We konden nu geen producten vinden. Stuur ons gerust een WhatsApp, dan denken we mee.</p>';
-				if(tot>0) h+='<div class="tkh-total"><span>Je pakket met onze keuzes, vanaf</span><strong>€ '+tot.toFixed(2).replace('.',',')+'</strong></div>';
+				if(tot>0) h+='<div class="tkh-total"><div><span>Je pakket met onze keuzes, vanaf</span><br><strong>€ '+tot.toFixed(2).replace('.',',')+'</strong></div><button type="button" class="tkh-btn tkh-btn-all" data-act="alles">Alles in winkelwagen</button></div><p class="tkh-note">Smaak of maat kun je hierboven kiezen, of later nog aanpassen in je winkelwagen.</p>';
 				h+='<div class="tkh-end"><button type="button" class="tkh-btn tkh-btn-gh" data-act="opnieuw">Opnieuw beginnen</button><a class="tkh-btn tkh-btn-nv" href="https://wa.me/31611789629" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>Twijfel je? Vraag het via WhatsApp</a></div>';
 				body.innerHTML=h; body.scrollTop=0;
 			}).catch(function(){ body.innerHTML='<p class="tkh-sub">Er ging iets mis. Probeer het opnieuw.</p>'; });
@@ -299,7 +330,8 @@ add_action('wp_footer', function () {
 			if(e.target.closest('.tkh-back')){ if(st>0){ st--; step(); } return; }
 			var o=e.target.closest('.tkh-opt'); if(o){ ans[V[st].k]=o.getAttribute('data-v'); o.classList.add('is-on'); setTimeout(function(){ st++; if(st<V.length) step(); else result(); },220); return; }
 			if(e.target.closest('[data-act="opnieuw"]')){ st=0; ans={}; step(); return; }
-			var b=e.target.closest('button.tkh-add'); if(b){ b.disabled=true; b.textContent='Toevoegen...'; var f=new FormData(); f.append('product_id',b.getAttribute('data-id')); f.append('quantity','1');
+			var all=e.target.closest('[data-act="alles"]'); if(all){ var btns=[].slice.call(body.querySelectorAll('.tkh-card.is-top button.tkh-add:not(.is-ok)')); all.disabled=true; all.textContent='Toevoegen...'; var i=0; (function next(){ if(i>=btns.length){ all.textContent='Alles toegevoegd ✓'; all.classList.add('is-ok'); setTimeout(function(){ location.href=<?php echo wp_json_encode(wc_get_cart_url()); ?>; },700); return; } var bb=btns[i++]; bb.click(); var t=setInterval(function(){ if(bb.classList.contains('is-ok')||!bb.disabled){ clearInterval(t); next(); } },150); })(); return; }
+			var b=e.target.closest('button.tkh-add'); if(b){ var pid=b.getAttribute('data-var')?(b.parentNode.querySelector('.tkh-var')||{}).value:b.getAttribute('data-id'); if(!pid) return; b.disabled=true; b.textContent='Toevoegen...'; var f=new FormData(); f.append('product_id',pid); f.append('quantity','1');
 				fetch(AJAX,{method:'POST',body:f,credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d&&d.error){ throw 0; } b.textContent='Toegevoegd ✓'; b.classList.add('is-ok'); if(window.jQuery&&d&&d.fragments){ jQuery(document.body).trigger('added_to_cart',[d.fragments,d.cart_hash]); } }).catch(function(){ b.disabled=false; b.textContent='Opnieuw proberen'; });
 			}
 		});
@@ -308,3 +340,48 @@ add_action('wp_footer', function () {
 	</script>
 	<?php
 }, 61);
+
+/* ---------- Winkelwagen: smaak/maat wijzigen bij variabele producten ---------- */
+add_action('woocommerce_after_cart_item_name', function ($item, $key) {
+	if (empty($item['variation_id']) || empty($item['product_id'])) return;
+	$parent = wc_get_product($item['product_id']);
+	if (!$parent || !$parent->is_type('variable')) return;
+	$opts = thh_kp_varianten($parent);
+	if (count($opts) < 2) return;
+	echo '<div class="thh-cartvar"><label>Smaak/maat wijzigen: <select data-key="' . esc_attr($key) . '">';
+	$found = false;
+	foreach ($opts as $o) { $sel = (int) $o['id'] === (int) $item['variation_id']; $found = $found || $sel; echo '<option value="' . (int) $o['id'] . '"' . selected($sel, true, false) . '>' . esc_html($o['label'] . ' · € ' . $o['prijs']) . '</option>'; }
+	if (!$found) echo '<option value="' . (int) $item['variation_id'] . '" selected>Huidige keuze</option>';
+	echo '</select></label></div>';
+}, 20, 2);
+
+add_action('wp_ajax_thh_cart_wissel', 'thh_cart_wissel');
+add_action('wp_ajax_nopriv_thh_cart_wissel', 'thh_cart_wissel');
+function thh_cart_wissel() {
+	check_ajax_referer('thh_cartvar', 'nonce');
+	$key = sanitize_text_field(wp_unslash($_POST['key'] ?? ''));
+	$vid = (int) ($_POST['vid'] ?? 0);
+	$cart = WC()->cart; $item = $key ? $cart->get_cart_item($key) : null;
+	$v = wc_get_product($vid);
+	if (!$item || !$v || !$v->is_type('variation') || (int) $v->get_parent_id() !== (int) $item['product_id'] || !$v->is_in_stock()) wp_send_json_error('ongeldig', 400);
+	$qty = (int) $item['quantity'];
+	$cart->remove_cart_item($key);
+	$ok = $cart->add_to_cart($v->get_parent_id(), $qty, $vid, $v->get_variation_attributes());
+	if (!$ok) { $cart->restore_cart_item($key); wp_send_json_error('niet gelukt', 400); }
+	wp_send_json_success();
+}
+
+add_action('wp_footer', function () {
+	if (!function_exists('is_cart') || !is_cart()) return;
+	?>
+	<style>.thh-cartvar{margin-top:6px;font-size:13px}.thh-cartvar label{display:flex;flex-wrap:wrap;align-items:center;gap:6px;color:#6b7280;font-weight:500}.thh-cartvar select{height:34px;border:1.5px solid #e5e7eb;border-radius:8px;padding:0 8px;font-size:13px;color:#111827;background:#fff;max-width:280px}</style>
+	<script>
+	document.addEventListener('change',function(e){
+		var s=e.target.closest('.thh-cartvar select'); if(!s) return;
+		s.disabled=true;
+		var f=new FormData(); f.append('action','thh_cart_wissel'); f.append('nonce',<?php echo wp_json_encode(wp_create_nonce('thh_cartvar')); ?>); f.append('key',s.getAttribute('data-key')); f.append('vid',s.value);
+		fetch(<?php echo wp_json_encode(admin_url('admin-ajax.php')); ?>,{method:'POST',body:f,credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d&&d.success){ location.reload(); } else { s.disabled=false; alert('Wijzigen is niet gelukt.'); } }).catch(function(){ s.disabled=false; });
+	});
+	</script>
+	<?php
+}, 70);
