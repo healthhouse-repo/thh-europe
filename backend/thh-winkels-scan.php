@@ -47,3 +47,16 @@ add_action('rest_api_init', function () {
 		return $walk($data, 0, '');
 	}]);
 });
+
+// Merk toekennen aan geïmporteerde producten (op basis van meta _thh_un_src_id) + overzicht
+add_action('rest_api_init', function () {
+	register_rest_route('thh/v1', '/import/merk', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_woocommerce'); }, 'callback' => function ($r) {
+		$meta = sanitize_key($r['meta'] ?: '_thh_un_src_id');
+		$term = (int) $r['term'];
+		$tax = taxonomy_exists('product_brand') ? 'product_brand' : 'brands';
+		$ids = get_posts(['post_type' => 'product', 'post_status' => ['publish', 'draft', 'private'], 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => $meta]);
+		$n = 0;
+		foreach ($ids as $id) { if ($term) wp_set_object_terms($id, [$term], $tax, false); $n++; }
+		return ['products' => count($ids), 'set' => $n, 'tax' => $tax];
+	}]);
+});
