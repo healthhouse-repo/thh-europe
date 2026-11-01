@@ -18,11 +18,11 @@ add_shortcode('thh_footer_v2', function () {
 	<section class="thf2-help">
 		<div class="thf2-help-txt">
 			<h2>Kunnen we je ergens mee helpen?</h2>
-			<p>We zijn bereikbaar op <strong>IN TE VULLEN: dagen en tijden</strong>. In onze winkels helpen we je ook graag persoonlijk.</p>
+			<p>Stuur ons een <strong>WhatsApp</strong> of <strong>mail</strong>, dan helpen we je zo snel mogelijk. In onze winkels helpen we je ook graag persoonlijk.</p>
 		</div>
 		<ul class="thf2-help-list">
-			<li><a href="https://wa.me/IN-TE-VULLEN" rel="nofollow"><span class="thf2-ic">💬</span><strong>WhatsApp</strong><span>IN TE VULLEN</span><span class="thf2-arr">↗</span></a></li>
-			<li><a href="mailto:IN-TE-VULLEN"><span class="thf2-ic">✉️</span><strong>E-mail</strong><span>IN TE VULLEN</span><span class="thf2-arr">↗</span></a></li>
+			<li><a href="https://wa.me/31611789629" rel="nofollow noopener" target="_blank"><span class="thf2-ic">💬</span><strong>WhatsApp</strong><span>06 11 78 96 29</span><span class="thf2-arr">↗</span></a></li>
+			<li><a href="mailto:klantenservice@thehealthhouse.nl"><span class="thf2-ic">✉️</span><strong>E-mail</strong><span>klantenservice@thehealthhouse.nl</span><span class="thf2-arr">↗</span></a></li>
 		</ul>
 	</section>
 
