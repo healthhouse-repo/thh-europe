@@ -29,11 +29,16 @@ add_shortcode('thh_footer_v2', function () {
 	<section class="thf2-main">
 		<div class="thf2-news">
 			<p>Ontvang <strong>15% welkomstkorting</strong> en hoor als eerste over <strong>deals en nieuwe producten</strong>:</p>
-			<form class="thf2-form" onsubmit="return false">
-				<input type="email" placeholder="Jouw e-mailadres..." aria-label="E-mailadres">
+			<form class="thf2-form" id="thf2News" novalidate>
+				<input type="email" name="email" placeholder="Jouw e-mailadres..." aria-label="E-mailadres" required>
 				<button type="submit">Schrijf mij in</button>
+				<p class="thf2-err" hidden>Vul een geldig e-mailadres in.</p>
 			</form>
-			<p class="thf2-note">(Op de echte footer koppelen we hier het bestaande Klaviyo-formulier.)</p>
+			<div class="thf2-ok" id="thf2NewsOk" hidden>
+				<p><strong>Gelukt — je staat op de lijst</strong></p>
+				<p>Je kortingscode is: <strong>WELKOM15</strong></p>
+				<p>Gebruik deze code bij het afrekenen voor 15% korting op je eerste bestelling.</p>
+			</div>
 			<div class="thf2-social">
 				<a href="https://www.instagram.com/healthhouse.nederland/" aria-label="Instagram" rel="noopener" target="_blank">IG</a>
 				<a href="https://www.facebook.com/healthhouse.nederland/" aria-label="Facebook" rel="noopener" target="_blank">FB</a>
@@ -45,7 +50,7 @@ add_shortcode('thh_footer_v2', function () {
 			<a href="<?php echo $u('/faq/'); ?>">Veelgestelde vragen</a>
 			<a href="<?php echo $u('/contact/'); ?>">Contact</a>
 			<a href="<?php echo $u('/betaling/'); ?>">Betaalmogelijkheden</a>
-			<a href="<?php echo $u('/faq/'); ?>">Verzending (pagina nog maken)</a>
+			<a href="<?php echo $u('/faq/'); ?>">Verzending</a>
 			<a href="<?php echo $u('/retourneren/'); ?>">Retourneren</a>
 			<a href="<?php echo $u('/terugroepacties/'); ?>">Terugroepacties</a>
 		</nav>
@@ -80,7 +85,6 @@ add_shortcode('thh_footer_v2', function () {
 			<span>Overhoeksplein 1, 1031 KS Amsterdam</span>
 			<a href="<?php echo $u('/privacy-beleid/'); ?>">Privacybeleid</a>
 			<a href="<?php echo $u('/cookies/'); ?>">Cookies</a>
-			<a href="<?php echo $u('/faq/'); ?>">Algemene voorwaarden (pagina nog maken)</a>
 		</div>
 		<div class="thf2-pay" aria-label="Betaalmethoden en verzending">
 			<span class="thf2-badge thf2-txt">iDEAL</span>
@@ -103,7 +107,7 @@ add_shortcode('thh_footer_v2', function () {
 .thf2-news,.thf2-news p,.thf2-news strong{color:#fff!important}.thf2-news p{margin:0 0 14px;line-height:1.5}.thf2-col h3{font-size:15px!important;letter-spacing:.02em}.thf2-form{display:flex;flex-direction:column;gap:10px}
 .thf2-form input{border:0;border-radius:999px;padding:16px 22px;font-size:15px;color:#111}
 .thf2-form button{border:0;border-radius:999px;padding:16px;background:var(--rd);color:#fff;font-weight:700;cursor:pointer}
-.thf2-note{font-size:12px;opacity:.6;margin-top:8px!important}
+.thf2-err{color:#ffb3b8!important;font-size:13px;margin:0!important}.thf2-ok{background:rgba(255,255,255,.08);border-radius:14px;padding:16px}.thf2-ok p{margin:0 0 6px!important}
 .thf2-social{display:flex;gap:10px;margin-top:18px}.thf2-social a{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;font-weight:700;font-size:13px}
 .thf2-col{display:flex;flex-direction:column;gap:10px}.thf2-col h3{color:#fff;font-size:16px;margin:0 0 6px}.thf2-col a{opacity:.85;font-size:15px}
 .thf2-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;max-width:1200px;margin:0 auto;padding-top:20px}
@@ -113,6 +117,26 @@ add_shortcode('thh_footer_v2', function () {
 @media(max-width:900px){.thf2-help{grid-template-columns:1fr;padding:24px}.thf2-main{grid-template-columns:1fr 1fr}.thf2-news{grid-column:1/-1}}
 @media(max-width:520px){.thf2{padding:24px 16px}.thf2-help-list a{grid-template-columns:24px 80px 1fr 16px}.thf2-main{grid-template-columns:1fr}}
 </style>
+<script>(function(){var f=document.getElementById('thf2News');if(!f||f.dataset.b)return;f.dataset.b=1;f.addEventListener('submit',function(e){e.preventDefault();var m=f.querySelector('input[name=email]'),er=f.querySelector('.thf2-err'),v=(m.value||'').trim();if(!/^[^@\s]+@[^@\s.]+\.[^@\s]{2,}$/.test(v)){er.hidden=false;m.focus();return}er.hidden=true;var b=f.querySelector('button');b.disabled=true;var d=new FormData();d.append('action','thh_popup_signup');d.append('email',v);d.append('bron','footer');fetch(<?php echo wp_json_encode(admin_url('admin-ajax.php')); ?>,{method:'POST',body:d,credentials:'same-origin'}).then(function(r){return r.json()}).catch(function(){return{}}).then(function(){f.hidden=true;document.getElementById('thf2NewsOk').hidden=false})})})();</script>
 <?php
 	return ob_get_clean();
+});
+
+// Live: oude Elementor-footer verbergen (blijft bewaard als back-up) en de nieuwe tonen.
+// Terugdraaien: optie thh_footer_v2_live op 0 zetten (of deze snippet uitzetten).
+add_action('wp_head', function () {
+	if (!get_option('thh_footer_v2_live') || is_admin() || is_page('footer-test')) return;
+	echo '<style id="thf2-live">.elementor-location-footer{display:none!important}</style>';
+}, 99);
+add_action('wp_footer', function () {
+	if (!get_option('thh_footer_v2_live') || is_admin() || is_page('footer-test')) return;
+	echo '<footer class="thf2-site" role="contentinfo">' . do_shortcode('[thh_footer_v2]') . '</footer>';
+}, 1);
+add_action('rest_api_init', function () {
+	register_rest_route('thh/v1', '/footer-v2', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function ($r) {
+		update_option('thh_footer_v2_live', $r['live'] ? 1 : 0, true);
+		global $kinsta_cache;
+		if (isset($kinsta_cache->kinsta_cache_purge) && method_exists($kinsta_cache->kinsta_cache_purge, 'purge_complete_caches')) $kinsta_cache->kinsta_cache_purge->purge_complete_caches();
+		return ['live' => (bool) get_option('thh_footer_v2_live')];
+	}]);
 });
