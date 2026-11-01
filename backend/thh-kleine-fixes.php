@@ -32,3 +32,13 @@ add_action('wp_head', function () {
 		. '.thhc-card>span:not(.thhc-card-ico):not(.thhc-card-arrow){flex:1 1 auto;min-width:0;white-space:normal!important;overflow-wrap:anywhere;text-align:left}'
 		. '</style>';
 }, 99);
+
+/* Chat: placeholder en aria-label van het vraagveld in de juiste taal. */
+add_action('wp_footer', function () {
+	$lang = function_exists('thh_i18n_lang') ? thh_i18n_lang() : 'nl';
+	if ($lang === 'nl') return;
+	$t = ['de' => ['Stell mir eine Frage', 'Stell deine Frage'], 'en' => ['Ask me a question', 'Ask your question']][$lang] ?? null;
+	if (!$t) return;
+	echo '<script>(function(){function f(){document.querySelectorAll("#thhcAsk,#thhcInput").forEach(function(el){if(/Stel me een vraag|Stel je vraag|Typ je vraag/i.test(el.getAttribute("placeholder")||""))el.setAttribute("placeholder",' . wp_json_encode($t[0]) . ');if(/Stel je vraag/i.test(el.getAttribute("aria-label")||""))el.setAttribute("aria-label",' . wp_json_encode($t[1]) . ');});}if(document.readyState!=="loading")f();else document.addEventListener("DOMContentLoaded",f);setTimeout(f,1500);})();</script>';
+}, 99);
+
