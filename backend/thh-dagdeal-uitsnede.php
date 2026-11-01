@@ -8,7 +8,7 @@
 
 if (!function_exists('thh_ddu_maak')) {
 	/** Uitsnede maken voor één product (parent-id). Geeft attachment-id of WP_Error. */
-	function thh_ddu_maak($pid, $forceer = false) {
+	function thh_ddu_maak($pid, $forceer = false, $opt = []) {
 		$pid = (int) $pid;
 		$bestaand = get_page_by_path('dagdeal-cutout-' . $pid, OBJECT, 'attachment');
 		if ($bestaand && !$forceer) return (int) $bestaand->ID;
@@ -33,7 +33,7 @@ if (!function_exists('thh_ddu_maak')) {
 		for ($y = 0; $y < $h; $y += 5) { foreach ([$y * $w, $y * $w + $w - 1] as $i) { $rs[] = $R[$i]; $gs[] = $G[$i]; $bs[] = $B[$i]; } }
 		sort($rs); sort($gs); sort($bs); $m = count($rs) >> 1; $bg = [$rs[$m], $gs[$m], $bs[$m]];
 		$dist = function ($i) use ($R, $G, $B, $bg) { return max(abs($R[$i] - $bg[0]), abs($G[$i] - $bg[1]), abs($B[$i] - $bg[2])); };
-		$T1 = 18; $T2 = 170; $BAND = 4;
+		$T1 = (int) ($opt['t1'] ?? 7); $T2 = (int) ($opt['t2'] ?? 110); $BAND = (int) ($opt['band'] ?? 3);
 		// flood fill vanaf de rand
 		$isbg = new SplFixedArray($n); $st = [];
 		for ($x = 0; $x < $w; $x++) { $st[] = $x; $st[] = ($h - 1) * $w + $x; }
@@ -104,7 +104,7 @@ add_action('rest_api_init', function () {
 		'permission_callback' => function () { return current_user_can('manage_woocommerce'); },
 		'callback' => function ($req) {
 			$pid = (int) $req->get_param('product');
-			if ($pid) { $a = thh_ddu_maak($pid, (bool) $req->get_param('opnieuw')); return is_wp_error($a) ? new WP_Error('ddu', $a->get_error_message(), ['status' => 400]) : ['ok' => true, 'attachment' => $a, 'url' => wp_get_attachment_url($a)]; }
+			if ($pid) { $opt = array_filter(['t1' => $req->get_param('t1'), 't2' => $req->get_param('t2'), 'band' => $req->get_param('band')], function ($v) { return $v !== null; }); $a = thh_ddu_maak($pid, (bool) $req->get_param('opnieuw'), $opt); return is_wp_error($a) ? new WP_Error('ddu', $a->get_error_message(), ['status' => 400]) : ['ok' => true, 'attachment' => $a, 'url' => wp_get_attachment_url($a)]; }
 			return ['ok' => true, 'resultaat' => thh_ddu_run((int) ($req->get_param('dagen') ?: 14), (int) ($req->get_param('max') ?: 3))];
 		},
 	]);
