@@ -85,3 +85,11 @@ add_filter('body_class', function ($c) {
 	if (is_page(['betaling', 'retourneren', 'privacy-beleid', 'cookies', 'terugroepacties', 'advies', 'werken-bij', 'gratisconsult', 'franchise', 'loyalty', 'membership', 'abonnementen', 'zakelijk-account'])) $c[] = 'thh-ps-tekst';
 	return $c;
 });
+
+/* tikfout in de oude hero van /retourneren/ */
+add_filter('the_content', function ($c) {
+	return is_page('retourneren') ? str_replace('<span>Retouneren</span>', '<span>Retourneren</span>', $c) : $c;
+}, 99);
+add_filter('elementor/frontend/the_content', function ($c) {
+	return is_page('retourneren') ? str_replace('<span>Retouneren</span>', '<span>Retourneren</span>', $c) : $c;
+}, 99);
