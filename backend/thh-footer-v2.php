@@ -70,7 +70,7 @@ add_shortcode('thh_footer_v2', function () {
 			<a href="<?php echo $u('/locaties/'); ?>">Onze winkels</a>
 			<a href="<?php echo $u('/loyalty/'); ?>">Loyalty club</a>
 			<a href="<?php echo $u('/werken-bij/'); ?>">Werken bij</a>
-			<a href="https://franchise.thehealthhouse.nl/">Franchise</a>
+			<a href="<?php echo $u('/franchise/'); ?>">Franchise</a>
 		</nav>
 		<nav class="thf2-col" aria-label="Zakelijk">
 			<h3>Zakelijk</h3>
