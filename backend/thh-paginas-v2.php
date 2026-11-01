@@ -66,6 +66,7 @@ body.page-id-41993 .site-main>.page-header,body.page-id-41090 .site-main>.page-h
 .pv-recall ul{margin:0 0 12px;padding-left:20px}.pv-recall li{font-size:15px;line-height:1.6}
 .pv-ract{background:var(--bg);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;align-self:start}
 .pv-ract strong{color:var(--nv);font-size:15px}.pv-ract p{font-size:14px;color:var(--mut);margin:0}
+.pv-claim{display:flex;flex-direction:column;gap:8px}.pv .pv-claim input{width:100%;background:#fff;border:1px solid #e1e4ee;border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--tx);box-shadow:none;outline:none}.pv .pv-claim input:focus{border-color:var(--nv)}.pv .pv-claim .pv-hp{position:absolute!important;left:-9999px!important}
 .pv .pv-ract .pv-btn{min-height:44px;font-size:14px;padding:0 18px;width:100%}
 .pv .pv-ract .pv-btn-nv{background:var(--nv);color:#fff!important}.pv .pv-ract .pv-btn-nv:hover{background:#0d1538;color:#fff}
 .pv .pv-ract .pv-btn-wa{background:#25D366;color:#fff!important}.pv .pv-ract .pv-btn-wa:hover{background:#1fb457;color:#fff}
@@ -168,10 +169,28 @@ add_shortcode('thh_terugroep_v2', function () {
 				<p>De NVWA heeft ons laten weten dat de samenstelling en de claims van producten van Jennah Organics niet voldoen aan de regels voor voedingssupplementen. Daarnaast missen de etiketten verplichte Nederlandse informatie. We hebben daarom alle producten van Jennah Organics uit de verkoop gehaald.</p>
 				<p>Het gaat om alle producten van dit merk die bij ons zijn gekocht, online en in de winkel, waaronder:</p>
 				<ul><li>Colon Support</li><li>Crave Control</li><li>Magic Magnesium</li><li>Collagen Care</li><li>Hormone Support</li><li>Burn Boost</li><li>Hair Growth</li><li>de bundels en de eiwitshake van Jennah Organics</li></ul>
-				<p>Heb je een van deze producten? Gebruik het niet meer en neem contact met ons op. Je krijgt het aankoopbedrag van ons terug. Onze excuses voor het ongemak.</p>
+				<p>Heb je een van deze producten? Gebruik het niet meer. Wij kunnen het aankoopbedrag niet zelf terugbetalen, maar we dienen wel een claim in bij Jennah Organics. Laat hieronder je gegevens achter, dan nemen we je mee in die claim en houden we je op de hoogte.</p>
 			</div>
-			<aside class="pv-ract"><strong>Geld terug</strong><p>Stuur ons je bestelnummer of aankoopbon, dan regelen we de terugbetaling.</p><a class="pv-btn pv-btn-wa" href="https://wa.me/31611789629" target="_blank" rel="noopener nofollow">WhatsApp ons</a><a class="pv-btn pv-btn-nv" href="mailto:klantenservice@thehealthhouse.nl?subject=Terugroepactie%20Jennah%20Organics">Mail klantenservice</a></aside>
+			<aside class="pv-ract"><strong>Laat je gegevens achter</strong>
+				<form class="pv-claim" id="pvClaim" novalidate>
+					<input type="text" name="naam" placeholder="Naam" autocomplete="name" required>
+					<input type="email" name="email" placeholder="E-mailadres" autocomplete="email" required>
+					<input type="tel" name="telefoon" placeholder="Telefoonnummer" autocomplete="tel">
+					<input type="text" name="product" placeholder="Welk product, en waar gekocht?">
+					<input type="text" name="bestelnummer" placeholder="Bestelnummer of datum aankoopbon">
+					<input type="text" name="website" class="pv-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+					<div class="pv-msg" role="status"></div>
+					<button class="pv-btn pv-btn-nv" type="submit">Verstuur</button>
+				</form>
+			</aside>
 		</article>
+<script>
+(function(){var f=document.getElementById('pvClaim');if(!f)return;var m=f.querySelector('.pv-msg'),b=f.querySelector('button');
+f.addEventListener('submit',function(e){e.preventDefault();m.className='pv-msg';var d={};new FormData(f).forEach(function(v,k){d[k]=v;});
+if(!d.naam||!/^\S+@\S+\.\S+$/.test(d.email||'')){m.textContent='Vul je naam en een geldig e-mailadres in.';m.className='pv-msg err';return;}
+b.disabled=true;fetch(<?php echo wp_json_encode(rest_url('thh/v1/jennah-claim')); ?>,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});}).then(function(x){
+if(x.ok){f.reset();m.textContent='Bedankt. We hebben je gegevens ontvangen en houden je op de hoogte.';m.className='pv-msg ok';}else{m.textContent=(x.j&&x.j.message)||'Er ging iets mis. Probeer het later nog eens.';m.className='pv-msg err';}}).catch(function(){m.textContent='Er ging iets mis. Probeer het later nog eens.';m.className='pv-msg err';}).then(function(){b.disabled=false;});});})();
+</script>
 
 		<article class="pv-recall" id="prime">
 			<div>
@@ -187,3 +206,35 @@ add_shortcode('thh_terugroep_v2', function () {
 <?php
 	return ob_get_clean();
 });
+
+/* Jennah-claim: gegevens van klanten opslaan en doorsturen naar klantenservice */
+add_action('rest_api_init', function () {
+	register_rest_route('thh/v1', '/jennah-claim', [
+		'methods' => 'POST',
+		'permission_callback' => '__return_true',
+		'callback' => function ($req) {
+			if (trim((string) $req->get_param('website')) !== '') return ['ok' => true];
+			$ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+			$k = 'thh_jc_' . md5($ip); $n = (int) get_transient($k);
+			if ($n >= 6) return new WP_Error('te_vaak', 'Je hebt al een paar keer iets verstuurd. Probeer het later nog eens.', ['status' => 429]);
+			set_transient($k, $n + 1, HOUR_IN_SECONDS);
+			$d = [];
+			foreach (['naam', 'email', 'telefoon', 'product', 'bestelnummer'] as $f) $d[$f] = sanitize_text_field(mb_substr((string) $req->get_param($f), 0, 200));
+			if ($d['naam'] === '' || !is_email($d['email'])) return new WP_Error('ongeldig', 'Vul je naam en een geldig e-mailadres in.', ['status' => 400]);
+			$d['tijd'] = current_time('mysql');
+			$lijst = get_option('thh_jennah_claims', []); if (!is_array($lijst)) $lijst = [];
+			$lijst[] = $d; update_option('thh_jennah_claims', $lijst, false);
+			$body = "Nieuwe aanmelding voor de Jennah Organics-claim (terugroepactie):\n\n";
+			foreach ($d as $k2 => $v) $body .= ucfirst($k2) . ': ' . $v . "\n";
+			$body .= "\nTotaal aantal aanmeldingen: " . count($lijst) . "\n";
+			wp_mail('klantenservice@thehealthhouse.nl', 'Jennah-claim: ' . $d['naam'], $body, ['Reply-To: ' . $d['naam'] . ' <' . $d['email'] . '>']);
+			return ['ok' => true];
+		},
+	]);
+	register_rest_route('thh/v1', '/jennah-claim/lijst', [
+		'methods' => 'GET',
+		'permission_callback' => function () { return current_user_can('manage_woocommerce'); },
+		'callback' => function () { $l = get_option('thh_jennah_claims', []); return is_array($l) ? $l : []; },
+	]);
+});
+
