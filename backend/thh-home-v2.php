@@ -9,24 +9,39 @@
  */
 if (!defined('ABSPATH')) return;
 
+function thh_h2_eur($v) {
+	$v = number_format((float) $v, 2, ',', '');
+	list($e, $c) = explode(',', $v);
+	return '<span class="h2-eur">' . $e . ',<sup>' . $c . '</sup></span>';
+}
+
 function thh_h2_card($p, $tag = '') {
 	if (!$p || !$p->is_visible()) return '';
 	$img = $p->get_image('woocommerce_thumbnail', ['loading' => 'lazy', 'class' => 'h2-pimg']);
-	$brand = '';
-	foreach (['product_brand', 'brands', 'pa_merk'] as $tx) { if (!taxonomy_exists($tx)) continue; $terms = wp_get_post_terms($p->get_id(), $tx, ['fields' => 'names']); if (!is_wp_error($terms) && $terms) { $brand = $terms[0]; break; } }
 	$badge = '';
-	if ($p->is_on_sale() && $p->get_regular_price() && $p->get_sale_price()) {
-		$off = round((1 - (float) $p->get_sale_price() / (float) $p->get_regular_price()) * 100);
+	$reg = $p->is_type('variable') ? (float) $p->get_variation_regular_price('min') : (float) $p->get_regular_price();
+	$now = $p->is_type('variable') ? (float) $p->get_variation_price('min') : (float) $p->get_price();
+	$sale = $p->is_on_sale() && $reg > $now && $now > 0;
+	if ($sale) {
+		$off = round((1 - $now / $reg) * 100);
 		if ($off > 0) $badge = '<span class="h2-badge">-' . $off . '%</span>';
 	} elseif ($tag) $badge = '<span class="h2-badge h2-badge-nv">' . esc_html($tag) . '</span>';
-	$btn = $p->is_type('variable') ? 'Kies je smaak' : ($p->is_in_stock() ? 'In winkelwagen' : 'Bekijk product');
-	$url = $p->is_type('variable') || !$p->is_in_stock() ? $p->get_permalink() : $p->add_to_cart_url();
-	return '<article class="h2-card">' . $badge .
-		'<a class="h2-cimg" href="' . esc_url($p->get_permalink()) . '">' . $img . '</a>' .
-		'<div class="h2-cbody">' . ($brand ? '<span class="h2-brand">' . esc_html($brand) . '</span>' : '') .
+	$vanaf = $p->is_type('variable') && (float) $p->get_variation_price('min') !== (float) $p->get_variation_price('max');
+	$price = ($vanaf ? '<span class="h2-vanaf">Vanaf</span> ' : '') . ($sale ? '<del>' . thh_h2_eur($reg) . '</del> <span class="h2-now h2-now-sale">' . thh_h2_eur($now) . '</span>' : '<span class="h2-now">' . thh_h2_eur($now) . '</span>');
+	$rating = '';
+	if ($p->get_rating_count() > 0) {
+		$r = (float) $p->get_average_rating();
+		$rating = '<div class="h2-rating"><span class="h2-stars" style="--r:' . esc_attr(round($r / 5 * 100)) . '%">★★★★★</span> ' . esc_html(number_format($r, 1, ',', '')) . ' (' . (int) $p->get_rating_count() . ')</div>';
+	}
+	$direct = !$p->is_type('variable') && $p->is_purchasable() && $p->is_in_stock();
+	$cart_url = $direct ? $p->add_to_cart_url() : $p->get_permalink();
+	$cart_lbl = $direct ? 'In winkelwagen' : 'Kies je smaak';
+	$cart = '<a class="h2-cart' . ($direct ? ' add_to_cart_button ajax_add_to_cart' : '') . '" href="' . esc_url($cart_url) . '" aria-label="' . esc_attr($cart_lbl . ': ' . $p->get_name()) . '"' . ($direct ? ' data-product_id="' . $p->get_id() . '" data-quantity="1" rel="nofollow"' : '') . '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2.6l2.4 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2L21 7H6"/></svg></a>';
+	return '<article class="h2-card">' .
+		'<div class="h2-cimg">' . $badge . $img . $cart . '</div>' .
+		'<div class="h2-cbody">' . $rating .
 		'<a class="h2-cname" href="' . esc_url($p->get_permalink()) . '">' . esc_html($p->get_name()) . '</a>' .
-		'<div class="h2-price">' . $p->get_price_html() . '</div>' .
-		'<a class="h2-cbtn" href="' . esc_url($url) . '"' . ($url === $p->add_to_cart_url() ? ' data-product_id="' . $p->get_id() . '"' : '') . '>' . $btn . '</a></div></article>';
+		'<div class="h2-price">' . $price . '</div></div></article>';
 }
 
 function thh_h2_products($args) {
@@ -205,16 +220,26 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-usps strong{font-size:14px;font-weight:600;color:var(--nv);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.h2-usps span{font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* secties */
 .h2-sec{margin-top:56px}.h2-sechead{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:20px}
-.h2 .h2-sechead h2{font-size:28px;font-weight:600;text-transform:none}.h2 .h2-band h2{text-transform:none}.h2 .h2-sechead a{font-weight:500;color:var(--nv);white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
-.h2-grid{display:grid;gap:16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.h2-card{background:#fff;border:1px solid #e6e8f0;border-radius:18px;padding:16px;position:relative;display:flex;flex-direction:column;gap:10px;transition:transform .15s,box-shadow .15s}
-.h2-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(20,32,74,.12)}
-.h2-badge{position:absolute;top:14px;left:14px;z-index:2;background:var(--rd);color:#fff;font-weight:600;font-size:12px;padding:5px 10px;border-radius:999px}.h2-badge-nv{background:var(--nv)}
-.h2-cimg{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-cimg img{max-height:88%;width:auto;max-width:88%;object-fit:contain}
-.h2-cbody{display:flex;flex-direction:column;gap:6px;flex:1}.h2-brand{font-size:12px;color:var(--mut)}
-.h2 .h2-cname{font-weight:500;color:var(--nv);font-size:15px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.h2-price{font-weight:600;font-size:18px;color:var(--nv);margin-top:auto}.h2-price del{color:#999;font-weight:400;font-size:14px;margin-right:6px}.h2-price ins{text-decoration:none}
-.h2 .h2-cbtn{display:block;text-align:center;background:var(--nv);color:#fff;font-weight:500;border-radius:999px;padding:12px;font-size:14px}.h2 .h2-cbtn:hover{background:#0d1538;color:#fff}
+.h2 .h2-sechead h2{font-size:24px;font-weight:700;letter-spacing:-.01em;text-transform:none}.h2 .h2-band h2{text-transform:none}.h2 .h2-sechead a{font-weight:500;color:var(--nv);white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+.h2-grid{display:grid;gap:20px 16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.h2-card{position:relative;display:flex;flex-direction:column;gap:10px;background:none;border:0;padding:0}
+.h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.08;background:#f5f5f6;border-radius:10px;overflow:hidden}
+.h2-cimg img{max-height:84%;width:auto;max-width:84%;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
+.h2-card:hover .h2-cimg img{transform:scale(1.04)}
+.h2-badge{position:absolute;top:12px;left:12px;z-index:3;background:var(--rd);color:#fff;font-weight:600;font-size:12px;padding:4px 9px;border-radius:999px}.h2-badge-nv{background:var(--nv)}
+.h2 .h2-cart{position:absolute;right:12px;bottom:12px;z-index:3;width:44px;height:44px;border-radius:50%;background:var(--nv);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,32,74,.18);transition:transform .15s,background .15s}
+.h2 .h2-cart:hover{transform:scale(1.07);background:#0d1538;color:#fff}.h2 .h2-cart.added::after,.h2-card .added_to_cart{display:none!important}
+.h2 .h2-cart.loading{opacity:.6}
+.h2-cbody{display:flex;flex-direction:column;gap:4px;flex:1;padding:0 2px}
+.h2 .h2-cname{font-weight:600;color:#111827;font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none}
+.h2 .h2-cname::after{content:"";position:absolute;inset:0;z-index:1}
+.h2-card:hover .h2-cname{text-decoration:underline;text-underline-offset:2px}
+.h2-rating{font-size:12px;color:#4b5563;display:flex;align-items:center;gap:4px}.h2-stars{font-size:13px;letter-spacing:1px;background:linear-gradient(90deg,#f5b301 var(--r),#d9dbe1 var(--r));-webkit-background-clip:text;background-clip:text;color:transparent}
+.h2-price{margin-top:2px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;color:#111827}
+.h2-vanaf{font-size:12px;font-weight:500;color:#a5a2a2}
+.h2-now{font-size:17px;font-weight:700}.h2-now-sale{color:var(--rd)}
+.h2-eur sup{font-size:.62em;top:-.45em;position:relative;vertical-align:baseline;margin-left:1px}
+.h2-price del{font-size:12px;color:#a5a2a2;font-weight:500}.h2-price del .h2-eur{font-size:12px}
 /* deals */
 .h2-dealgrid{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;align-items:stretch}
 .h2 .h2-deal,.h2 .h2-deal strong,.h2 .h2-deal h3{color:#fff}.h2-deal{background:var(--nv);color:#fff;border-radius:20px;padding:28px;display:grid;grid-template-columns:1fr 42%;gap:16px;position:relative;overflow:hidden;min-height:360px}
@@ -241,7 +266,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2 .h2-post{color:var(--nv)}.h2-post{display:flex;flex-direction:column;gap:12px}.h2-post img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px}
 .h2-post span{display:flex;flex-direction:column;gap:4px}.h2-post em{font-style:normal;font-size:12px;color:var(--mut)}.h2-post strong{font-size:16px;font-weight:500;color:var(--nv);line-height:1.4}
 @media(max-width:1024px){.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-usps{grid-template-columns:1fr 1fr}.h2-grid4{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-brands{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-dealgrid{grid-template-columns:1fr}.h2-band{grid-template-columns:1fr;padding:36px}.h2-hero{grid-template-columns:1fr;padding:36px 28px;min-height:0}.h2-herovis{min-height:260px}}
-@media(max-width:640px){.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:1fr 1fr}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:200px;margin:0 auto;order:-1}.h2-sechead h2{font-size:22px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2-card{padding:12px}.h2-cbtn{padding:11px;font-size:13px}}
+@media(max-width:640px){.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:1fr 1fr}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:200px;margin:0 auto;order:-1}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
 </style>
 <script>
 (function(){var t=document.querySelector('[data-h2-timer]');if(!t)return;var b=t.querySelectorAll('b');function tick(){var n=new Date(),e=new Date(n);e.setHours(23,59,59,999);var s=Math.max(0,Math.floor((e-n)/1000));b[0].textContent=('0'+Math.floor(s/3600)).slice(-2);b[1].textContent=('0'+Math.floor(s%3600/60)).slice(-2);b[2].textContent=('0'+s%60).slice(-2)}tick();setInterval(tick,1000)})();
