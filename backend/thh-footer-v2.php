@@ -69,8 +69,7 @@ add_shortcode('thh_footer_v2', function () {
 		</nav>
 		<nav class="thf2-col" aria-label="Zakelijk">
 			<h3>Zakelijk</h3>
-			<a href="https://thheurope.com/">Groothandel (THH Europe)</a>
-			<a href="https://thheurope.com/">Zakelijk account aanvragen</a>
+			<a href="<?php echo $u('/zakelijk-account/'); ?>">Zakelijk account aanvragen</a>
 			<a href="<?php echo $u('/contact/'); ?>">Samenwerken / affiliate</a>
 		</nav>
 	</section>
@@ -78,7 +77,7 @@ add_shortcode('thh_footer_v2', function () {
 	<section class="thf2-bottom">
 		<div class="thf2-legal">
 			<span>© <?php echo esc_html(gmdate('Y')); ?> The Health House Nederland · KvK 97962996</span>
-			<span>IN TE VULLEN: bezoek-/vestigingsadres</span>
+			<span>Overhoeksplein 1, 1031 KS Amsterdam</span>
 			<a href="<?php echo $u('/privacy-beleid/'); ?>">Privacybeleid</a>
 			<a href="<?php echo $u('/cookies/'); ?>">Cookies</a>
 			<a href="<?php echo $u('/faq/'); ?>">Algemene voorwaarden (pagina nog maken)</a>
