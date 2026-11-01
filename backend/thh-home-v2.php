@@ -290,3 +290,8 @@ add_shortcode('thh_home_v2', function ($a) {
 <?php
 	return ob_get_clean();
 });
+
+/* Testpagina /home-test/ (91746) is openbaar te bekijken via de link, maar niet vindbaar. */
+add_filter('wp_robots', function ($r) { if (is_page(91746)) { $r['noindex'] = true; $r['nofollow'] = true; } return $r; }, 99);
+add_filter('wpseo_robots', function ($r) { return is_page(91746) ? 'noindex, nofollow' : $r; }, 99);
+add_filter('wpseo_exclude_from_sitemap_by_post_ids', function ($ids) { $ids[] = 91746; return $ids; });
