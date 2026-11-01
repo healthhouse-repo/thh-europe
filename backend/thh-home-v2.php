@@ -68,7 +68,7 @@ function thh_h2_products($args) {
 add_shortcode('thh_home_v2', function ($a) {
 	$a = shortcode_atts([
 		'kicker' => '', 'titel' => 'ALLES VOOR', 'titel2' => 'JOUW DOEL', 'sub' => 'Eiwitten, creatine, pre-workouts en vitamines van bekende merken. Vandaag voor 22:00 besteld, binnen 2 werkdagen verzonden. Ophalen in een van onze winkels kan ook.',
-		'cta' => 'Shop de bestsellers', 'cta_url' => '/product-category/best-verkocht/', 'cta2' => 'Start de keuzehulp', 'cta2_url' => '/advies/',
+		'cta' => 'Shop de bestsellers', 'cta_url' => '/product-category/best-verkocht/', 'cta2' => 'Start de keuzehulp', 'cta2_url' => '#keuzehulp',
 		'img' => 'https://thh-outlet.vercel.app/outlet/assets/weekdeals/hero-weekdeals.png', 'thema' => 'navy',
 		'banner_mobiel' => '', 'banner' => 'https://thehealthhouse.nl/wp-content/uploads/2026/11/homepage-banner-clear-whey.webp', 'banner_url' => '/product/clear-whey-isolate/', 'banner_alt' => 'Nieuw: Clear Whey Isolate met collageen, 20% korting',
 	], $a, 'thh_home_v2');
