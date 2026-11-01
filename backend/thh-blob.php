@@ -27,7 +27,8 @@ add_action('rest_api_init', function () {
 		['methods' => 'GET', 'permission_callback' => '__return_true', 'callback' => function ($r) {
 			$k = preg_replace('/[^a-z0-9_-]/i', '', (string) $r['k']);
 			$tok = get_option('thh_blob_token');
-			if (!$tok || !hash_equals($tok, (string) $r['t'])) return new WP_Error('auth', 'geen toegang', ['status' => 403]);
+			// Sleutels die met pub_ beginnen zijn openbaar (bijv. een publieke productcatalogus van een leverancier).
+			if (strpos($k, 'pub_') !== 0 && (!$tok || !hash_equals($tok, (string) $r['t']))) return new WP_Error('auth', 'geen toegang', ['status' => 403]);
 			$d = get_option('thh_blob_' . $k);
 			if ($d === false) return new WP_Error('nf', 'niet gevonden', ['status' => 404]);
 			$resp = new WP_REST_Response(json_decode($d, true) ?? $d);
