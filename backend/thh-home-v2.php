@@ -67,10 +67,10 @@ function thh_h2_products($args) {
 
 add_shortcode('thh_home_v2', function ($a) {
 	$a = shortcode_atts([
-		'kicker' => '', 'titel' => 'ALLES VOOR', 'titel2' => 'JOUW DOEL', 'sub' => 'Eiwitten, creatine, pre-workouts en vitamines van de merken die je kent. Online besteld, morgen in huis — of haal het op in één van onze winkels.',
+		'kicker' => '', 'titel' => 'ALLES VOOR', 'titel2' => 'JOUW DOEL', 'sub' => 'Eiwitten, creatine, pre-workouts en vitamines van bekende merken. Vandaag voor 22:00 besteld, binnen 2 werkdagen verzonden. Ophalen in een van onze winkels kan ook.',
 		'cta' => 'Shop de bestsellers', 'cta_url' => '/product-category/best-verkocht/', 'cta2' => 'Start de keuzehulp', 'cta2_url' => '/advies/',
 		'img' => 'https://thh-outlet.vercel.app/outlet/assets/weekdeals/hero-weekdeals.png', 'thema' => 'navy',
-		'banner_mobiel' => '', 'banner' => 'https://thehealthhouse.nl/wp-content/uploads/2026/11/homepage-banner-clear-whey.webp', 'banner_url' => '/product/clear-whey-isolate/', 'banner_alt' => 'Nieuw: Clear Whey Isolate met collageen – 20% korting',
+		'banner_mobiel' => '', 'banner' => 'https://thehealthhouse.nl/wp-content/uploads/2026/11/homepage-banner-clear-whey.webp', 'banner_url' => '/product/clear-whey-isolate/', 'banner_alt' => 'Nieuw: Clear Whey Isolate met collageen, 20% korting',
 	], $a, 'thh_home_v2');
 	$u = function ($p) { return esc_url(strpos($p, 'http') === 0 ? $p : home_url($p)); };
 	$up = 'https://thehealthhouse.nl/wp-content/uploads/';
@@ -124,7 +124,7 @@ add_shortcode('thh_home_v2', function ($a) {
 		$week = !empty($deal['week']);
 		$deals_html .= '<a class="h2-deal" href="' . esc_url($week ? home_url('/weekdeals/') : home_url('/dagdeal/')) . '">' .
 			'<div class="h2-dealtxt"><span class="h2-pill">' . ($week ? 'Weekdeals' : 'Dagdeal van vandaag') . '</span>' .
-			'<h3>' . esc_html($week ? 'Alle dagdeals nog één keer' : $i['titel']) . '</h3>' .
+			'<h3>' . esc_html($week ? 'Alle dagdeals van deze week' : $i['titel']) . '</h3>' .
 			(!empty($i['sub']) && !$week ? '<p>' . esc_html($i['sub']) . '</p>' : '') .
 			'<div class="h2-dealprice">' . (!empty($i['van']) ? '<s>' . esc_html(str_replace('.', ',', $i['van'])) . '</s> ' : '') . '<strong>' . esc_html(str_replace('.', ',', $i['voor'] ?? '')) . '</strong>' . (!empty($i['off']) ? '<span class="h2-badge">-' . esc_html($i['off']) . '%</span>' : '') . '</div>' .
 			'<div class="h2-timer" data-h2-timer><span><b>00</b><small>uur</small></span><span><b>00</b><small>min</small></span><span><b>00</b><small>sec</small></span></div>' .
@@ -181,7 +181,7 @@ add_shortcode('thh_home_v2', function ($a) {
 			<h1><?php echo esc_html($a['titel']); ?><br><em><?php echo esc_html($a['titel2']); ?></em></h1>
 			<p><?php echo esc_html($a['sub']); ?></p>
 			<div class="h2-ctas"><a class="h2-btn h2-btn-red" href="<?php echo $u($a['cta_url']); ?>"><?php echo esc_html($a['cta']); ?></a><?php if ($a['cta2']) : ?><a class="h2-btn h2-btn-ghost" href="<?php echo $u($a['cta2_url']); ?>"><?php echo esc_html($a['cta2']); ?></a><?php endif; ?></div>
-			<div class="h2-herousp"><span>★ Klanten geven ons 9,3 / 10</span><span>Gratis verzending vanaf € 60 (NL)</span></div>
+			<div class="h2-herousp"><span>★ Klanten geven ons een 9,3</span><span>Gratis verzending vanaf € 60 (NL)</span></div>
 		</div>
 		<div class="h2-herovis"><?php echo $hero_img; ?></div>
 	</section>
@@ -208,18 +208,18 @@ add_shortcode('thh_home_v2', function ($a) {
 	</section>
 
 	<section class="h2-usps">
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg><strong>Gratis verzending vanaf € 60</strong><span>Voor 16:00 besteld, snel in huis</span></div>
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><strong>Winkels in heel Nederland</strong><span>Online bestellen, gratis ophalen</span></div>
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 21l1.9-5.4A8 8 0 1121 12z"/></svg><strong>Persoonlijk advies</strong><span>Via WhatsApp, chat of in de winkel</span></div>
-		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.6 6.8L12 16.9 5.8 20.4l1.6-6.8L2.2 9l6.9-.7z"/></svg><strong>Spaar punten bij elke bestelling</strong><span>Gratis lid van de THH Club</span></div>
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg><strong>Voor 22:00 besteld</strong><span>Binnen 2 werkdagen verzonden</span></div>
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><strong>Gratis verzending</strong><span>Bij bestellingen vanaf € 60</span></div>
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 21l1.9-5.4A8 8 0 1121 12z"/></svg><strong>Advies nodig?</strong><span>Stuur ons een WhatsApp</span></div>
+		<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.6 6.8L12 16.9 5.8 20.4l1.6-6.8L2.2 9l6.9-.7z"/></svg><strong>Spaar punten</strong><span>Bij elke bestelling, ook in de winkel</span></div>
 	</section>
 
 	<section class="h2-band">
-		<div class="h2-bandtxt"><span class="h2-kicker">Meer dan een webshop</span><h2>Echte winkels, eerlijk advies, <em>geen onzin</em></h2><p>Van één winkel naar winkels door heel Nederland en een webshop met ruim 1.800 producten. Onze specialisten denken met je mee — online of in de winkel. Advies dat past bij jouw doel, je niveau en je budget.</p><div class="h2-ctas"><a class="h2-btn h2-btn-red" href="<?php echo $u('/advies/'); ?>">Gratis advies</a><a class="h2-btn h2-btn-ghost" href="<?php echo $u('/locaties/'); ?>">Vind een winkel</a></div></div>
+		<div class="h2-bandtxt"><span class="h2-kicker">Onze winkels</span><h2>Liever even <em>langskomen?</em></h2><p>We hebben winkels in Amsterdam, Hoofddorp, Heerhugowaard en Uithoorn. Loop binnen voor advies of om je bestelling op te halen. Vragen kun je ook gewoon via WhatsApp stellen.</p><div class="h2-ctas"><a class="h2-btn h2-btn-red" href="<?php echo $u('/advies/'); ?>">Vraag advies</a><a class="h2-btn h2-btn-ghost" href="<?php echo $u('/locaties/'); ?>">Vind een winkel</a></div></div>
 		<div class="h2-bandcards">
 			<a href="<?php echo $u('/locaties/'); ?>"><strong>Zoek een winkel</strong><span>Amsterdam, Hoofddorp, Heerhugowaard, Uithoorn en binnenkort Halfweg (outlet)</span></a>
-			<a href="<?php echo $u('/loyalty/'); ?>" data-thh-loyalty><strong>Meld je aan voor The Health House Loyalty</strong><span>Voor elke € 10 een punt. 10 punten = € 5 korting</span></a>
-			<a href="<?php echo $u('/gratis-tools/'); ?>"><strong>Gratis tools</strong><span>Caloriebehoefte, eiwitbehoefte en meer</span></a>
+			<a href="<?php echo $u('/loyalty/'); ?>" data-thh-loyalty><strong>Meld je aan voor The Health House Loyalty</strong><span>Voor elke € 10 krijg je een punt. 10 punten is € 5 korting.</span></a>
+			<a href="<?php echo $u('/gratis-tools/'); ?>"><strong>Gratis tools</strong><span>Bereken je calorie- en eiwitbehoefte</span></a>
 		</div>
 	</section>
 
