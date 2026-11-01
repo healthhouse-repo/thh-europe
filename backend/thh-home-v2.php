@@ -128,7 +128,7 @@ add_shortcode('thh_home_v2', function ($a) {
 			$fid = !empty($ddl[0][0]) ? (int) reset($ddl[0][0]) : 0;
 			$pid = $fid ? ((int) wp_get_post_parent_id($fid) ?: $fid) : 0;
 			if ($pid) {
-				$ck = 'thh_ddcut3_' . $pid;
+				$ck = 'thh_ddcut4_' . $pid;
 				$cu = get_transient($ck);
 				if ($cu === false) { $att = get_page_by_path('dagdeal-cutout-' . $pid, OBJECT, 'attachment'); $cu = $att ? (string) wp_get_attachment_url($att->ID) : ''; set_transient($ck, $cu, 10 * MINUTE_IN_SECONDS); }
 				if ($cu) { $i['img'] = $cu; }
