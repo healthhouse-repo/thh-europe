@@ -251,7 +251,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-grid{display:grid;gap:20px 16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .h2-card{position:relative;display:flex;flex-direction:column;gap:10px;background:none;border:0;padding:0}
 .h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.22;background:#f5f5f6;border-radius:10px;overflow:hidden}
-.h2-cimg img{max-height:80%;width:auto;max-width:82%;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
+.h2-cimg img{width:82%;height:80%;max-width:none;max-height:none;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
 .h2-card:hover .h2-cimg img{transform:scale(1.04)}
 .h2-badge{position:absolute;top:12px;left:12px;z-index:3;background:var(--rd);color:#fff;font-weight:600;font-size:12px;padding:4px 9px;border-radius:999px}.h2-badge-nv{background:var(--nv)}
 .h2 .h2-cart{position:absolute;right:12px;bottom:12px;z-index:3;width:44px;height:44px;border-radius:50%;background:var(--nv);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,32,74,.18);transition:transform .15s,background .15s}
@@ -301,22 +301,27 @@ add_shortcode('thh_home_v2', function ($a) {
 	/* Maakt de (bijna) witte achtergrond van productfoto's transparant, alleen vanaf de rand (flood fill),
 	   zodat het grijze tegelvlak overal egaal is - ook op iOS/Safari waar mix-blend-mode + filter niet samengaan. */
 	function bg(d,i){var r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];if(a<10)return true;var mn=Math.min(r,g,b),mx=Math.max(r,g,b);return mn>=222&&mx-mn<=14;}
+	function biggest(img){ var best=img.currentSrc||img.src, bw=0; (img.getAttribute('srcset')||'').split(',').forEach(function(c){ var p=c.trim().split(/\s+/); var w=parseInt(p[1])||0; if(p[0]&&w>bw&&w<=1200){bw=w;best=p[0];} }); return best; }
 	function cut(img){
 		if(img.dataset.cut)return; img.dataset.cut='1';
-		try{
-			var w=img.naturalWidth,h=img.naturalHeight; if(!w||!h)return;
-			var sc=Math.min(1,600/Math.max(w,h)); w=Math.round(w*sc); h=Math.round(h*sc);
-			var c=document.createElement('canvas'); c.width=w; c.height=h;
-			var x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(img,0,0,w,h);
-			var im=x.getImageData(0,0,w,h), d=im.data, seen=new Uint8Array(w*h), st=[], n=0;
-			for(var i=0;i<w;i++){st.push(i,(h-1)*w+i);} for(var j=0;j<h;j++){st.push(j*w,j*w+w-1);}
-			while(st.length){var p=st.pop(); if(seen[p])continue; seen[p]=1; var k=p*4; if(!bg(d,k))continue;
-				var m=Math.min(d[k],d[k+1],d[k+2]); d[k+3]=m>=240?0:Math.round(d[k+3]*(240-m)/18); n++;
-				var px=p%w; if(px>0)st.push(p-1); if(px<w-1)st.push(p+1); if(p>=w)st.push(p-w); if(p<w*(h-1))st.push(p+w);}
-			if(n<w*h*0.03)return; // geen (witte) achtergrond gevonden
-			x.putImageData(im,0,0);
-			var u=c.toDataURL('image/png'); img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src=u;
-		}catch(e){}
+		var src=new Image(); src.decoding='async';
+		src.onload=function(){
+			try{
+				var w=src.naturalWidth,h=src.naturalHeight; if(!w||!h)return;
+				var sc=Math.min(1,800/Math.max(w,h)); w=Math.round(w*sc); h=Math.round(h*sc);
+				var c=document.createElement('canvas'); c.width=w; c.height=h;
+				var x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(src,0,0,w,h);
+				var im=x.getImageData(0,0,w,h), d=im.data, seen=new Uint8Array(w*h), st=[], n=0;
+				for(var i=0;i<w;i++){st.push(i,(h-1)*w+i);} for(var j=0;j<h;j++){st.push(j*w,j*w+w-1);}
+				while(st.length){var p=st.pop(); if(seen[p])continue; seen[p]=1; var k=p*4; if(!bg(d,k))continue;
+					var m=Math.min(d[k],d[k+1],d[k+2]); d[k+3]=m>=240?0:Math.round(d[k+3]*(240-m)/18); n++;
+					var px=p%w; if(px>0)st.push(p-1); if(px<w-1)st.push(p+1); if(p>=w)st.push(p-w); if(p<w*(h-1))st.push(p+w);}
+				if(n<w*h*0.03)return;
+				x.putImageData(im,0,0);
+				img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src=c.toDataURL('image/png');
+			}catch(e){}
+		};
+		src.src=biggest(img);
 	}
 	function run(img){ if(img.complete&&img.naturalWidth)cut(img); else img.addEventListener('load',function(){cut(img);},{once:true}); }
 	function all(){ document.querySelectorAll('.h2-cimg img').forEach(run); }
