@@ -134,7 +134,12 @@ add_shortcode('thh_home_v2', function ($a) {
 	$wk = thh_h2_products(['category' => ['week-deals'], 'limit' => 4, 'orderby' => 'popularity']);
 	if (count($wk) < 4) $wk = thh_h2_products(['limit' => 4, 'orderby' => 'popularity', 'on_sale' => true]);
 	$wk_html = '';
-	$wk = array_values($wk);
+	// vaste deal vooraan: THH Platinum Whey (i.p.v. Test Boost)
+	$fix = wc_get_product(45196);
+	$wk = array_values(array_filter($wk, function ($p) { return $p->get_id() !== 45196 && !preg_match('/test(osterone)? ?boost/i', $p->get_name()); }));
+	if ($fix && $fix->is_visible() && $fix->is_in_stock()) array_unshift($wk, $fix);
+	if (count($wk) < 4) { foreach (thh_h2_products(['limit' => 8, 'orderby' => 'popularity', 'on_sale' => true]) as $x) { if (count($wk) >= 4) break; $ids = array_map(function ($p) { return $p->get_id(); }, $wk); if (!in_array($x->get_id(), $ids, true) && !preg_match('/test(osterone)? ?boost/i', $x->get_name())) $wk[] = $x; } }
+	$wk = array_slice($wk, 0, 4);
 	foreach ($wk as $i => $p) { $c = thh_h2_card($p, 'Deal'); if ($i === 3) $c = str_replace('<article class="h2-card">', '<article class="h2-card h2-only-mob">', $c); $wk_html .= $c; }
 
 	$best_html = '';
