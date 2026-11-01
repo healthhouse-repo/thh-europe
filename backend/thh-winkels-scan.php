@@ -56,7 +56,13 @@ add_action('rest_api_init', function () {
 		$tax = taxonomy_exists('product_brand') ? 'product_brand' : 'brands';
 		$ids = get_posts(['post_type' => 'product', 'post_status' => ['publish', 'draft', 'private'], 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => $meta]);
 		$n = 0;
-		foreach ($ids as $id) { if ($term) wp_set_object_terms($id, [$term], $tax, false); $n++; }
+		foreach ($ids as $id) {
+			if ($term) wp_set_object_terms($id, [$term], $tax, false);
+			// primaire categorie (Yoast) = eerste categorie die niet 'nieuw' is
+			$cats = wp_get_post_terms($id, 'product_cat', ['fields' => 'all']);
+			if (!is_wp_error($cats)) foreach ($cats as $c) { if ($c->slug !== 'nieuw') { update_post_meta($id, '_yoast_wpseo_primary_product_cat', $c->term_id); break; } }
+			$n++;
+		}
 		return ['products' => count($ids), 'set' => $n, 'tax' => $tax];
 	}]);
 });
