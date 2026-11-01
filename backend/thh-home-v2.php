@@ -111,10 +111,11 @@ add_shortcode('thh_home_v2', function ($a) {
 			'<span class="h2-btn h2-btn-red">Pak de deal</span></div>' .
 			(!empty($i['img']) ? '<img class="h2-dealimg" src="' . esc_url($i['img']) . '" alt="" loading="lazy">' : '') . '</a>';
 	}
-	$wk = thh_h2_products(['category' => ['week-deals'], 'limit' => 3, 'orderby' => 'popularity']);
-	if (count($wk) < 3) $wk = thh_h2_products(['limit' => 3, 'orderby' => 'popularity', 'on_sale' => true]);
+	$wk = thh_h2_products(['category' => ['week-deals'], 'limit' => 4, 'orderby' => 'popularity']);
+	if (count($wk) < 4) $wk = thh_h2_products(['limit' => 4, 'orderby' => 'popularity', 'on_sale' => true]);
 	$wk_html = '';
-	foreach ($wk as $p) $wk_html .= thh_h2_card($p, 'Deal');
+	$wk = array_values($wk);
+	foreach ($wk as $i => $p) { $c = thh_h2_card($p, 'Deal'); if ($i === 3) $c = str_replace('<article class="h2-card">', '<article class="h2-card h2-only-mob">', $c); $wk_html .= $c; }
 
 	$best_html = '';
 	foreach (thh_h2_products(['limit' => 8, 'orderby' => 'meta_value_num', 'meta_key' => 'total_sales', 'order' => 'DESC']) as $p) $best_html .= thh_h2_card($p);
@@ -254,7 +255,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-vanaf{font-size:12px;font-weight:500;color:#a5a2a2}
 .h2-now{font-size:17px;font-weight:700}.h2-now-sale{color:var(--rd)}
 .h2-eur sup{font-size:.62em;top:-.45em;position:relative;vertical-align:baseline;margin-left:1px}
-.h2-dealgrid .h2-grid3{align-items:stretch}.h2-dealgrid .h2-card{height:100%}.h2-dealgrid .h2-cimg{aspect-ratio:auto;flex:1;min-height:380px}.h2-dealgrid .h2-cbody{flex:0 0 auto;min-height:62px}
+.h2-dealgrid .h2-grid3{align-items:stretch}.h2-only-mob{display:none!important}.h2-dealgrid .h2-card{height:100%}.h2-dealgrid .h2-cimg{aspect-ratio:auto;flex:1;min-height:380px}.h2-dealgrid .h2-cbody{flex:0 0 auto;min-height:62px}
 .h2-price del{font-size:12px;color:#a5a2a2;font-weight:500}.h2-price del .h2-eur{font-size:12px}
 /* deals */
 .h2-dealgrid{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;align-items:stretch}
@@ -282,7 +283,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2 .h2-post{color:var(--nv)}.h2-post{display:flex;flex-direction:column;gap:12px}.h2-post img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px}
 .h2-post span{display:flex;flex-direction:column;gap:4px}.h2-post em{font-style:normal;font-size:12px;color:var(--mut)}.h2-post strong{font-size:16px;font-weight:500;color:var(--nv);line-height:1.4}
 @media(max-width:1024px){.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-usps{grid-template-columns:1fr 1fr}.h2-grid4{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-brands{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-dealgrid{grid-template-columns:1fr}.h2-band{grid-template-columns:1fr;padding:36px}.h2-hero{grid-template-columns:1fr;padding:36px 28px;min-height:0}.h2-herovis{min-height:260px}}
-@media(max-width:640px){.h2-dealgrid .h2-cimg{min-height:0;aspect-ratio:1/1.22}.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:1fr 1fr}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:200px;margin:0 auto;order:-1}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
+@media(max-width:640px){.h2-only-mob{display:flex!important}.h2-dealgrid .h2-cimg{min-height:0;aspect-ratio:1/1.22}.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:1fr 1fr}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:200px;margin:0 auto;order:-1}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
 </style>
 <script>
 (function(){var t=document.querySelector('[data-h2-timer]');if(!t)return;var b=t.querySelectorAll('b');function tick(){var n=new Date(),e=new Date(n);e.setHours(23,59,59,999);var s=Math.max(0,Math.floor((e-n)/1000));b[0].textContent=('0'+Math.floor(s/3600)).slice(-2);b[1].textContent=('0'+Math.floor(s%3600/60)).slice(-2);b[2].textContent=('0'+s%60).slice(-2)}tick();setInterval(tick,1000)})();
