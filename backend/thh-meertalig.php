@@ -109,6 +109,19 @@ function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$m
 		}
 		$is_ogurl = preg_match('~^<meta\b[^>]*\bproperty="og:url"~i', $tag);
 		$attrs = $is_ogurl ? 'content' : '(?:href|action)';
+		// Links in data-attributen (bijv. Elementor "hele kolom is een link"), ook JSON-geëscaped.
+		if (stripos($tag, ' data-') !== false && stripos($tag, $host) !== false) {
+			$tag = preg_replace_callback('~(\sdata-[\w-]+=")([^"]*)"~i', function ($a) use ($lang, $host) {
+				if (stripos($a[2], $host) === false) return $a[0];
+				$v = preg_replace_callback('~(https?:(?:\\\\)?/(?:\\\\)?/' . preg_quote($host, '~') . ')((?:\\\\)?/)([^"&\s,}\]]*)~i', function ($m) use ($lang) {
+					$path = str_replace('\\/', '/', $m[3]);
+					if (preg_match('~^(wp-admin|wp-json|wp-content|wp-includes|wp-login|xmlrpc|feed|pos|wcpos|de|en)(/|$|\?)~i', $path)) return $m[0];
+					if (preg_match('~\.(jpe?g|png|webp|avif|gif|svg|ico|pdf|xml|css|js|txt|zip|mp4|woff2?)($|\?)~i', $path)) return $m[0];
+					return $m[1] . $m[2] . $lang . $m[2] . $m[3];
+				}, $a[2]);
+				return $v === null ? $a[0] : $a[1] . $v . '"';
+			}, $tag) ?? $tag;
+		}
 		return preg_replace_callback('~\s(' . $attrs . ')="([^"]*)"~i', function ($m) use ($lang, $host) {
 			$dec = html_entity_decode($m[2], ENT_QUOTES, 'UTF-8');
 			$new = thh_i18n_url($dec, $lang, $host);
@@ -154,12 +167,11 @@ function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$m
 			}
 		}
 	}
-	if ($js) {
-		$payload = wp_json_encode($js, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP);
-		$script = '<script id="thh-i18n-js">(function(){var M=' . $payload . ';function n(s){return s.replace(/\\s+/g," ").trim()}function t(el){var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null),x;while(x=w.nextNode()){var p=x.parentNode;if(!p||/^(SCRIPT|STYLE|TEXTAREA)$/.test(p.nodeName))continue;var k=n(x.nodeValue);if(k&&M.hasOwnProperty(k)){var m=x.nodeValue.match(/^\\s*/)[0],e=x.nodeValue.match(/\\s*$/)[0];x.nodeValue=m+M[k]+e}}if(el.querySelectorAll)el.querySelectorAll("[placeholder],[aria-label],input[type=submit],button[value]").forEach(function(a){["placeholder","aria-label","value"].forEach(function(b){var v=a.getAttribute(b);if(v&&M.hasOwnProperty(n(v)))a.setAttribute(b,M[n(v)])})})}function r(){t(document.body)}if(document.readyState!=="loading")r();else document.addEventListener("DOMContentLoaded",r);var q=0,Q=[];new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(a){Q.push(a)})});if(q)return;q=1;requestAnimationFrame(function(){q=0;var L=Q;Q=[];L.forEach(function(a){if(a.nodeType===1)t(a);else if(a.nodeType===3&&a.parentNode)t(a.parentNode)})})}).observe(document.documentElement,{childList:true,subtree:true})})();</script>';
-		$pos = strripos($out, '</body>');
-		$out = $pos === false ? $out . $script : substr_replace($out, $script, $pos, 0);
-	}
+	// Altijd: vertaalkaart voor JS-teksten + links die pas in de browser ontstaan in de taal houden.
+	$payload = $js ? wp_json_encode($js, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) : '{}';
+	$script = '<script id="thh-i18n-js">(function(){var M=' . $payload . ',LG="' . $lang . '",HO=location.host,EX=/^\/(wp-admin|wp-json|wp-content|wp-includes|wp-login\.php|xmlrpc\.php|wp-cron\.php|feed|pos|wcpos|de|en)(\/|$)/i,FE=/\.(jpe?g|png|webp|avif|gif|svg|ico|pdf|xml|css|js|txt|zip|mp4|woff2?)$/i;function n(s){return s.replace(/\s+/g," ").trim()}function fx(a){if(!a||!a.getAttribute||a.hasAttribute("data-thh-nolang"))return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#"||/^(mailto|tel|javascript):/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(e){return}if(u.host!==HO||EX.test(u.pathname)||FE.test(u.pathname)||/wc-ajax|add-to-cart/.test(u.search))return;u.pathname="/"+LG+u.pathname;a.setAttribute("href",u.toString())}function t(el){if(el.nodeName==="A")fx(el);if(el.querySelectorAll)el.querySelectorAll("a[href]").forEach(fx);var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null),x;while(x=w.nextNode()){var p=x.parentNode;if(!p||/^(SCRIPT|STYLE|TEXTAREA)$/.test(p.nodeName))continue;var k=n(x.nodeValue);if(k&&M.hasOwnProperty(k)){var m=x.nodeValue.match(/^\s*/)[0],e=x.nodeValue.match(/\s*$/)[0];x.nodeValue=m+M[k]+e}}if(el.querySelectorAll)el.querySelectorAll("[placeholder],[aria-label],input[type=submit],button[value]").forEach(function(a){["placeholder","aria-label","value"].forEach(function(b){var v=a.getAttribute(b);if(v&&M.hasOwnProperty(n(v)))a.setAttribute(b,M[n(v)])})})}document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a)fx(a)},true);function r(){t(document.body)}if(document.readyState!=="loading")r();else document.addEventListener("DOMContentLoaded",r);var q=0,Q=[];new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(a){Q.push(a)})});if(q)return;q=1;requestAnimationFrame(function(){q=0;var L=Q;Q=[];L.forEach(function(a){if(a.nodeType===1)t(a);else if(a.nodeType===3&&a.parentNode)t(a.parentNode)})})}).observe(document.documentElement,{childList:true,subtree:true})})();</script>';
+	$pos = strripos($out, '</body>');
+	$out = $pos === false ? $out . $script : substr_replace($out, $script, $pos, 0);
 	$L = THH_I18N_LANGS[$lang];
 	$out = preg_replace('~(<html\b[^>]*\blang=")[^"]*"~i', '${1}' . $L[0] . '"', $out, 1);
 	$out = preg_replace('~(<meta\b[^>]*property="og:locale"[^>]*content=")[^"]*"~i', '${1}' . $L[1] . '"', $out, 1);
