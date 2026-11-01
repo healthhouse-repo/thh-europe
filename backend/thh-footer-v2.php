@@ -102,7 +102,7 @@ add_shortcode('thh_footer_v2', function () {
 .thf2-help-list a{display:grid;grid-template-columns:28px 110px 1fr 20px;align-items:center;gap:8px;padding:16px 0;color:var(--nv)}
 .thf2-arr{text-align:right}
 .thf2-main{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:32px;max-width:1200px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--ln)}
-.thf2-news p{margin:0 0 14px;line-height:1.5}.thf2-form{display:flex;flex-direction:column;gap:10px}
+.thf2-news,.thf2-news p,.thf2-news strong{color:#fff!important}.thf2-news p{margin:0 0 14px;line-height:1.5}.thf2-col h3{font-size:15px!important;letter-spacing:.02em}.thf2-form{display:flex;flex-direction:column;gap:10px}
 .thf2-form input{border:0;border-radius:999px;padding:16px 22px;font-size:15px;color:#111}
 .thf2-form button{border:0;border-radius:999px;padding:16px;background:var(--rd);color:#fff;font-weight:700;cursor:pointer}
 .thf2-note{font-size:12px;opacity:.6;margin-top:8px!important}
