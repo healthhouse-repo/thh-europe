@@ -7,10 +7,16 @@
 if (!defined('ABSPATH')) return;
 add_action('rest_api_init', function () {
 	register_rest_route('thh/v1', '/blob', [
-		['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function ($r) {
-			$k = preg_replace('/[^a-z0-9_-]/i', '', (string) $r['k']);
+		['methods' => 'POST', 'permission_callback' => '__return_true', 'callback' => function ($r) {
+			// Ook bruikbaar vanaf een andere site (no-cors, text/plain) met het token in de body.
+			$p = $r->get_json_params();
+			if (!$p) { $p = json_decode((string) $r->get_body(), true) ?: []; }
+			$tok = get_option('thh_blob_token');
+			$ok = current_user_can('manage_options') || ($tok && isset($p['t']) && hash_equals($tok, (string) $p['t']));
+			if (!$ok) return new WP_Error('auth', 'geen toegang', ['status' => 403]);
+			$k = preg_replace('/[^a-z0-9_-]/i', '', (string) ($p['k'] ?? $r['k']));
 			if (!$k) return new WP_Error('k', 'k ontbreekt', ['status' => 400]);
-			$data = $r['data'];
+			$data = $p['data'] ?? $r['data'];
 			if (!is_string($data)) $data = wp_json_encode($data);
 			if (strlen($data) > 20000000) return new WP_Error('size', 'te groot', ['status' => 413]);
 			update_option('thh_blob_' . $k, $data, false);
