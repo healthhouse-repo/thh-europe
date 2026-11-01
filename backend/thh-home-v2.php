@@ -91,10 +91,29 @@ add_shortcode('thh_home_v2', function ($a) {
 		['Vitamines', 'vitamines'], ['Afvallen', 'fatburners'], ['Vechtsport', 'fightgear'], ['Shakers', 'accessoires-shakers'],
 	];
 	$cat_html = '';
+	$catimg = get_transient('thh_h2_catimg_v1');
+	if (!is_array($catimg)) {
+		$catimg = [];
+		$over = (array) get_option('thh_h2_cat_img', []); // handmatig: [slug => product-id]
+		foreach ($cats as [$name, $slug]) {
+			$pick = null;
+			if (!empty($over[$slug])) $pick = wc_get_product((int) $over[$slug]);
+			if (!$pick) {
+				$ps = wc_get_products(['status' => 'publish', 'category' => [$slug], 'stock_status' => 'instock', 'limit' => 12, 'orderby' => 'meta_value_num', 'meta_key' => 'total_sales', 'order' => 'DESC', 'return' => 'objects']);
+				$ps = array_values(array_filter($ps, function ($p) { return $p->get_image_id() && !preg_match('/sample|bundel|bundle|pakket|cadeau/i', $p->get_name()); }));
+				foreach ($ps as $p) { if (has_term('the-health-house', 'product_brand', $p->get_id())) { $pick = $p; break; } }
+				if (!$pick && $ps) $pick = $ps[0];
+			}
+			$catimg[$slug] = $pick ? (int) $pick->get_image_id() : 0;
+		}
+		set_transient('thh_h2_catimg_v1', $catimg, 12 * HOUR_IN_SECONDS);
+	}
 	foreach ($cats as [$name, $slug]) {
 		$t = get_term_by('slug', $slug, 'product_cat');
 		if (!$t) continue;
-		$cat_html .= '<a class="h2-cat" href="' . esc_url(get_term_link($t)) . '"><span class="h2-catico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $ico[$slug] . '</svg></span><span class="h2-catname">' . esc_html($name) . '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></a>';
+		$img = !empty($catimg[$slug]) ? wp_get_attachment_image($catimg[$slug], 'woocommerce_thumbnail', false, ['loading' => 'lazy', 'alt' => '', 'class' => 'h2-catimg']) : '';
+		if (!$img) $img = '<span class="h2-catico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $ico[$slug] . '</svg></span>';
+		$cat_html .= '<a class="h2-cat" href="' . esc_url(get_term_link($t)) . '"><span class="h2-catpic">' . $img . '</span><span class="h2-catname">' . esc_html($name) . '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></a>';
 	}
 
 	$deal = function_exists('thh_ddp_data') ? thh_ddp_data() : null;
@@ -226,10 +245,10 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-heroimg{width:100%;max-height:460px;object-fit:contain;filter:drop-shadow(0 30px 40px rgba(0,0,0,.45))}
 /* categorie-tegels */
 .h2-cats{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px;margin-top:16px}
-.h2 .h2-cat{color:var(--nv);background:#fff;border:1px solid #e6e8f0;border-radius:16px;padding:18px 14px 14px;display:flex;flex-direction:column;gap:14px;align-items:flex-start;transition:transform .15s,box-shadow .15s}
-.h2-cat:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(20,32,74,.12)}
+.h2 .h2-cat{color:#111827;background:#f5f5f6;border:0;border-radius:10px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-decoration:none;transition:background .15s}
+.h2 .h2-cat:hover{background:#ececee}.h2-catpic{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-catimg{max-width:82%;max-height:82%;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transition:transform .25s}.h2-cat:hover .h2-catimg{transform:scale(1.05)}
 .h2-catico{width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--nv)}.h2-catico svg{width:24px;height:24px}
-.h2-catname{display:flex;justify-content:space-between;align-items:center;width:100%;font-weight:500;font-size:14px;color:var(--nv)}.h2-catname svg{color:var(--mut)}
+.h2-catname{display:flex;justify-content:space-between;align-items:center;width:100%;font-weight:600;font-size:16px;color:#111827;padding:0 4px;line-height:1.2}.h2-catname svg{color:#111827;flex:none}
 /* usp */
 .h2-usps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:48px;background:var(--bg);border-radius:18px;padding:18px 22px}
 .h2-usps div{display:grid;grid-template-columns:30px 1fr;grid-template-rows:22px 20px;column-gap:12px;align-items:center}.h2-usps svg{width:26px;height:26px;grid-row:1/3;color:var(--rd)}
