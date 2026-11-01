@@ -159,105 +159,134 @@ add_action('wp_footer', function () {
 	?>
 	<div class="tkh-ov" id="tkhOv" hidden>
 		<div class="tkh-modal" role="dialog" aria-modal="true" aria-labelledby="tkhTitle">
-			<div class="tkh-top">
-				<button type="button" class="tkh-back" aria-label="Vorige vraag" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-				<span class="tkh-brand">Keuzehulp</span>
-				<button type="button" class="tkh-x" aria-label="Sluiten">&times;</button>
+			<div class="tkh-head">
+				<div class="tkh-top">
+					<button type="button" class="tkh-back" aria-label="Vorige vraag" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+					<span class="tkh-brand"><b>Keuzehulp</b><span class="tkh-step" id="tkhStep"></span></span>
+					<button type="button" class="tkh-x" aria-label="Sluiten">&times;</button>
+				</div>
+				<div class="tkh-bar"><span></span></div>
 			</div>
-			<div class="tkh-bar"><span></span></div>
 			<div class="tkh-body" id="tkhBody"></div>
 		</div>
 	</div>
 	<style>
-	.tkh-ov{position:fixed;inset:0;z-index:100060;background:rgba(10,16,40,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+	#tkhOv{--nv:#14204A;--nv2:#1d2b5e;--rd:#E63946;--bd:#e6e8ef;--mut:#6b7280;--bg:#f5f6f9}
+	.tkh-ov{position:fixed;inset:0;z-index:100060;background:rgba(10,16,40,.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:16px}
 	.tkh-ov[hidden]{display:none}
-	.tkh-modal{position:relative;width:100%;max-width:680px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.25);color:#111827;overflow:hidden}
-	.tkh-top{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
-	.tkh-brand{flex:1;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#E63946}
-	.tkh-x,.tkh-back{width:36px;height:36px;border:0;background:#f3f4f6;border-radius:50%;font-size:22px;line-height:1;cursor:pointer;color:#14204A;display:grid;place-items:center;padding:0}
+	.tkh-modal{position:relative;width:100%;max-width:720px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:#fff;border-radius:22px;box-shadow:0 30px 80px rgba(8,14,40,.35);color:#111827;overflow:hidden;animation:tkhIn .22s ease-out}
+	@keyframes tkhIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+	.tkh-head{background:var(--nv);color:#fff;padding:14px 18px 16px}
+	.tkh-top{display:flex;align-items:center;gap:10px}
+	.tkh-brand{flex:1;display:flex;align-items:baseline;gap:10px}
+	.tkh-brand b{font-size:15px;font-weight:700;letter-spacing:.02em}
+	.tkh-step{font-size:12.5px;color:rgba(255,255,255,.7)}
+	.tkh-x,.tkh-back{width:36px;height:36px;border:0;border-radius:50%;font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
 	.tkh-back[hidden]{display:none}
-	.tkh-bar{height:4px;background:#eef0f4;margin:0 16px;border-radius:4px;overflow:hidden}.tkh-bar span{display:block;height:100%;width:0;background:#14204A;transition:width .3s}
-	.tkh-body{padding:18px 24px 24px;overflow:auto}
-	.tkh-q{font-size:24px;font-weight:700;color:#14204A;margin:4px 0 6px;line-height:1.25;letter-spacing:-.01em;text-transform:none}
-	.tkh-sub{margin:0 0 18px;color:#6b7280;font-size:14px}
-	.tkh-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-	.tkh-opt{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px;border:1.5px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer;font:inherit;color:#111827;transition:border-color .15s,background .15s}
-	.tkh-opt:hover{border-color:#14204A;background:#f8f9fc}
-	.tkh-opt.is-on{border-color:#14204A;background:#14204A;color:#fff}
-	.tkh-ico{font-size:22px;line-height:1;flex:none}
-	.tkh-opt strong{display:block;font-size:15px;font-weight:600}
-	.tkh-opt small{display:block;font-size:12.5px;color:#6b7280;margin-top:2px}
-	.tkh-opt.is-on small{color:rgba(255,255,255,.75)}
-	.tkh-intro{background:#f5f5f6;border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.5;margin:0 0 18px;color:#374151}
-	.tkh-sec{margin:0 0 20px}
-	.tkh-sec h3{font-size:17px;font-weight:700;color:#14204A;margin:0 0 4px;text-transform:none}
-	.tkh-sec p{font-size:13.5px;color:#4b5563;margin:0 0 10px;line-height:1.5}
-	.tkh-prods{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-	.tkh-card{position:relative;display:flex;gap:12px;align-items:center;border:1.5px solid #eef0f4;border-radius:12px;padding:10px;text-decoration:none;color:#111827}
-	.tkh-card.is-top{border-color:#14204A}
-	.tkh-tag{position:absolute;top:-9px;left:10px;background:#14204A;color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px}
+	.tkh-bar{height:5px;background:rgba(255,255,255,.18);margin-top:12px;border-radius:5px;overflow:hidden}.tkh-bar span{display:block;height:100%;width:0;background:var(--rd);border-radius:5px;transition:width .35s ease}
+	.tkh-body{padding:24px 26px 26px;overflow:auto}
+	.tkh-q{font-size:26px;font-weight:700;color:var(--nv);margin:0 0 6px;line-height:1.2;letter-spacing:-.015em;text-transform:none}
+	.tkh-sub{margin:0 0 20px;color:var(--mut);font-size:14.5px}
+	.tkh-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+	.tkh-opts.is-3{grid-template-columns:repeat(3,1fr)}
+	.tkh-opt{position:relative;display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border:1.5px solid var(--bd);border-radius:14px;background:#fff;cursor:pointer;font:inherit;color:#111827;transition:border-color .15s,background .15s,transform .15s,box-shadow .15s}
+	.tkh-opts.is-3 .tkh-opt{flex-direction:column;text-align:center;justify-content:center;padding:20px 12px}
+	.tkh-ic{width:46px;height:46px;flex:none;border-radius:12px;background:var(--bg);color:var(--nv);display:grid;place-items:center;transition:background .15s,color .15s}
+	.tkh-ic svg{width:24px;height:24px}
+	.tkh-ic.txt{font-weight:800;font-size:15px;letter-spacing:-.02em}
+	.tkh-opt strong{display:block;font-size:15.5px;font-weight:600;line-height:1.25}
+	.tkh-opt small{display:block;font-size:12.5px;margin-top:3px;line-height:1.35}
+	.tkh-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bd);display:grid;place-items:center;background:#fff;transition:all .15s}
+	.tkh-check svg{width:13px;height:13px;opacity:0}
+	.tkh-intro{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(135deg,var(--nv),var(--nv2));color:#fff;border-radius:16px;padding:18px;margin:0 0 22px}
+	.tkh-intro p{margin:0;font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.92)}
+	.tkh-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+	.tkh-chip{font-size:12px;font-weight:600;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:4px 10px}
+	.tkh-sec{margin:0 0 22px}
+	.tkh-sech{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+	.tkh-num{width:26px;height:26px;border-radius:50%;background:var(--nv);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex:none}
+	.tkh-sec h3{font-size:18px;font-weight:700;color:var(--nv);margin:0;text-transform:none;letter-spacing:-.01em}
+	.tkh-sec p{font-size:13.5px;color:#4b5563;margin:0 0 12px 36px;line-height:1.5}
+	.tkh-prods{display:grid;grid-template-columns:1.15fr 1fr;gap:12px;margin-left:36px}
+	.tkh-card{position:relative;display:flex;gap:12px;align-items:center;border:1.5px solid var(--bd);border-radius:14px;padding:12px;background:#fff}
+	.tkh-card.is-top{border-color:var(--nv);box-shadow:0 8px 22px rgba(20,32,74,.10)}
+	.tkh-tag{position:absolute;top:-10px;left:12px;background:var(--rd);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.02em}
 	.tkh-card.is-alt .tkh-tag{background:#9ca3af}
-	.tkh-img{width:70px;height:78px;flex:none;background:#f5f5f6;border-radius:8px;display:grid;place-items:center;overflow:hidden}
-	.tkh-img img{max-width:88%;max-height:88%;object-fit:contain;mix-blend-mode:multiply}
+	.tkh-img{width:76px;height:86px;flex:none;background:var(--bg);border-radius:10px;display:grid;place-items:center;overflow:hidden}
+	.tkh-img img{max-width:86%;max-height:86%;object-fit:contain;mix-blend-mode:multiply}
 	.tkh-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-	.tkh-merk{font-size:11.5px;color:#6b7280}
-	.tkh-naam{font-size:13.5px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-	.tkh-prijs{font-size:14px;font-weight:700}.tkh-prijs small{font-weight:500;color:#9ca3af;font-size:11.5px}.tkh-prijs del{color:#9ca3af;font-weight:500;font-size:12px;margin-right:4px}
-	.tkh-add{align-self:flex-start;margin-top:2px;border:0;background:#14204A;color:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:none}
-	.tkh-add.is-ok{background:#16a34a}
-	.tkh-end{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;padding-top:16px;border-top:1px solid #eef0f4;align-items:center}
-	.tkh-btn{border:0;border-radius:999px;padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-	.tkh-btn-nv{background:#14204A;color:#fff}.tkh-btn-gh{background:#f3f4f6;color:#14204A}
-	.tkh-load{padding:40px 0;text-align:center;color:#6b7280}
-	@media(max-width:600px){.tkh-ov{padding:0;align-items:flex-end}.tkh-modal{max-height:92vh;border-radius:18px 18px 0 0}.tkh-body{padding:14px 16px 20px}.tkh-q{font-size:21px}.tkh-opts,.tkh-prods{grid-template-columns:1fr}}
-	/* thema-hovers neutraliseren */
-	#tkhOv .tkh-opt,#tkhOv .tkh-opt:hover,#tkhOv .tkh-opt:focus{color:#111827!important;background:#fff!important;border-color:#e5e7eb;box-shadow:none!important;text-decoration:none!important}
-	#tkhOv .tkh-opt:hover,#tkhOv .tkh-opt:focus-visible{border-color:#14204A!important;background:#f3f5fa!important}
-	#tkhOv .tkh-opt.is-on,#tkhOv .tkh-opt.is-on:hover{background:#14204A!important;color:#fff!important;border-color:#14204A!important}
-	#tkhOv .tkh-opt strong{color:inherit!important}#tkhOv .tkh-opt small{color:#6b7280!important}#tkhOv .tkh-opt.is-on small{color:rgba(255,255,255,.75)!important}
-	#tkhOv .tkh-add,#tkhOv .tkh-add:hover,#tkhOv .tkh-add:focus,#tkhOv .tkh-add:visited{background:#14204A!important;color:#fff!important;border:0!important;text-decoration:none!important;box-shadow:none!important}
+	.tkh-merk{font-size:11.5px;color:var(--mut)}
+	.tkh-naam{font-size:13.5px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none}
+	.tkh-prijs{font-size:15px;font-weight:700}.tkh-prijs small{font-weight:500;color:#9ca3af;font-size:11.5px}.tkh-prijs del{color:#9ca3af;font-weight:500;font-size:12px;margin-right:4px}
+	.tkh-add{align-self:flex-start;margin-top:4px;border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;line-height:1.2}
+	.tkh-total{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg);border-radius:14px;padding:14px 16px;margin:4px 0 14px}
+	.tkh-total span{font-size:13.5px;color:#374151}.tkh-total strong{font-size:20px;color:var(--nv)}
+	.tkh-end{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+	.tkh-btn{border-radius:999px;padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;line-height:1.2}
+	.tkh-load{padding:50px 0;text-align:center;color:var(--mut)}
+	.tkh-spin{width:34px;height:34px;border:3px solid var(--bg);border-top-color:var(--nv);border-radius:50%;margin:0 auto 12px;animation:tkhSpin .8s linear infinite}
+	@keyframes tkhSpin{to{transform:rotate(360deg)}}
+	@media(max-width:600px){.tkh-ov{padding:0;align-items:flex-end}.tkh-modal{max-height:94vh;border-radius:20px 20px 0 0}.tkh-body{padding:18px 16px 22px}.tkh-q{font-size:22px}.tkh-opts,.tkh-opts.is-3{grid-template-columns:1fr}.tkh-opts.is-3 .tkh-opt{flex-direction:row;text-align:left;justify-content:flex-start;padding:14px}.tkh-prods{grid-template-columns:1fr;margin-left:0}.tkh-sec p{margin-left:0}}
+	/* vaste kleuren (thema-hovers neutraliseren) */
+	#tkhOv .tkh-x,#tkhOv .tkh-back,#tkhOv .tkh-x:hover,#tkhOv .tkh-back:hover,#tkhOv .tkh-x:focus,#tkhOv .tkh-back:focus{background:rgba(255,255,255,.12)!important;color:#fff!important;border:0!important;box-shadow:none!important}
+	#tkhOv .tkh-x:hover,#tkhOv .tkh-back:hover{background:rgba(255,255,255,.22)!important}
+	#tkhOv .tkh-opt,#tkhOv .tkh-opt:focus{color:#111827!important;background:#fff!important;border-color:var(--bd)!important;box-shadow:none!important;text-decoration:none!important}
+	#tkhOv .tkh-opt small{color:var(--mut)!important}
+	#tkhOv .tkh-opt:hover,#tkhOv .tkh-opt:focus-visible{border-color:var(--nv)!important;background:#fff!important;color:#111827!important;transform:translateY(-2px);box-shadow:0 10px 24px rgba(20,32,74,.10)!important}
+	#tkhOv .tkh-opt:hover .tkh-ic{background:var(--nv);color:#fff}
+	#tkhOv .tkh-opt.is-on,#tkhOv .tkh-opt.is-on:hover{border-color:var(--nv)!important;background:#f3f5fb!important;color:#111827!important}
+	#tkhOv .tkh-opt.is-on .tkh-ic{background:var(--nv);color:#fff}
+	#tkhOv .tkh-opt.is-on .tkh-check{background:var(--nv);border-color:var(--nv)}#tkhOv .tkh-opt.is-on .tkh-check svg{opacity:1}
+	#tkhOv .tkh-add,#tkhOv .tkh-add:hover,#tkhOv .tkh-add:focus,#tkhOv .tkh-add:visited{background:var(--nv)!important;color:#fff!important;border:0!important;text-decoration:none!important;box-shadow:none!important}
 	#tkhOv .tkh-add:hover{background:#0d1538!important}
 	#tkhOv .tkh-add.is-ok,#tkhOv .tkh-add.is-ok:hover{background:#16a34a!important}
-	#tkhOv .tkh-btn-nv,#tkhOv .tkh-btn-nv:hover,#tkhOv .tkh-btn-nv:visited{background:#14204A!important;color:#fff!important;text-decoration:none!important}
-	#tkhOv .tkh-btn-nv:hover{background:#0d1538!important}
-	#tkhOv .tkh-btn-gh,#tkhOv .tkh-btn-gh:hover{background:#f3f4f6!important;color:#14204A!important;border:0!important}
-	#tkhOv .tkh-btn-gh:hover{background:#e5e7eb!important}
-	#tkhOv .tkh-x,#tkhOv .tkh-back,#tkhOv .tkh-x:hover,#tkhOv .tkh-back:hover{background:#f3f4f6!important;color:#14204A!important;border:0!important}
-	#tkhOv .tkh-x:hover,#tkhOv .tkh-back:hover{background:#e5e7eb!important}
-	#tkhOv .tkh-naam,#tkhOv .tkh-naam:hover{color:#111827!important}#tkhOv .tkh-naam:hover{text-decoration:underline!important}
+	#tkhOv .tkh-btn-nv,#tkhOv .tkh-btn-nv:hover,#tkhOv .tkh-btn-nv:visited,#tkhOv .tkh-btn-nv:focus{background:#25D366!important;color:#fff!important;text-decoration:none!important;border:0!important}
+	#tkhOv .tkh-btn-nv:hover{background:#1eb85a!important}
+	#tkhOv .tkh-btn-gh,#tkhOv .tkh-btn-gh:hover,#tkhOv .tkh-btn-gh:focus{background:var(--bg)!important;color:var(--nv)!important;border:0!important;box-shadow:none!important}
+	#tkhOv .tkh-btn-gh:hover{background:#e7e9f0!important}
+	#tkhOv .tkh-naam,#tkhOv .tkh-naam:hover,#tkhOv .tkh-naam:visited{color:#111827!important}#tkhOv .tkh-naam:hover{text-decoration:underline!important}
 	</style>
 	<script>
 	(function(){
 		var ov=document.getElementById('tkhOv'); if(!ov) return;
 		var body=document.getElementById('tkhBody'), bar=ov.querySelector('.tkh-bar span'), back=ov.querySelector('.tkh-back');
 		var API=<?php echo wp_json_encode($api); ?>, AJAX=<?php echo wp_json_encode($ajax); ?>;
+		var IC={"spier": "<path d=\"M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11\"/>", "afvallen": "<path d=\"M12 22c4 0 7-2.8 7-7 0-3.5-2-5.5-3.5-7.5-.5 2-1.5 3-3 3.5.5-3.5-.5-6.5-3-9 0 4-5.5 6.5-5.5 13 0 4.2 3.5 7 8 7z\"/><path d=\"M12 22c-1.7 0-3-1.3-3-3 0-1.8 1.4-2.8 3-5 1.6 2.2 3 3.2 3 5 0 1.7-1.3 3-3 3z\"/>", "fit": "<path d=\"M13 2L4 14h7l-1 8 9-12h-7z\"/>", "duur": "<path d=\"M3 12h4l3-8 4 16 3-8h4\"/>", "herstel": "<path d=\"M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z\"/>", "kracht": "<path d=\"M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11\"/>", "vecht": "<path d=\"M7 11V8a4 4 0 014-4h3a4 4 0 014 4v5a5 5 0 01-5 5h-1a5 5 0 01-5-5z\"/><path d=\"M7 12H5.5A1.5 1.5 0 004 13.5 3.5 3.5 0 007.5 17M8 20h9\"/>", "cardio": "<circle cx=\"6\" cy=\"17\" r=\"3.5\"/><circle cx=\"18\" cy=\"17\" r=\"3.5\"/><path d=\"M6 17l4-7h5l3 7M10 10L8.5 6H6M14 6h2\"/>", "mix": "<path d=\"M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5\"/>", "geen": "<path d=\"M20 6L9 17l-5-5\"/>", "lactose": "<path d=\"M8 2h8M9 2v3l-2 4v11a2 2 0 002 2h6a2 2 0 002-2V9l-2-4V2M7 12h10\"/><path d=\"M4 4l16 16\"/>", "vegan": "<path d=\"M11 20A7 7 0 014 13c0-6 7-9 16-9 0 9-3 16-9 16z\"/><path d=\"M4 20c4-5 7-8 11-10\"/>", "basis": "<path d=\"M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8\"/>", "compleet": "<path d=\"M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.5 5.8 21l1.4-7L2 9.3l7-.8z\"/>"};
 		var V=[
-			{k:'doel',q:'Wat is je doel?',s:'Kies wat het beste bij je past.',o:[['spier','💪','Spieren opbouwen','Sterker worden en meer spiermassa'],['afvallen','🔥','Afvallen','Vet verliezen en strakker worden'],['fit','⚡','Fitter voelen','Meer energie en een gezonde basis'],['duur','🏃','Beter presteren','Duursport, vechtsport of teamsport'],['herstel','🌙','Herstel en gezondheid','Gewrichten, slaap en weerstand']]},
-			{k:'freq',q:'Hoe vaak train je per week?',s:'',o:[['laag','1️⃣','1 tot 2 keer',''],['mid','2️⃣','3 tot 4 keer',''],['hoog','3️⃣','5 keer of vaker','']]},
-			{k:'sport',q:'Wat voor training doe je vooral?',s:'',o:[['kracht','🏋️','Krachttraining','Fitness en gewichten'],['vecht','🥊','Vechtsport','Boksen, kickboksen, MMA'],['cardio','🚴','Cardio of duursport','Hardlopen, fietsen, zwemmen'],['mix','🔄','Een mix','Van alles wat']]},
-			{k:'dieet',q:'Let je op iets in je voeding?',s:'Dan houden we daar rekening mee bij de eiwitshake.',o:[['geen','✅','Nee, alles is goed',''],['lactose','🥛','Lactosevrij',''],['vegan','🌱','Vegan','']]},
-			{k:'budget',q:'Wat wil je?',s:'',o:[['basis','👌','De basis','Alleen wat je echt nodig hebt'],['compleet','⭐','Een compleet pakket','De basis plus extra ondersteuning']]}
+			{k:'doel',q:'Wat is je doel?',s:'Kies wat het beste bij je past.',o:[['spier','Spieren opbouwen','Sterker worden en meer spiermassa'],['afvallen','Afvallen','Vet verliezen en strakker worden'],['fit','Fitter voelen','Meer energie en een gezonde basis'],['duur','Beter presteren','Duursport, vechtsport of teamsport'],['herstel','Herstel en gezondheid','Gewrichten, slaap en weerstand']]},
+			{k:'freq',q:'Hoe vaak train je per week?',s:'Dan weten we hoeveel ondersteuning je nodig hebt.',n:1,o:[['laag','1 tot 2 keer','','1-2'],['mid','3 tot 4 keer','','3-4'],['hoog','5 keer of vaker','','5+']]},
+			{k:'sport',q:'Wat voor training doe je vooral?',s:'',o:[['kracht','Krachttraining','Fitness en gewichten'],['vecht','Vechtsport','Boksen, kickboksen, MMA'],['cardio','Cardio of duursport','Hardlopen, fietsen, zwemmen'],['mix','Een mix','Van alles wat']]},
+			{k:'dieet',q:'Let je op iets in je voeding?',s:'Daar houden we rekening mee bij de eiwitshake.',n:1,o:[['geen','Nee, alles is goed',''],['lactose','Lactosevrij',''],['vegan','Vegan','']]},
+			{k:'budget',q:'Wat zoek je?',s:'',o:[['basis','De basis','Alleen wat je echt nodig hebt'],['compleet','Een compleet pakket','De basis plus extra ondersteuning']]}
 		];
+		var LBL={}; V.forEach(function(v){ v.o.forEach(function(o){ LBL[v.k+':'+o[0]]=o[1]; }); });
+		var CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+		function icon(k,t){ if(t) return '<span class="tkh-ic txt">'+t+'</span>'; return '<span class="tkh-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(IC[k]||'')+'</svg></span>'; }
 		var st=0, ans={}, last=null;
 		function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-		function prog(){ bar.style.width=Math.round((st/V.length)*100)+'%'; back.hidden=st===0; }
+		var stepEl=document.getElementById('tkhStep');
+		function prog(){ bar.style.width=Math.round((Math.min(st+1,V.length)/V.length)*100)+'%'; back.hidden=st===0; stepEl.textContent=st<V.length?('Stap '+(st+1)+' van '+V.length):'Jouw advies'; }
 		function step(){
 			prog(); var v=V[st];
-			body.innerHTML='<h2 class="tkh-q" id="tkhTitle">'+esc(v.q)+'</h2>'+(v.s?'<p class="tkh-sub">'+esc(v.s)+'</p>':'<p class="tkh-sub">Vraag '+(st+1)+' van '+V.length+'</p>')+'<div class="tkh-opts">'+v.o.map(function(o){return '<button type="button" class="tkh-opt'+(ans[v.k]===o[0]?' is-on':'')+'" data-v="'+o[0]+'"><span class="tkh-ico" aria-hidden="true">'+o[1]+'</span><span><strong>'+esc(o[2])+'</strong>'+(o[3]?'<small>'+esc(o[3])+'</small>':'')+'</span></button>';}).join('')+'</div>';
+			body.innerHTML='<h2 class="tkh-q" id="tkhTitle">'+esc(v.q)+'</h2>'+(v.s?'<p class="tkh-sub">'+esc(v.s)+'</p>':'<p class="tkh-sub">&nbsp;</p>')+'<div class="tkh-opts'+(v.n?' is-3':'')+'">'+v.o.map(function(o){return '<button type="button" class="tkh-opt'+(ans[v.k]===o[0]?' is-on':'')+'" data-v="'+o[0]+'">'+icon(o[0],o[3])+'<span><strong>'+esc(o[1])+'</strong>'+(o[2]?'<small>'+esc(o[2])+'</small>':'')+'</span><span class="tkh-check" aria-hidden="true">'+CHECK+'</span></button>';}).join('')+'</div>';
+			body.scrollTop=0;
 		}
 		function card(p,i){
 			var pr=(p.van?'<del>€ '+esc(p.van)+'</del>':'')+(p.vanaf?'<small>vanaf </small>':'')+'€ '+esc(p.prijs);
 			var btn=p.direct?'<button type="button" class="tkh-add" data-id="'+p.id+'">In winkelwagen</button>':'<a class="tkh-add" href="'+esc(p.url)+'">Kies je smaak</a>';
-			return '<div class="tkh-card '+(i===0?'is-top':'is-alt')+'"><span class="tkh-tag">'+(i===0?'Onze keuze':'Alternatief')+'</span><a class="tkh-img" href="'+esc(p.url)+'"><img src="'+esc(p.img)+'" alt="" loading="lazy"></a><div class="tkh-info">'+(p.merk?'<span class="tkh-merk">'+esc(p.merk)+'</span>':'')+'<a class="tkh-naam" href="'+esc(p.url)+'" style="color:inherit;text-decoration:none">'+esc(p.naam)+'</a><span class="tkh-prijs">'+pr+'</span>'+btn+'</div></div>';
+			return '<div class="tkh-card '+(i===0?'is-top':'is-alt')+'"><span class="tkh-tag">'+(i===0?'Onze keuze':'Of kies')+'</span><a class="tkh-img" href="'+esc(p.url)+'"><img src="'+esc(p.img)+'" alt="" loading="lazy"></a><div class="tkh-info">'+(p.merk?'<span class="tkh-merk">'+esc(p.merk)+'</span>':'')+'<a class="tkh-naam" href="'+esc(p.url)+'" style="color:inherit;text-decoration:none">'+esc(p.naam)+'</a><span class="tkh-prijs">'+pr+'</span>'+btn+'</div></div>';
 		}
 		function result(){
 			st=V.length; prog(); back.hidden=false;
-			body.innerHTML='<div class="tkh-load">Even je advies samenstellen...</div>';
+			body.innerHTML='<div class="tkh-load"><div class="tkh-spin"></div>Even je advies samenstellen...</div>';
 			fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ans)}).then(function(r){return r.json();}).then(function(d){
-				var h='<h2 class="tkh-q" id="tkhTitle">Jouw advies</h2>'+(d.intro?'<p class="tkh-intro">'+esc(d.intro)+'</p>':'');
-				(d.secties||[]).forEach(function(s){ h+='<div class="tkh-sec"><h3>'+esc(s.titel)+'</h3><p>'+esc(s.waarom)+'</p><div class="tkh-prods">'+s.producten.map(card).join('')+'</div></div>'; });
+				var chips=V.map(function(v){ return ans[v.k]?'<span class="tkh-chip">'+esc(LBL[v.k+':'+ans[v.k]])+'</span>':''; }).join('');
+				var h='<h2 class="tkh-q" id="tkhTitle">Jouw advies</h2><div class="tkh-intro"><div><div class="tkh-chips">'+chips+'</div>'+(d.intro?'<p>'+esc(d.intro)+'</p>':'')+'</div></div>';
+				var tot=0;
+				(d.secties||[]).forEach(function(s,i){ if(s.producten[0]) tot+=parseFloat(String(s.producten[0].prijs).replace(/\./g,'').replace(',','.'))||0; h+='<div class="tkh-sec"><div class="tkh-sech"><span class="tkh-num">'+(i+1)+'</span><h3>'+esc(s.titel)+'</h3></div><p>'+esc(s.waarom)+'</p><div class="tkh-prods">'+s.producten.map(card).join('')+'</div></div>'; });
 				if(!(d.secties||[]).length) h+='<p class="tkh-sub">We konden nu geen producten vinden. Stuur ons gerust een WhatsApp, dan denken we mee.</p>';
-				h+='<div class="tkh-end"><button type="button" class="tkh-btn tkh-btn-gh" data-act="opnieuw">Opnieuw beginnen</button><a class="tkh-btn tkh-btn-nv" href="https://wa.me/31611789629" target="_blank" rel="noopener">Twijfel je? Vraag het via WhatsApp</a></div>';
+				if(tot>0) h+='<div class="tkh-total"><span>Je pakket met onze keuzes, vanaf</span><strong>€ '+tot.toFixed(2).replace('.',',')+'</strong></div>';
+				h+='<div class="tkh-end"><button type="button" class="tkh-btn tkh-btn-gh" data-act="opnieuw">Opnieuw beginnen</button><a class="tkh-btn tkh-btn-nv" href="https://wa.me/31611789629" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>Twijfel je? Vraag het via WhatsApp</a></div>';
 				body.innerHTML=h; body.scrollTop=0;
 			}).catch(function(){ body.innerHTML='<p class="tkh-sub">Er ging iets mis. Probeer het opnieuw.</p>'; });
 		}
@@ -268,7 +297,7 @@ add_action('wp_footer', function () {
 		ov.addEventListener('click',function(e){
 			if(e.target===ov||e.target.closest('.tkh-x')) return close();
 			if(e.target.closest('.tkh-back')){ if(st>0){ st--; step(); } return; }
-			var o=e.target.closest('.tkh-opt'); if(o){ ans[V[st].k]=o.getAttribute('data-v'); o.classList.add('is-on'); setTimeout(function(){ st++; if(st<V.length) step(); else result(); },160); return; }
+			var o=e.target.closest('.tkh-opt'); if(o){ ans[V[st].k]=o.getAttribute('data-v'); o.classList.add('is-on'); setTimeout(function(){ st++; if(st<V.length) step(); else result(); },220); return; }
 			if(e.target.closest('[data-act="opnieuw"]')){ st=0; ans={}; step(); return; }
 			var b=e.target.closest('button.tkh-add'); if(b){ b.disabled=true; b.textContent='Toevoegen...'; var f=new FormData(); f.append('product_id',b.getAttribute('data-id')); f.append('quantity','1');
 				fetch(AJAX,{method:'POST',body:f,credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d&&d.error){ throw 0; } b.textContent='Toegevoegd ✓'; b.classList.add('is-ok'); if(window.jQuery&&d&&d.fragments){ jQuery(document.body).trigger('added_to_cart',[d.fragments,d.cart_hash]); } }).catch(function(){ b.disabled=false; b.textContent='Opnieuw proberen'; });
