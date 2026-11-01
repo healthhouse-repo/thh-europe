@@ -196,6 +196,41 @@ add_action('rest_api_init', function () {
 		if (isset($GLOBALS['kinsta_cache']) && !empty($GLOBALS['kinsta_cache']->kinsta_cache_purge)) $GLOBALS['kinsta_cache']->kinsta_cache_purge->purge_complete_caches();
 		return $out;
 	}]);
+	/* Hulp bij het zoeken van logo's: haalt de homepage van een merksite op en geeft logo-kandidaten terug (alleen admins). */
+	register_rest_route('thh/v1', '/merken/logo-zoek', ['methods' => 'POST', 'permission_callback' => $adm, 'callback' => function ($r) {
+		$out = [];
+		foreach (array_slice((array) ($r->get_json_params()['sites'] ?? []), 0, 15) as $site) {
+			$site = esc_url_raw(trim($site));
+			if (!preg_match('#^https?://#i', $site)) continue;
+			$res = wp_remote_get($site, ['timeout' => 15, 'redirection' => 5, 'user-agent' => 'Mozilla/5.0 (compatible; THH-logo-check)']);
+			if (is_wp_error($res)) { $out[$site] = ['error' => $res->get_error_message()]; continue; }
+			$html = (string) wp_remote_retrieve_body($res);
+			$base = $site;
+			if (preg_match('#<base[^>]+href=["\']([^"\']+)#i', $html, $m)) $base = $m[1];
+			$abs = function ($u) use ($base) {
+				$u = html_entity_decode(trim($u));
+				if (preg_match('#^(https?:)?//#i', $u)) return preg_match('#^//#', $u) ? 'https:' . $u : $u;
+				if (strpos($u, 'data:') === 0) return '';
+				$p = parse_url($base);
+				$root = $p['scheme'] . '://' . $p['host'];
+				return $u[0] === '/' ? $root . $u : rtrim($base, '/') . '/' . $u;
+			};
+			$cands = [];
+			if (preg_match_all('#<img[^>]+>#i', $html, $imgs)) {
+				foreach ($imgs[0] as $tag) {
+					if (!preg_match('/logo|brand|wordmark/i', $tag)) continue;
+					foreach (['data-src', 'srcset', 'data-srcset', 'src'] as $at) {
+						if (preg_match('#' . $at . '=["\']([^"\']+)#i', $tag, $m)) { $v = $m[1]; if ($at === 'srcset' || $at === 'data-srcset') $v = trim(explode(' ', trim(explode(',', $v)[0]))[0]); $u = $abs($v); if ($u) $cands[] = $u; }
+					}
+				}
+			}
+			if (preg_match_all('#<(?:svg|img)[^>]*class=["\'][^"\']*logo[^"\']*["\'][^>]*>#i', $html, $m2)) $cands[] = 'inline-svg:' . count($m2[0]);
+			if (preg_match('#property=["\']og:image["\'][^>]+content=["\']([^"\']+)#i', $html, $m) || preg_match('#content=["\']([^"\']+)["\'][^>]+property=["\']og:image#i', $html, $m)) $cands[] = 'og:' . $abs($m[1]);
+			if (preg_match('#<link[^>]+rel=["\'][^"\']*icon[^"\']*["\'][^>]+href=["\']([^"\']+)#i', $html, $m)) $cands[] = 'icon:' . $abs($m[1]);
+			$out[$site] = array_values(array_unique($cands));
+		}
+		return $out;
+	}]);
 	register_rest_route('thh/v1', '/merken/logo-remove', ['methods' => 'POST', 'permission_callback' => $adm, 'callback' => function ($r) use ($find) {
 		$t = $find($r->get_json_params());
 		if (!$t || is_wp_error($t)) return new WP_Error('term', 'merk niet gevonden', ['status' => 404]);
