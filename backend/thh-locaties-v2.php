@@ -145,7 +145,7 @@ add_shortcode('thh_locaties_v2', function () {
 .lc-wrap{margin-top:32px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
 .lc-list{display:flex;flex-direction:column;gap:14px}
 .lc-card{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;background:#fff;border:1px solid #e6e8f0;border-radius:18px;padding:14px;scroll-margin-top:120px}
-.lc-foto{border-radius:12px;overflow:hidden;background:var(--bg);min-height:150px}.lc-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.lc-foto{border-radius:12px;overflow:hidden;background:var(--bg);height:150px;align-self:center}.lc-foto img{width:100%;height:100%;object-fit:cover;display:block}
 .lc-ph{display:grid;place-items:center;width:100%;height:100%;color:#c3c8d8}.lc-ph svg{width:40px;height:40px}
 .lc-info{display:flex;flex-direction:column;gap:8px;min-width:0;padding:4px 4px 2px 0}
 .lc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.lc .lc-top h2{font-size:18px;font-weight:700}
@@ -174,7 +174,7 @@ add_shortcode('thh_locaties_v2', function () {
 .lc-fr div{display:flex;flex-direction:column;gap:2px}.lc-fr strong{color:var(--nv);font-size:17px}.lc-fr span{color:var(--mut);font-size:14px}
 @media(max-width:900px){.lc-hero{grid-template-columns:minmax(0,1fr);padding:32px 28px}.lc-wrap{grid-template-columns:minmax(0,1fr)}.lc-mapcol{position:static;order:-1}.lc-map{height:340px}.lc-band{grid-template-columns:minmax(0,1fr);padding:32px 28px}}
 @media(max-width:640px){.lc{padding:12px 14px 32px}.lc-hero{border-radius:18px;padding:24px 20px;gap:18px}.lc .lc-hero h1{font-size:32px}.lc-hero p{font-size:15px}.lc-herostats{gap:8px}.lc-herostats div{padding:12px 10px}.lc-herostats b{font-size:17px}.lc-herostats span{font-size:11.5px}
-.lc-card{grid-template-columns:minmax(0,1fr);gap:12px;padding:12px}.lc-foto{min-height:0;aspect-ratio:16/8}.lc-foto:has(.lc-ph){display:none}.lc-btns .lc-btn{flex:1 1 auto}.lc-map{height:280px}
+.lc-card{grid-template-columns:minmax(0,1fr);gap:12px;padding:12px}.lc-foto{height:auto;aspect-ratio:16/8}.lc-foto:has(.lc-ph){display:none}.lc-btns .lc-btn{flex:1 1 auto}.lc-map{height:280px}
 .lc-band{border-radius:18px;padding:26px 20px}.lc .lc-band h2{font-size:24px}.lc-ctas{flex-direction:column;align-items:stretch}.lc-fr{padding:18px 20px}.lc-fr .lc-btn{width:100%}}
 </style>
 <?php
