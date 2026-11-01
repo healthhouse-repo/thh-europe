@@ -13,7 +13,7 @@ add_action('wp_head', function () {
 <style id="thh-paginastijl">
 :root{--thh-nv:#14204a;--thh-rd:#e2373f;--thh-bg:#f5f6fa;--thh-mut:#5a6072}
 /* oude Elementor-hero */
-body.page section.page-hero{max-width:1240px!important;margin:16px auto 0!important;border-radius:24px!important;overflow:hidden!important;background:var(--thh-nv)!important;background-image:none!important;min-height:0!important;padding:0!important;position:relative}
+body.page section.page-hero{max-width:1200px!important;margin:16px auto 0!important;border-radius:24px!important;overflow:hidden!important;background:var(--thh-nv)!important;background-image:none!important;min-height:0!important;padding:0!important;position:relative}
 body.page section.page-hero:before,body.page section.page-hero:after{display:none!important}
 body.page section.page-hero>.elementor-background-overlay,body.page section.page-hero .elementor-shape{display:none!important}
 body.page section.page-hero>.elementor-container{min-height:0!important;max-width:none!important;padding:48px 56px!important}
@@ -22,7 +22,7 @@ body.page section.page-hero .title-sub{display:inline-block!important;background
 body.page section.page-hero h1{margin:0!important;color:#fff!important;font-weight:900!important;font-size:clamp(34px,4.6vw,60px)!important;line-height:1.02!important;text-transform:uppercase!important;letter-spacing:-.01em!important}
 body.page section.page-hero h1 span{color:transparent!important;-webkit-text-stroke:2px #fff!important}
 /* themakop (pagina's zonder eigen hero) */
-body.page .site-main>.page-header{max-width:1240px;margin:16px auto 8px!important;background:var(--thh-nv);border-radius:24px;padding:48px 56px!important;box-sizing:border-box;position:relative;overflow:hidden}
+body.page .site-main>.page-header{max-width:1200px;margin:16px auto 8px!important;background:var(--thh-nv);border-radius:24px;padding:48px 56px!important;box-sizing:border-box;position:relative;overflow:hidden}
 body.page .site-main>.page-header:before{content:"The Health House";display:inline-block;background:rgba(255,255,255,.14);color:#fff;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:6px;margin:0 0 16px}
 body.page .site-main>.page-header .entry-title{display:block!important;margin:0!important;color:#fff!important;font-weight:900!important;font-size:clamp(34px,4.6vw,60px)!important;line-height:1.02!important;text-transform:uppercase!important;letter-spacing:-.01em!important;padding:0!important;max-width:none!important}
 /* tekstpagina's: rustiger koppen */
@@ -54,7 +54,7 @@ body.page-id-74112 .page-header .entry-title{display:block!important}
 .thh-faq__item summary::-webkit-details-marker{display:none}
 .thh-faq__plus{position:relative;width:14px;height:14px;flex:none}.thh-faq__plus:before,.thh-faq__plus:after{content:"";position:absolute;left:0;top:6px;width:14px;height:2px;background:var(--nv);border-radius:2px;transition:transform .2s}.thh-faq__plus:after{transform:rotate(90deg)}.thh-faq__item[open] .thh-faq__plus:after{transform:rotate(0)}
 .thh-faq__answer{padding:0 0 18px}.thh-faq__answer p{margin:0;font-size:14.5px;line-height:1.65;color:var(--mut)}.thh-faq__answer a{color:var(--nv);text-decoration:underline}
-.thh-faq__empty{color:var(--mut)}
+.thh-faq__empty{display:none;color:var(--mut)}
 .thh-faq__contact{margin-top:24px;background:var(--nv);color:#fff;border-radius:24px;padding:36px 40px}
 .thh-faq .thh-faq__contact h2{color:#fff;font-size:26px;font-weight:700;text-transform:none;margin:0 0 8px}.thh-faq__contact p{color:rgba(255,255,255,.82);margin:0 0 18px;font-size:15px;line-height:1.6}
 .thh-faq__contact-links{display:flex;flex-wrap:wrap;gap:12px}
