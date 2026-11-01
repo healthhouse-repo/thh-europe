@@ -36,7 +36,6 @@ body.page section.page-hero .hero-title{position:relative!important;top:auto!imp
 body.page-id-13929 section.page-hero .hero-image{background-image:url(https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies-3.webp)!important}body.page-id-13929 section.page-hero .hero-image>.elementor-widget-wrap{background:none!important}
 /* themakop (pagina's zonder eigen hero) */
 body.page .site-main>.page-header{max-width:1200px;margin:16px auto 8px!important;background:var(--thh-nv);border-radius:24px;padding:48px 56px!important;box-sizing:border-box;position:relative;overflow:hidden}
-body.page .site-main>.page-header:not(:has(.entry-title:not([style*="display: none"]))){display:none!important}
 body.page .site-main>.page-header:before{content:"The Health House";display:inline-block;background:rgba(255,255,255,.14);color:#fff;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:6px;margin:0 0 16px}
 body.page .site-main>.page-header .entry-title{margin:0!important;color:#fff!important;font-weight:900!important;font-size:clamp(34px,4.6vw,60px)!important;line-height:1.02!important;text-transform:uppercase!important;letter-spacing:-.01em!important;padding:0!important;max-width:none!important}
 /* tekstpagina's: rustiger koppen */
@@ -81,6 +80,12 @@ body.page-id-74112 .page-header .entry-title{display:block!important}
 </style>
 <?php
 }, 99);
+
+/* pagina's die de themakop zelf verbergen (eigen kop): ook de navy kaart weg */
+add_action('wp_footer', function () {
+	if (!is_page() || is_front_page()) return;
+	echo '<script>(function(){var h=document.querySelector(".site-main>.page-header");if(!h)return;var t=h.querySelector(".entry-title");if(!t||getComputedStyle(t).display==="none")h.style.display="none";})();</script>';
+}, 5);
 
 /* tekstpagina's markeren voor de rustigere koppen */
 add_filter('body_class', function ($c) {

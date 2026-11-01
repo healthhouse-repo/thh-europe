@@ -121,7 +121,7 @@ add_shortcode('thh_locaties_v2', function () {
 	function kaart(){
 		if(!window.L||!document.getElementById('lcMap'))return setTimeout(kaart,150);
 		var m=L.map('lcMap',{scrollWheelZoom:false}),mk={},b=[];
-		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19,className:'lc-tiles'}).addTo(m);
+		L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri',maxZoom:16}).addTo(m);L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxZoom:16}).addTo(m);
 		var ic=L.divIcon({className:'lc-mk',html:'<span></span>',iconSize:[30,38],iconAnchor:[15,36],popupAnchor:[0,-30]});
 		W.forEach(function(s){if(!s.lat)return;var x=L.marker([s.lat,s.lng],{icon:ic}).addTo(m).bindPopup('<strong>'+s.n+'</strong><br>'+s.a);mk[s.id]=x;b.push([s.lat,s.lng])});
 		if(b.length)m.fitBounds(b,{padding:[30,30]});
@@ -144,8 +144,8 @@ add_shortcode('thh_locaties_v2', function () {
 .lc-herostats b{font-size:22px;font-weight:700;color:#fff}.lc-herostats span{font-size:12.5px;color:rgba(255,255,255,.75);line-height:1.35}
 .lc-wrap{margin-top:32px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
 .lc-list{display:flex;flex-direction:column;gap:14px}
-.lc-card{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;background:#fff;border:1px solid #e6e8f0;border-radius:18px;padding:14px;scroll-margin-top:120px}
-.lc-foto{border-radius:12px;overflow:hidden;background:var(--bg);height:150px;align-self:center}.lc-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.lc-card{display:grid;grid-template-columns:210px minmax(0,1fr);gap:18px;background:#fff;border:1px solid #e6e8f0;border-radius:18px;padding:14px;scroll-margin-top:120px}
+.lc-foto{border-radius:12px;overflow:hidden;background:var(--bg);height:158px;align-self:center}.lc-foto img{object-position:center 35%}.lc-foto img{width:100%;height:100%;object-fit:cover;display:block}
 .lc-ph{display:grid;place-items:center;width:100%;height:100%;color:#c3c8d8}.lc-ph svg{width:40px;height:40px}
 .lc-info{display:flex;flex-direction:column;gap:8px;min-width:0;padding:4px 4px 2px 0}
 .lc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.lc .lc-top h2{font-size:18px;font-weight:700}
@@ -165,7 +165,7 @@ add_shortcode('thh_locaties_v2', function () {
 .lc .lc-btn-ghost{background:transparent;border:2px solid rgba(255,255,255,.7);color:#fff;min-height:48px;padding:0 26px;font-size:15px}.lc .lc-btn-ghost:hover{background:rgba(255,255,255,.12);color:#fff}
 .lc-mapcol{position:sticky;top:110px}.lc-map{height:640px;border-radius:18px;overflow:hidden;background:var(--bg);border:1px solid #e6e8f0;z-index:0}
 .lc-mk span{display:block;width:30px;height:30px;border-radius:50% 50% 50% 0;background:var(--rd,#e2373f);transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.25)}
-.lc .lc-tiles{filter:saturate(.55) contrast(.95)}.lc-card:not(:has(.lc-foto img)){grid-template-columns:minmax(0,1fr);padding:18px 20px}.lc-card:not(:has(.lc-foto img)) .lc-foto{display:none}
+.lc-card:not(:has(.lc-foto img)){grid-template-columns:minmax(0,1fr);padding:18px 20px}.lc-card:not(:has(.lc-foto img)) .lc-foto{display:none}
 .lc .leaflet-popup-content{font-family:inherit;font-size:13px;color:#1b1f2e}
 .lc-band{margin-top:48px;background:var(--nv);color:#fff;border-radius:24px;padding:40px 56px;display:grid;grid-template-columns:minmax(0,1.3fr) auto;gap:32px;align-items:center}
 .lc-band>div:first-child{display:flex;flex-direction:column;gap:12px}.lc .lc-band h2{color:#fff;font-size:30px;font-weight:700}.lc-band p{margin:0;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.82);max-width:560px}
