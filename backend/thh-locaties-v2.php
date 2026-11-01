@@ -19,6 +19,9 @@ function thh_loc_fotos() {
 function thh_loc_winkels() {
 	$posts = get_posts(['post_type' => 'wpsl_stores', 'post_status' => 'publish', 'numberposts' => 50, 'orderby' => 'menu_order title', 'order' => 'ASC']);
 	$foto = thh_loc_fotos();
+	$u = 'https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-';
+	$pool = [$u . 'winkel-binnen.webp', $u . 'winkel-gevel.webp', $u . 'advies-2.webp', $u . 'schap.webp', $u . 'winkel-klant.webp', $u . 'advies-3.webp', $u . 'winkel-advies.webp', $u . 'advies.webp'];
+	$pi = 0;
 	$out = [];
 	foreach ($posts as $p) {
 		$m = function ($k) use ($p) { return trim((string) get_post_meta($p->ID, 'wpsl_' . $k, true)); };
@@ -26,7 +29,7 @@ function thh_loc_winkels() {
 		$out[] = [
 			'id' => $p->ID, 'naam' => get_the_title($p), 'adres' => $m('address'), 'adres2' => $m('address2'),
 			'pc' => $m('zip'), 'plaats' => $m('city'), 'tel' => $m('phone'), 'lat' => (float) $m('lat'), 'lng' => (float) $m('lng'),
-			'uren' => is_array($hours) ? $hours : [], 'foto' => $foto[$p->ID] ?? '',
+			'uren' => is_array($hours) ? $hours : [], 'foto' => $foto[$p->ID] ?? $pool[$pi++ % count($pool)],
 		];
 	}
 	// outlet en kiosk achteraan houden we gewoon in titelvolgorde; Halfweg zonder uren = binnenkort open
@@ -49,7 +52,7 @@ add_shortcode('thh_locaties_v2', function () {
 			<h1>Kom langs <em>in de winkel</em></h1>
 			<p>Persoonlijk advies, alles even vasthouden en proeven, of je online bestelling ophalen. Kies hieronder de winkel die het dichtst bij je is.</p>
 		</div>
-		<div class="lc-herostats"><div><b><?php echo count($w); ?></b><span>locaties</span></div><div><b>Gratis</b><span>ophalen</span></div><div><b>Advies</b><span>van mensen die zelf trainen</span></div></div>
+		<div class="lc-herostats"><div><b><?php echo count($w); ?></b><span>locaties</span></div><div><b>Gratis</b><span>ophalen</span></div><div><b>Gratis advies</b><span>van mensen die zelf trainen</span></div></div>
 	</section>
 
 	<section class="lc-wrap">
