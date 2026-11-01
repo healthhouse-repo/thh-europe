@@ -45,7 +45,7 @@ add_action('rest_api_init', function () {
 
 		// 3. Abonnementen-pagina (49138): locatie-tags
 		$p = get_post(49138);
-		if ($p && strpos($p->post_content, 'Style Outlets') === false && preg_match('~<div class="location-tag"><span class="loc-dot"></span> Amsterdam IJburg[^<]*</div>~', $p->post_content, $m)) {
+		if ($p && strpos($p->post_content, 'Style Outlets') === false && preg_match('~<div class="location-tag"[^>]*><span class="loc-dot"[^>]*></span> Amsterdam IJburg[^<]*</div>~', $p->post_content, $m)) {
 			add_post_meta(49138, '_thh_outlet_backup_content', $p->post_content, true);
 			wp_update_post(['ID' => 49138, 'post_content' => str_replace($m[0], $m[0] . '<div class="location-tag"><span class="loc-dot"></span> ' . $o['naam'] . ' — binnenkort</div>', $p->post_content)]);
 			$done[] = 'page:49138';
