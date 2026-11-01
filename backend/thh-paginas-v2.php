@@ -169,7 +169,7 @@ add_shortcode('thh_terugroep_v2', function () {
 				<p>De NVWA heeft ons laten weten dat de samenstelling en de claims van producten van Jennah Organics niet voldoen aan de regels voor voedingssupplementen. Daarnaast missen de etiketten verplichte Nederlandse informatie. We hebben daarom alle producten van Jennah Organics uit de verkoop gehaald.</p>
 				<p>Het gaat om alle producten van dit merk die bij ons zijn gekocht, online en in de winkel, waaronder:</p>
 				<ul><li>Colon Support</li><li>Crave Control</li><li>Magic Magnesium</li><li>Collagen Care</li><li>Hormone Support</li><li>Burn Boost</li><li>Hair Growth</li><li>de bundels en de eiwitshake van Jennah Organics</li></ul>
-				<p>Heb je een van deze producten? Gebruik het niet meer. Wij kunnen het aankoopbedrag niet zelf terugbetalen, maar we dienen wel een claim in bij Jennah Organics. Laat hieronder je gegevens achter, dan nemen we je mee in die claim en houden we je op de hoogte.</p>
+				<p>Heb je een van deze producten? Gebruik het niet meer. Wij kunnen het aankoopbedrag niet zelf terugbetalen, maar we dienen wel een claim in bij Jennah Organics. Laat via het formulier je gegevens achter, dan nemen we je mee in die claim en houden we je op de hoogte.</p>
 			</div>
 			<aside class="pv-ract"><strong>Laat je gegevens achter</strong>
 				<form class="pv-claim" id="pvClaim" novalidate>
