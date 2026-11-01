@@ -350,7 +350,32 @@ add_shortcode('thh_home_v2', function ($a) {
 	return ob_get_clean();
 });
 
-/* Testpagina /home-test/ (91746) is openbaar te bekijken via de link, maar niet vindbaar. */
-add_filter('wp_robots', function ($r) { if (is_page(91746)) { $r['noindex'] = true; $r['nofollow'] = true; } return $r; }, 99);
-add_filter('wpseo_robots', function ($r) { return is_page(91746) ? 'noindex, nofollow' : $r; }, 99);
-add_filter('wpseo_exclude_from_sitemap_by_post_ids', function ($ids) { $ids[] = 91746; return $ids; });
+/* Nieuwe homepage (pagina 91746). Zolang hij niet de voorpagina is: openbaar via link, maar niet vindbaar. */
+add_filter('wp_robots', function ($r) { if (is_page(91746) && !is_front_page()) { $r['noindex'] = true; $r['nofollow'] = true; } return $r; }, 99);
+add_filter('wpseo_robots', function ($r) { return (is_page(91746) && !is_front_page()) ? 'noindex, nofollow' : $r; }, 99);
+add_filter('wpseo_exclude_from_sitemap_by_post_ids', function ($ids) { if ((int) get_option('page_on_front') !== 91746) $ids[] = 91746; return $ids; });
+
+/* Live-schakelaar: POST /thh/v1/home-v2/live {live:true|false}
+ * live:  oude voorpagina-id bewaren, Yoast-SEO van de oude homepage overnemen, 91746 als voorpagina instellen.
+ * terug: oude voorpagina (standaard 37) weer instellen. De oude Elementor-homepage blijft ongewijzigd bestaan. */
+add_action('rest_api_init', function () {
+	register_rest_route('thh/v1', '/home-v2/live', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function (WP_REST_Request $r) {
+		$live = (bool) $r->get_param('live');
+		$cur = (int) get_option('page_on_front');
+		if ($live) {
+			if ($cur !== 91746) update_option('thh_home_v2_vorige', $cur ?: 37, false);
+			$old = (int) get_option('thh_home_v2_vorige', 37);
+			foreach (['_yoast_wpseo_title', '_yoast_wpseo_metadesc', '_yoast_wpseo_focuskw', '_yoast_wpseo_opengraph-title', '_yoast_wpseo_opengraph-description', '_yoast_wpseo_opengraph-image', '_yoast_wpseo_twitter-title', '_yoast_wpseo_twitter-description'] as $k) {
+				$v = get_post_meta($old, $k, true);
+				if ($v !== '' && $v !== false) update_post_meta(91746, $k, $v);
+			}
+			update_option('show_on_front', 'page');
+			update_option('page_on_front', 91746);
+		} else {
+			update_option('page_on_front', (int) get_option('thh_home_v2_vorige', 37));
+		}
+		if (isset($GLOBALS['kinsta_cache']) && !empty($GLOBALS['kinsta_cache']->kinsta_cache_purge)) $GLOBALS['kinsta_cache']->kinsta_cache_purge->purge_complete_caches();
+		if (function_exists('autoptimize_flush_cache')) autoptimize_flush_cache();
+		return ['voorpagina' => (int) get_option('page_on_front'), 'vorige' => (int) get_option('thh_home_v2_vorige', 37)];
+	}]);
+});
