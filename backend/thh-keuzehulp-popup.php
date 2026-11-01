@@ -64,7 +64,7 @@ function thh_kp_card($p) {
 	list($prijs, $reg, $vanaf) = thh_kp_prijs($p);
 	$merk = wp_get_post_terms($p->get_id(), 'product_brand', ['fields' => 'names']);
 	return [
-		'id' => $p->get_id(), 'naam' => $p->get_name(), 'merk' => (!is_wp_error($merk) && $merk) ? $merk[0] : '',
+		'id' => $p->get_id(), 'naam' => html_entity_decode($p->get_name(), ENT_QUOTES, 'UTF-8'), 'merk' => (!is_wp_error($merk) && $merk) ? $merk[0] : '',
 		'url' => $p->get_permalink(), 'img' => $img, 'prijs' => number_format($prijs, 2, ',', '.'),
 		'van' => ($reg > $prijs) ? number_format($reg, 2, ',', '.') : '',
 		'vanaf' => $vanaf,
@@ -75,7 +75,7 @@ function thh_kp_card($p) {
 
 /* Leverbare varianten (zonder samples) voor de keuzelijst; meest verkochte/goedkoopste eerst. */
 function thh_kp_varianten($p) {
-	$out = [];
+	$out = []; $seen = [];
 	foreach ($p->get_children() as $vid) {
 		$v = wc_get_product($vid);
 		if (!$v || !$v->is_purchasable() || !$v->is_in_stock() || (float) $v->get_price() <= 0) continue;
@@ -86,7 +86,8 @@ function thh_kp_varianten($p) {
 			$t = taxonomy_exists($tax) ? get_term_by('slug', $val, $tax) : null;
 			$lbl[] = $t ? $t->name : $val;
 		}
-		$label = implode(' · ', $lbl);
+		$label = html_entity_decode(implode(' · ', $lbl), ENT_QUOTES, 'UTF-8');
+		if (isset($seen[$label])) continue; $seen[$label] = 1;
 		if (preg_match('/sample|proef|tester|30\\s*gram|1\\s*portie|single serv/i', $label . ' ' . $v->get_name())) continue;
 		$out[] = ['id' => $v->get_id(), 'label' => $label ?: $v->get_name(), 'prijs' => number_format((float) $v->get_price(), 2, ',', '.'), 'p' => (float) $v->get_price(), 's' => (int) $v->get_total_sales()];
 	}
@@ -168,7 +169,7 @@ add_action('rest_api_init', function () {
 		$ok = ['doel' => ['spier', 'afvallen', 'fit', 'duur', 'herstel'], 'freq' => ['laag', 'mid', 'hoog'], 'sport' => ['kracht', 'vecht', 'cardio', 'mix'], 'dieet' => ['geen', 'lactose', 'vegan'], 'budget' => ['basis', 'compleet']];
 		$a = [];
 		foreach ($ok as $k => $vals) $a[$k] = in_array($p[$k] ?? '', $vals, true) ? $p[$k] : $vals[0];
-		$key = 'thh_kp4_' . md5(wp_json_encode($a));
+		$key = 'thh_kp5_' . md5(wp_json_encode($a));
 		$res = get_transient($key);
 		if (!$res) { $res = thh_kp_advies($a); set_transient($key, $res, 2 * HOUR_IN_SECONDS); }
 		return $res;
