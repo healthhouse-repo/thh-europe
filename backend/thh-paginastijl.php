@@ -30,7 +30,7 @@ body.page section.page-hero .elementor-inner-section.hero-inner>.elementor-conta
 body.page section.page-hero .elementor-column.hero-inner{position:relative!important;top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;transform:none!important;width:100%!important}
 body.page section.page-hero .hero-image{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background-size:cover!important;background-position:center!important;clip-path:none!important;transform:none!important}
 body.page section.page-hero .hero-image:before,body.page section.page-hero .hero-image:after,body.page section.page-hero .hero-image>.elementor-background-overlay{display:none!important}
-body.page section.page-hero:has(.hero-image) .hero-title{max-width:50%;position:relative;z-index:1}
+body.page section.page-hero .hero-title{position:relative!important;top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;transform:none!important;width:auto!important;z-index:1}body.page section.page-hero:has(.hero-image) .hero-title{max-width:50%}
 @media(max-width:900px){body.page section.page-hero .elementor-inner-section.hero-inner{position:relative!important;width:auto!important;height:220px!important;margin:24px -28px -32px!important}body.page section.page-hero:has(.hero-image) .hero-title{max-width:none}}
 @media(max-width:640px){body.page section.page-hero .elementor-inner-section.hero-inner{height:180px!important;margin:20px -20px -24px!important}}
 /* themakop (pagina's zonder eigen hero) */
