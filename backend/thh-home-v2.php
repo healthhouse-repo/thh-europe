@@ -13,9 +13,7 @@ function thh_h2_card($p, $tag = '') {
 	if (!$p || !$p->is_visible()) return '';
 	$img = $p->get_image('woocommerce_thumbnail', ['loading' => 'lazy', 'class' => 'h2-pimg']);
 	$brand = '';
-	$terms = wp_get_post_terms($p->get_id(), 'pa_merk', ['fields' => 'names']);
-	if (!is_wp_error($terms) && $terms) $brand = $terms[0];
-	if (!$brand) { $b = wc_get_product_terms($p->get_id(), 'product_brand', ['fields' => 'names']); if (!is_wp_error($b) && $b) $brand = $b[0]; }
+	foreach (['product_brand', 'brands', 'pa_merk'] as $tx) { if (!taxonomy_exists($tx)) continue; $terms = wp_get_post_terms($p->get_id(), $tx, ['fields' => 'names']); if (!is_wp_error($terms) && $terms) { $brand = $terms[0]; break; } }
 	$badge = '';
 	if ($p->is_on_sale() && $p->get_regular_price() && $p->get_sale_price()) {
 		$off = round((1 - (float) $p->get_sale_price() / (float) $p->get_regular_price()) * 100);
@@ -97,8 +95,10 @@ add_shortcode('thh_home_v2', function ($a) {
 
 	$wish = ['XXL Nutrition', 'Applied Nutrition', 'Optimum Nutrition', 'Cellucor', 'Quamtrax', 'Kosso Nutrition', 'Grenade', 'Barebells', 'Per4m', 'USN', 'Nutrend', 'The Health House'];
 	$brands = [];
-	foreach ($wish as $w) { $t = get_term_by('name', $w, 'pa_merk'); if ($t && !is_wp_error($t)) $brands[] = $t; }
-	if (count($brands) < 6) $brands = get_terms(['taxonomy' => 'pa_merk', 'orderby' => 'count', 'order' => 'DESC', 'number' => 12, 'hide_empty' => true]);
+	$btax = taxonomy_exists('product_brand') ? 'product_brand' : (taxonomy_exists('brands') ? 'brands' : 'pa_merk');
+	foreach ($wish as $w) { $t = get_term_by('name', $w, $btax); if (!$t) { $q = get_terms(['taxonomy' => $btax, 'name__like' => $w, 'number' => 1, 'hide_empty' => true]); $t = !is_wp_error($q) && $q ? $q[0] : null; } if ($t && !is_wp_error($t)) $brands[$t->term_id] = $t; }
+	$brands = array_values($brands);
+	if (count($brands) < 6) $brands = get_terms(['taxonomy' => $btax, 'orderby' => 'count', 'order' => 'DESC', 'number' => 12, 'hide_empty' => true]);
 	$brand_html = '';
 	if (!is_wp_error($brands)) foreach ($brands as $b) { $lid = (int) get_term_meta($b->term_id, 'thumbnail_id', true); $logo = $lid ? wp_get_attachment_image($lid, 'medium', false, ['loading' => 'lazy', 'alt' => $b->name]) : ''; $brand_html .= '<a class="h2-brand-tile" href="' . esc_url(get_term_link($b)) . '">' . ($logo ?: '<span>' . esc_html($b->name) . '</span>') . '</a>'; }
 
