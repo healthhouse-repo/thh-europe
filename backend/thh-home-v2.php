@@ -131,7 +131,8 @@ add_shortcode('thh_home_v2', function ($a) {
 				$ck = 'thh_ddcut_' . $pid;
 				$cu = get_transient($ck);
 				if ($cu === false) { $a = get_page_by_path('dagdeal-cutout-' . $pid, OBJECT, 'attachment'); $cu = $a ? (string) wp_get_attachment_url($a->ID) : ''; set_transient($ck, $cu, HOUR_IN_SECONDS); }
-				if ($cu) $i['img'] = $cu;
+				if ($cu) { $i['img'] = $cu; }
+				else { $pp = wc_get_product($pid); $iid = $pp ? $pp->get_image_id() : 0; if ($iid) { $full = wp_get_attachment_url($iid); if ($full) $i['img'] = $full; } }
 			}
 		}
 		$deals_html .= '<a class="h2-deal" href="' . esc_url($week ? home_url('/weekdeals/') : home_url('/dagdeal/')) . '">' .
@@ -207,7 +208,7 @@ add_shortcode('thh_home_v2', function ($a) {
 
 	<?php if ($deals_html || $wk_html) : ?>
 	<section class="h2-sec">
-		<div class="h2-sechead"><h2>Deals van vandaag</h2><a href="<?php echo $u('/deals/'); ?>">Alle deals →</a></div>
+		<div class="h2-sechead"><h2>Deals van vandaag</h2><span class="h2-headlinks"><a href="<?php echo $u('/deals/'); ?>">Alle deals →</a><a class="h2-weekbtn" href="<?php echo $u('/weekdeals/'); ?>">Bekijk weekdeals →</a></span></div>
 		<div class="h2-dealgrid"><?php echo $deals_html; ?><div class="h2-grid h2-grid3"><?php echo $wk_html; ?></div></div>
 	</section>
 	<?php endif; ?>
@@ -301,7 +302,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-deal h3{color:#fff;font-size:24px;font-weight:700}.h2-deal p{margin:0;font-size:13px;color:rgba(255,255,255,.75)}
 .h2-dealprice{font-size:28px;font-weight:700;display:flex;align-items:center;gap:10px}.h2-dealprice s{color:rgba(255,255,255,.55);font-size:16px;font-weight:400}.h2-dealprice .h2-badge{position:static}
 .h2-timer{display:flex;gap:8px}.h2-timer span{background:rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;min-width:56px;text-align:center;display:flex;flex-direction:column}.h2-timer b{font-size:20px;font-weight:600}.h2-timer small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
-.h2-dealimg{position:absolute;right:2%;top:50%;transform:translateY(-50%);width:46%;height:90%;object-fit:contain;filter:drop-shadow(0 24px 30px rgba(0,0,0,.45))}
+.h2-dealimg{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:37%;height:72%;object-fit:contain;filter:drop-shadow(0 24px 30px rgba(0,0,0,.45))}
 /* banner */
 .h2-bannersec{margin-top:40px}.h2-banner{display:block;border-radius:20px;overflow:hidden}.h2-banner img{display:block;width:100%;height:auto}.h2-banner picture{display:block}
 /* band */
@@ -320,7 +321,8 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2 .h2-post{color:var(--nv)}.h2-post{display:flex;flex-direction:column;gap:12px}.h2-post img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px}
 .h2-post span{display:flex;flex-direction:column;gap:4px}.h2-post em{font-style:normal;font-size:12px;color:var(--mut)}.h2-post strong{font-size:16px;font-weight:500;color:var(--nv);line-height:1.4}
 @media(max-width:1024px){.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-usps{grid-template-columns:1fr 1fr}.h2-grid4{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-brands{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-dealgrid{grid-template-columns:1fr}.h2-band{grid-template-columns:1fr;padding:36px}.h2-hero{grid-template-columns:1fr;padding:36px 28px;min-height:0}.h2-herovis{min-height:260px}}
-@media(max-width:640px){.h2 .h2-hero{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;padding:20px 14px 20px 18px;gap:8px;border-radius:18px}.h2-herovis{order:0;min-height:0;height:auto;padding:0;align-self:center}.h2-heroimg{max-height:210px;width:100%}.h2-herotxt{gap:10px;justify-content:center}.h2 .h2-hero h1{font-size:26px;line-height:1}.h2-hero h1 em{-webkit-text-stroke:1.2px #fff}.h2-hero p{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.h2-ctas{flex-direction:column;flex-wrap:nowrap;gap:8px;align-items:stretch}.h2-ctas .h2-btn{min-height:40px;padding:8px 12px;font-size:13px;white-space:nowrap}.h2-herousp{display:none}.h2-only-mob{display:flex!important}.h2-dealgrid .h2-cimg{min-height:0;aspect-ratio:1/1.22}.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.h2 .h2-cat{padding:6px 4px 8px;gap:2px;border-radius:8px}.h2-catname{font-size:11.5px;justify-content:center;padding:0;white-space:nowrap;letter-spacing:-.01em;text-align:center}.h2-catname svg{display:none}.h2-catvec{width:84%;height:84%}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:85%;height:250px;margin:0 auto;order:-1}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
+@media(max-width:640px){.h2 .h2-hero{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;padding:20px 14px 20px 18px;gap:8px;border-radius:18px}.h2-herovis{order:0;min-height:0;height:auto;padding:0;align-self:center}.h2-heroimg{max-height:210px;width:100%}.h2-herotxt{gap:10px;justify-content:center}.h2 .h2-hero h1{font-size:26px;line-height:1}.h2-hero h1 em{-webkit-text-stroke:1.2px #fff}.h2-hero p{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.h2-ctas{flex-direction:column;flex-wrap:nowrap;gap:8px;align-items:stretch}.h2-ctas .h2-btn{min-height:40px;padding:8px 12px;font-size:13px;white-space:nowrap}.h2-herousp{display:none}.h2-only-mob{display:flex!important}.h2-dealgrid .h2-cimg{min-height:0;aspect-ratio:1/1.22}.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.h2 .h2-cat{padding:6px 4px 8px;gap:2px;border-radius:8px}.h2-catname{font-size:11.5px;justify-content:center;padding:0;white-space:nowrap;letter-spacing:-.01em;text-align:center}.h2-catname svg{display:none}.h2-catvec{width:84%;height:84%}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:210px;margin:0 auto;order:-1}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
+.h2-headlinks{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end}.h2 .h2-sechead .h2-weekbtn{background:var(--nv);color:#fff;text-decoration:none;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600}.h2 .h2-sechead .h2-weekbtn:hover{background:#0d1538;color:#fff}@media(max-width:640px){.h2-headlinks{gap:8px}.h2 .h2-sechead .h2-weekbtn{padding:6px 12px;font-size:12.5px}.h2-headlinks a:first-child{font-size:13px}}
 </style>
 <script id="thh-h2-cutout">
 (function(){
