@@ -18,7 +18,9 @@ function thh_ddp_info( $deal ) {
 	$img = '';
 	if ( $p ) {
 		$iid = $p->get_image_id();
-		if ( $iid ) { $img = wp_get_attachment_image_url( $iid, 'woocommerce_single' ); }
+		if ( $iid ) { $img = wp_get_attachment_image_url( $iid, 'full' ); }
+		$cut = get_page_by_path( 'dagdeal-cutout-' . $pid, OBJECT, 'attachment' );
+		if ( $cut ) { $cu = wp_get_attachment_url( $cut->ID ); if ( $cu ) { $img = $cu; } }
 	}
 	$van = (float) $deal[2];
 	$voor = (float) $deal[1];
@@ -109,8 +111,8 @@ body.thh-dagdeal-page .site-main,body.thh-dagdeal-page .page-content{max-width:n
 .dd-cdb b{display:block;font-size:28px;font-weight:900;line-height:1}.dd-cdb small{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c9d0f5}
 .dd-cta{display:inline-block;margin-top:28px;background:#D4364A;color:#fff!important;text-decoration:none!important;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;font-size:15px;padding:16px 34px;border-radius:40px}
 .dd-cta.off{background:#5b6180;pointer-events:none}
-.dd-art{position:relative;aspect-ratio:1/1;border-radius:24px;background:radial-gradient(circle at 50% 45%,#ffffff 0%,#dfe5f7 75%);display:flex;align-items:center;justify-content:center}
-.dd-art img{width:78%!important;height:78%!important;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(3,18,79,.35))}
+.dd-art{position:relative;aspect-ratio:1/1;border-radius:24px;background:#fff;display:flex;align-items:center;justify-content:center}
+.dd-art img{width:72%!important;height:72%!important;object-fit:contain;filter:none}
 .dd-badge{position:absolute;right:-2%;top:-4%;width:130px;height:130px;border-radius:50%;background:#D4364A;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(8deg);font-weight:900;text-transform:uppercase;line-height:.95;box-shadow:0 10px 24px rgba(0,0,20,.35)}
 .dd-badge span{font-size:14px}.dd-badge strong{font-size:30px;margin-top:4px}
 .dd-off{position:absolute;left:16px;top:16px;background:#03124F;color:#fff;font-weight:800;font-size:16px;padding:7px 14px;border-radius:24px}
@@ -120,8 +122,8 @@ body.thh-dagdeal-page .site-main,body.thh-dagdeal-page .page-content{max-width:n
 .dd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .dd-card{position:relative;display:flex;flex-direction:column;background:#fff;border-radius:18px;padding:14px 14px 18px;text-decoration:none!important;color:#03124F!important;box-shadow:0 2px 0 rgba(3,18,79,.04);transition:transform .2s,box-shadow .2s}
 a.dd-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(3,18,79,.14)}
-.dd-img{position:relative;border-radius:12px;aspect-ratio:1/1;background:radial-gradient(circle at 50% 42%,#ffffff 0%,#e8ecf8 78%);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.dd-img img{width:74%!important;height:78%!important;object-fit:contain;filter:drop-shadow(0 14px 16px rgba(3,18,79,.25))}
+.dd-img{position:relative;border-radius:12px;aspect-ratio:1/1;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.dd-img img{width:74%!important;height:78%!important;object-fit:contain;filter:none}
 .dd-q{font-size:64px;font-weight:900;color:#c3cae6}
 .dd-pr{position:absolute;right:8px;top:8px;width:74px;height:74px;border-radius:50%;background:#D4364A;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(8deg);font-weight:900;line-height:1}
 .dd-pr small{font-size:9px;letter-spacing:1px;text-transform:uppercase}.dd-pr b{font-size:17px;margin-top:2px}
@@ -135,7 +137,7 @@ a.dd-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(3,18,79,.
 .dd-note{margin:28px 0 0;font-size:13px;color:#5b6180}
 .ddh{font-family:Poppins,system-ui,sans-serif;max-width:1240px;margin:24px auto;padding:0 16px}
 .ddh a{display:grid;grid-template-columns:150px 1fr auto;gap:22px;align-items:center;background:linear-gradient(118deg,#03124F 0%,#03124F 62%,#1E2A66 62%);color:#fff!important;text-decoration:none!important;border-radius:20px;padding:18px 26px;position:relative;overflow:hidden}
-.ddh-img{width:150px;height:150px;border-radius:14px;background:radial-gradient(circle,#fff 0%,#dfe5f7 75%);display:flex;align-items:center;justify-content:center}
+.ddh-img{width:150px;height:150px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center}
 .ddh-img img{width:82%!important;height:82%!important;object-fit:contain}
 .ddh-lab{display:inline-block;background:#D4364A;color:#fff;font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:20px}
 .ddh h3{color:#fff!important;font-weight:900!important;font-size:clamp(22px,2.6vw,32px)!important;margin:8px 0 4px!important;text-transform:uppercase;line-height:1.05!important}

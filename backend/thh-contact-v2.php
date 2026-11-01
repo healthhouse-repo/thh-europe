@@ -52,7 +52,7 @@ add_shortcode('thh_contact_v2', function () {
 				<li><a href="<?php echo $u('/locaties/'); ?>"><span class="ct-ic"><?php echo $svg('<path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'); ?></span><strong>In de winkel</strong><span>Bekijk onze winkels</span><?php echo $arr; ?></a></li>
 			</ul>
 		</div>
-		<figure class="ct-foto"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies-3.webp" alt="Medewerker van The Health House helpt een klant" loading="eager"></figure>
+		<figure class="ct-foto"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies-2.webp" alt="Medewerker van The Health House helpt een klant" loading="eager"></figure>
 	</section>
 
 	<section class="ct-sec">
