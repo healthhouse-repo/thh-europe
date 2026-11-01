@@ -23,7 +23,6 @@ add_shortcode('thh_footer_v2', function () {
 		<ul class="thf2-help-list">
 			<li><a href="https://wa.me/IN-TE-VULLEN" rel="nofollow"><span class="thf2-ic">💬</span><strong>WhatsApp</strong><span>IN TE VULLEN</span><span class="thf2-arr">↗</span></a></li>
 			<li><a href="mailto:IN-TE-VULLEN"><span class="thf2-ic">✉️</span><strong>E-mail</strong><span>IN TE VULLEN</span><span class="thf2-arr">↗</span></a></li>
-			<li><a href="tel:+31772088011"><span class="thf2-ic">📞</span><strong>Bel</strong><span>077 208 8011</span><span class="thf2-arr">↗</span></a></li>
 		</ul>
 	</section>
 
