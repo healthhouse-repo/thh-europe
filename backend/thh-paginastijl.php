@@ -21,6 +21,17 @@ body.page section.page-hero .hero-inner>.elementor-widget-wrap{padding:0!importa
 body.page section.page-hero .title-sub{display:inline-block!important;background:rgba(255,255,255,.14)!important;color:#fff!important;font-weight:600!important;font-size:12px!important;letter-spacing:.12em!important;text-transform:uppercase!important;padding:8px 14px!important;border-radius:6px!important;margin:0 0 16px!important}
 body.page section.page-hero h1{margin:0!important;color:#fff!important;font-weight:900!important;font-size:clamp(34px,4.6vw,60px)!important;line-height:1.02!important;text-transform:uppercase!important;letter-spacing:-.01em!important}
 body.page section.page-hero h1 span{color:transparent!important;-webkit-text-stroke:2px #fff!important}
+body.page section.page-hero,body.page section.page-hero>.elementor-container,body.page section.page-hero>.elementor-container>.elementor-column,body.page section.page-hero>.elementor-container>.elementor-column>.elementor-widget-wrap{height:auto!important;min-height:0!important}
+body.page section.page-hero{margin-bottom:40px!important}
+body.page section.page-hero>.elementor-container{align-items:center!important}
+body.page section.page-hero>.elementor-container>.elementor-column>.elementor-widget-wrap{align-content:center!important;position:static!important}
+body.page section.page-hero .elementor-inner-section.hero-inner{position:absolute!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;width:46%!important;margin:0!important;padding:0!important;z-index:0}
+body.page section.page-hero .elementor-inner-section.hero-inner>.elementor-container{height:100%!important;max-width:none!important}
+body.page section.page-hero .hero-image{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background-size:cover!important;background-position:center!important;clip-path:none!important;transform:none!important}
+body.page section.page-hero .hero-image:before,body.page section.page-hero .hero-image:after,body.page section.page-hero .hero-image>.elementor-background-overlay{display:none!important}
+body.page section.page-hero:has(.hero-image) .hero-title{max-width:50%;position:relative;z-index:1}
+@media(max-width:900px){body.page section.page-hero .elementor-inner-section.hero-inner{position:relative!important;width:auto!important;height:220px!important;margin:24px -28px -32px!important}body.page section.page-hero:has(.hero-image) .hero-title{max-width:none}}
+@media(max-width:640px){body.page section.page-hero .elementor-inner-section.hero-inner{height:180px!important;margin:20px -20px -24px!important}}
 /* themakop (pagina's zonder eigen hero) */
 body.page .site-main>.page-header{max-width:1200px;margin:16px auto 8px!important;background:var(--thh-nv);border-radius:24px;padding:48px 56px!important;box-sizing:border-box;position:relative;overflow:hidden}
 body.page .site-main>.page-header:before{content:"The Health House";display:inline-block;background:rgba(255,255,255,.14);color:#fff;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:6px;margin:0 0 16px}
