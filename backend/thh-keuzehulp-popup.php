@@ -14,6 +14,21 @@ function thh_kp_cat_ids($slugs) {
 	return $ids;
 }
 
+/* Prijs van leverbare, normale varianten (samples/proefzakjes tellen niet mee). Geeft [nu, normaal, vanaf]. */
+function thh_kp_prijs($p) {
+	if (!$p->is_type('variable')) return [(float) $p->get_price(), (float) $p->get_regular_price(), false];
+	$best = null; $prices = [];
+	foreach ($p->get_children() as $vid) {
+		$v = wc_get_product($vid);
+		if (!$v || !$v->is_purchasable() || !$v->is_in_stock() || (float) $v->get_price() <= 0) continue;
+		if (preg_match('/sample|proef|tester|30\\s*gram|1\\s*portie|single serv/i', implode(' ', $v->get_attributes()) . ' ' . $v->get_name())) continue;
+		$prices[] = (float) $v->get_price();
+		if (!$best || (float) $v->get_price() < (float) $best->get_price()) $best = $v;
+	}
+	if (!$best) return [(float) $p->get_variation_price('min'), (float) $p->get_variation_regular_price('min'), true];
+	return [(float) $best->get_price(), (float) $best->get_regular_price(), count(array_unique($prices)) > 1];
+}
+
 /* Kies producten uit categorieën: op voorraad, met foto, gesorteerd op verkopen. */
 function thh_kp_pick($cats, $opts = []) {
 	$uit_merk = function_exists('thh_home_merk_uit') ? thh_home_merk_uit() : ['jennah'];
@@ -29,7 +44,8 @@ function thh_kp_pick($cats, $opts = []) {
 	$moet = !empty($opts['moet']) ? $opts['moet'] : '';
 	$out = [];
 	foreach ($ps as $p) {
-		if (!$p->get_image_id() || (float) $p->get_price() < 5) continue;
+		if (!$p->get_image_id()) continue;
+		if (thh_kp_prijs($p)[0] < 5) continue;
 		if (in_array($p->get_id(), array_map(function ($x) { return $x->get_id(); }, $out), true)) continue;
 		$is_pref = !empty($opts['pref']) && in_array($p->get_id(), (array) $opts['pref'], true);
 		if (!$is_pref && preg_match($niet, $p->get_name())) continue;
@@ -45,21 +61,20 @@ function thh_kp_pick($cats, $opts = []) {
 function thh_kp_card($p) {
 	$img = wp_get_attachment_image_url($p->get_image_id(), 'woocommerce_thumbnail');
 	$var = $p->is_type('variable');
-	$prijs = $var ? (float) $p->get_variation_price('min') : (float) $p->get_price();
-	$reg = $var ? (float) $p->get_variation_regular_price('min') : (float) $p->get_regular_price();
+	list($prijs, $reg, $vanaf) = thh_kp_prijs($p);
 	$merk = wp_get_post_terms($p->get_id(), 'product_brand', ['fields' => 'names']);
 	return [
 		'id' => $p->get_id(), 'naam' => $p->get_name(), 'merk' => (!is_wp_error($merk) && $merk) ? $merk[0] : '',
 		'url' => $p->get_permalink(), 'img' => $img, 'prijs' => number_format($prijs, 2, ',', '.'),
-		'van' => ($p->is_on_sale() && $reg > $prijs) ? number_format($reg, 2, ',', '.') : '',
-		'vanaf' => $var && (float) $p->get_variation_price('min') !== (float) $p->get_variation_price('max'),
+		'van' => ($reg > $prijs) ? number_format($reg, 2, ',', '.') : '',
+		'vanaf' => $vanaf,
 		'direct' => !$var && $p->is_purchasable() && $p->is_in_stock(),
 	];
 }
 
 function thh_kp_advies($a) {
 	$doel = $a['doel'] ?? 'spier'; $freq = $a['freq'] ?? 'mid'; $sport = $a['sport'] ?? 'kracht'; $dieet = $a['dieet'] ?? 'geen'; $budget = $a['budget'] ?? 'basis';
-	$eiwit_cats = ['eiwitten']; $eiwit_opts = ['niet' => 'weight ?gainer|mass|vegan|plant|drink|lemonade|milkshake|pudding', 'pref' => [45196, 49348]];
+	$eiwit_cats = ['eiwitten']; $eiwit_opts = ['niet' => 'weight ?gainer|mass|vegan|plant|drink|lemonade|milkshake|pudding|pindakaas|peanut', 'pref' => [45196, 49348, 49356]];
 	if ($dieet === 'vegan') { $eiwit_cats = ['eiwitten-vegan']; $eiwit_opts = ['niet' => 'drink|reep|bar']; }
 	if ($dieet === 'lactose') { $eiwit_cats = ['eiwitten-isolaat', 'clear-whey']; $eiwit_opts = ['pref' => [50068, 49357], 'niet' => 'drink|lemonade']; }
 
@@ -130,7 +145,7 @@ add_action('rest_api_init', function () {
 		$ok = ['doel' => ['spier', 'afvallen', 'fit', 'duur', 'herstel'], 'freq' => ['laag', 'mid', 'hoog'], 'sport' => ['kracht', 'vecht', 'cardio', 'mix'], 'dieet' => ['geen', 'lactose', 'vegan'], 'budget' => ['basis', 'compleet']];
 		$a = [];
 		foreach ($ok as $k => $vals) $a[$k] = in_array($p[$k] ?? '', $vals, true) ? $p[$k] : $vals[0];
-		$key = 'thh_kp2_' . md5(wp_json_encode($a));
+		$key = 'thh_kp3_' . md5(wp_json_encode($a));
 		$res = get_transient($key);
 		if (!$res) { $res = thh_kp_advies($a); set_transient($key, $res, 2 * HOUR_IN_SECONDS); }
 		return $res;
