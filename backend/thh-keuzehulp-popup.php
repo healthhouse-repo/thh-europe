@@ -20,13 +20,20 @@ function thh_kp_pick($cats, $opts = []) {
 	$args = ['status' => 'publish', 'stock_status' => 'instock', 'visibility' => 'catalog', 'limit' => 40, 'category' => thh_kp_cat_ids($cats),
 		'orderby' => 'meta_value_num', 'meta_key' => 'total_sales', 'order' => 'DESC', 'return' => 'objects'];
 	$ps = wc_get_products($args);
+	if (!empty($opts['pref'])) {
+		$pref = [];
+		foreach ((array) $opts['pref'] as $pid) { $pp = wc_get_product($pid); if ($pp && $pp->is_visible() && $pp->is_in_stock() && $pp->get_image_id()) $pref[] = $pp; }
+		$ps = array_merge($pref, $ps);
+	}
 	$niet = '/sample|proef|bundel|bundle|pakket|cadeau|dagdeal|shaker|t-shirt|pet |kipfilet|reep|bar\b|wafel|chips|spread|jerky' . (!empty($opts['niet']) ? '|' . $opts['niet'] : '') . '/i';
 	$moet = !empty($opts['moet']) ? $opts['moet'] : '';
 	$out = [];
 	foreach ($ps as $p) {
 		if (!$p->get_image_id() || (float) $p->get_price() < 5) continue;
-		if (preg_match($niet, $p->get_name())) continue;
-		if ($moet && !preg_match($moet, $p->get_name() . ' ' . implode(' ', wp_get_post_terms($p->get_id(), 'product_cat', ['fields' => 'slugs'])))) continue;
+		if (in_array($p->get_id(), array_map(function ($x) { return $x->get_id(); }, $out), true)) continue;
+		$is_pref = !empty($opts['pref']) && in_array($p->get_id(), (array) $opts['pref'], true);
+		if (!$is_pref && preg_match($niet, $p->get_name())) continue;
+		if (!$is_pref && $moet && !preg_match($moet, $p->get_name() . ' ' . implode(' ', wp_get_post_terms($p->get_id(), 'product_cat', ['fields' => 'slugs'])))) continue;
 		$merk = wp_get_post_terms($p->get_id(), 'product_brand', ['fields' => 'slugs']);
 		if (!is_wp_error($merk) && array_intersect($merk, $uit_merk)) continue;
 		$out[] = $p;
@@ -52,9 +59,9 @@ function thh_kp_card($p) {
 
 function thh_kp_advies($a) {
 	$doel = $a['doel'] ?? 'spier'; $freq = $a['freq'] ?? 'mid'; $sport = $a['sport'] ?? 'kracht'; $dieet = $a['dieet'] ?? 'geen'; $budget = $a['budget'] ?? 'basis';
-	$eiwit_cats = ['eiwitten']; $eiwit_opts = ['niet' => 'weight ?gainer|mass|vegan|plant'];
-	if ($dieet === 'vegan') { $eiwit_cats = ['eiwitten-vegan']; $eiwit_opts = []; }
-	if ($dieet === 'lactose') { $eiwit_cats = ['eiwitten-isolaat', 'clear-whey']; $eiwit_opts = []; }
+	$eiwit_cats = ['eiwitten']; $eiwit_opts = ['niet' => 'weight ?gainer|mass|vegan|plant|drink|lemonade|milkshake|pudding', 'pref' => [45196, 49348]];
+	if ($dieet === 'vegan') { $eiwit_cats = ['eiwitten-vegan']; $eiwit_opts = ['niet' => 'drink|reep|bar']; }
+	if ($dieet === 'lactose') { $eiwit_cats = ['eiwitten-isolaat', 'clear-whey']; $eiwit_opts = ['pref' => [50068, 49357], 'niet' => 'drink|lemonade']; }
 
 	$S = []; // [titel, waarom, cats, opts]
 	$eiwit_waarom = [
@@ -70,35 +77,35 @@ function thh_kp_advies($a) {
 	switch ($doel) {
 		case 'afvallen':
 			$S[] = ['Eiwitshake', $eiwit_waarom['afvallen'], $dieet === 'geen' ? ['eiwitten-isolaat', 'clear-whey', 'eiwitten'] : $eiwit_cats, $eiwit_opts];
-			$S[] = ['Fatburner', 'Geeft extra energie en ondersteunt je als je wilt afvallen. Werkt alleen samen met goed eten en bewegen.', ['fatburners'], ['niet' => 'thee|tea|drink']];
-			if ($budget === 'compleet') $S[] = ['L-carnitine', 'Populair bij afvallen, zonder cafeïne. Goed te combineren met een fatburner.', ['l-carnitine-2'], []];
-			$S[] = ['Multivitamine', 'Als je minder eet, krijg je ook minder vitamines binnen. Een multivitamine vult dat aan.', ['multivitamine', 'vitamines'], ['moet' => '/multi/i']];
+			$S[] = ['Fatburner', 'Geeft extra energie en ondersteunt je als je wilt afvallen. Werkt alleen samen met goed eten en bewegen.', ['fatburners'], ['niet' => 'thee|tea|drink', 'pref' => [49506, 92541]]];
+			if ($budget === 'compleet') $S[] = ['L-carnitine', 'Populair bij afvallen, zonder cafeïne. Goed te combineren met een fatburner.', ['l-carnitine-2'], ['pref' => [57011, 92562]]];
+			$S[] = ['Multivitamine', 'Als je minder eet, krijg je ook minder vitamines binnen. Een multivitamine vult dat aan.', ['multivitamine', 'vitamines'], ['moet' => '/multi/i', 'pref' => [45972, 49498], 'niet' => 'gumm|bruis|vrouw']];
 			break;
 		case 'fit':
-			$S[] = ['Multivitamine', 'Een goede basis voor iedereen die actief is: alle belangrijke vitamines en mineralen in één.', ['multivitamine', 'vitamines'], ['moet' => '/multi/i']];
-			$S[] = ['Omega-3', 'Visolie met EPA en DHA, goed voor hart en hersenen. Veel mensen eten te weinig vette vis.', ['omega-3'], []];
+			$S[] = ['Multivitamine', 'Een goede basis voor iedereen die actief is: alle belangrijke vitamines en mineralen in één.', ['multivitamine', 'vitamines'], ['moet' => '/multi/i', 'pref' => [45972, 49498], 'niet' => 'gumm|bruis|vrouw']];
+			$S[] = ['Omega-3', 'Visolie met EPA en DHA, goed voor hart en hersenen. Veel mensen eten te weinig vette vis.', ['omega-3'], ['pref' => [45968, 49497]]];
 			$S[] = ['Eiwitshake', $eiwit_waarom['fit'], $eiwit_cats, $eiwit_opts];
-			if ($budget === 'compleet') $S[] = ['Magnesium', 'Helpt bij ontspanning van je spieren en een goede nachtrust.', ['magnesium'], []];
+			if ($budget === 'compleet') $S[] = ['Magnesium', 'Helpt bij ontspanning van je spieren en een goede nachtrust.', ['magnesium'], ['pref' => [49500, 56165]]];
 			break;
 		case 'duur':
-			$S[] = ['Elektrolyten', 'Bij lang of intensief sporten verlies je veel zout via zweet. Elektrolyten vullen dat aan.', ['elektrolyten', 'hydratie'], []];
-			$S[] = ['EAA', 'Essentiële aminozuren voor tijdens of na de training, licht en snel opgenomen.', ['eaa'], []];
+			$S[] = ['Elektrolyten', 'Bij lang of intensief sporten verlies je veel zout via zweet. Elektrolyten vullen dat aan.', ['elektrolyten', 'hydratie'], ['pref' => [49453]]];
+			$S[] = ['EAA', 'Essentiële aminozuren voor tijdens of na de training, licht en snel opgenomen.', ['eaa'], ['pref' => [57007, 92520]]];
 			$S[] = ['Eiwitshake', $eiwit_waarom['duur'], $eiwit_cats, $eiwit_opts];
-			if ($budget === 'compleet' || $sport === 'vecht') $S[] = ['Creatine', 'Helpt bij korte, explosieve inspanningen, zoals sprints en combinaties.', ['creatine'], ['niet' => 'gumm']];
+			if ($budget === 'compleet' || $sport === 'vecht') $S[] = ['Creatine', 'Helpt bij korte, explosieve inspanningen, zoals sprints en combinaties.', ['creatine'], ['niet' => 'gumm', 'pref' => [45304, 50071]]];
 			break;
 		case 'herstel':
-			$S[] = ['Omega-3', 'Visolie met EPA en DHA, een goede basis voor je gezondheid.', ['omega-3'], []];
-			$S[] = ['Magnesium', 'Helpt bij ontspanning van je spieren en een goede nachtrust.', ['magnesium'], []];
-			$S[] = ['Gewrichten', 'Voor wie veel traint of last heeft van stijve gewrichten, bijvoorbeeld met collageen of glucosamine.', ['joints-gewrichten'], []];
-			if ($budget === 'compleet') $S[] = ['Slaap en herstel', 'Een goede nachtrust is het belangrijkste deel van je herstel.', ['slaap', 'nachtrust-en-herstel'], []];
+			$S[] = ['Omega-3', 'Visolie met EPA en DHA, een goede basis voor je gezondheid.', ['omega-3'], ['pref' => [45968, 49497]]];
+			$S[] = ['Magnesium', 'Helpt bij ontspanning van je spieren en een goede nachtrust.', ['magnesium'], ['pref' => [49500, 56165]]];
+			$S[] = ['Gewrichten', 'Voor wie veel traint of last heeft van stijve gewrichten, bijvoorbeeld met collageen of glucosamine.', ['joints-gewrichten'], ['pref' => [49943, 49912]]];
+			if ($budget === 'compleet') $S[] = ['Slaap en herstel', 'Een goede nachtrust is het belangrijkste deel van je herstel.', ['slaap', 'nachtrust-en-herstel'], ['pref' => [46857, 49540]]];
 			break;
 		default: // spier
 			$S[] = ['Eiwitshake', $eiwit_waarom['spier'], $eiwit_cats, $eiwit_opts];
-			$S[] = ['Creatine', 'Het best onderzochte supplement voor kracht en spiermassa. Neem dagelijks 3 tot 5 gram.', ['creatine-monohydraat', 'creatine'], ['niet' => 'gumm|hmb|stack']];
-			if ($freq !== 'laag' || $budget === 'compleet') $S[] = ['Pre-workout', 'Voor extra energie en focus tijdens je training. Neem hem niet te laat op de dag.', ['pre-workout'], []];
-			if ($budget === 'compleet') $S[] = ['Multivitamine', 'Als je veel traint, heb je meer vitamines en mineralen nodig.', ['multivitamine', 'vitamines'], ['moet' => '/multi/i']];
+			$S[] = ['Creatine', 'Het best onderzochte supplement voor kracht en spiermassa. Neem dagelijks 3 tot 5 gram.', ['creatine-monohydraat', 'creatine'], ['niet' => 'gumm|hmb|stack', 'pref' => [45304, 50071]]];
+			if ($freq !== 'laag' || $budget === 'compleet') $S[] = ['Pre-workout', 'Voor extra energie en focus tijdens je training. Neem hem niet te laat op de dag.', ['pre-workout'], ['niet' => 'caps|capsul|tablet|shot|o\\.r\\.s|rehydrat', 'pref' => [47127, 56361]]];
+			if ($budget === 'compleet') $S[] = ['Multivitamine', 'Als je veel traint, heb je meer vitamines en mineralen nodig.', ['multivitamine', 'vitamines'], ['moet' => '/multi/i', 'pref' => [45972, 49498], 'niet' => 'gumm|bruis|vrouw']];
 	}
-	if ($sport === 'vecht' && $doel !== 'duur') $S[] = ['Elektrolyten', 'Bij vechtsport zweet je veel. Elektrolyten helpen je fris te blijven tijdens lange trainingen.', ['elektrolyten', 'hydratie'], []];
+	if ($sport === 'vecht' && $doel !== 'duur') $S[] = ['Elektrolyten', 'Bij vechtsport zweet je veel. Elektrolyten helpen je fris te blijven tijdens lange trainingen.', ['elektrolyten', 'hydratie'], ['pref' => [49453]]];
 
 	$secties = []; $gezien = [];
 	foreach ($S as [$titel, $waarom, $cats, $opts]) {
@@ -123,7 +130,7 @@ add_action('rest_api_init', function () {
 		$ok = ['doel' => ['spier', 'afvallen', 'fit', 'duur', 'herstel'], 'freq' => ['laag', 'mid', 'hoog'], 'sport' => ['kracht', 'vecht', 'cardio', 'mix'], 'dieet' => ['geen', 'lactose', 'vegan'], 'budget' => ['basis', 'compleet']];
 		$a = [];
 		foreach ($ok as $k => $vals) $a[$k] = in_array($p[$k] ?? '', $vals, true) ? $p[$k] : $vals[0];
-		$key = 'thh_kp_' . md5(wp_json_encode($a));
+		$key = 'thh_kp2_' . md5(wp_json_encode($a));
 		$res = get_transient($key);
 		if (!$res) { $res = thh_kp_advies($a); set_transient($key, $res, 2 * HOUR_IN_SECONDS); }
 		return $res;
