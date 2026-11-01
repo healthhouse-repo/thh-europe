@@ -122,6 +122,18 @@ add_shortcode('thh_home_v2', function ($a) {
 	if ($deal && !empty($deal['deals'])) {
 		$i = $deal['deals'][0];
 		$week = !empty($deal['week']);
+		// transparante uitsnede gebruiken als die er is (media-slug dagdeal-cutout-{product-id})
+		if (function_exists('thh_dd_vandaag')) {
+			list(, $ddl) = thh_dd_vandaag();
+			$fid = !empty($ddl[0][0]) ? (int) reset($ddl[0][0]) : 0;
+			$pid = $fid ? ((int) wp_get_post_parent_id($fid) ?: $fid) : 0;
+			if ($pid) {
+				$ck = 'thh_ddcut_' . $pid;
+				$cu = get_transient($ck);
+				if ($cu === false) { $a = get_page_by_path('dagdeal-cutout-' . $pid, OBJECT, 'attachment'); $cu = $a ? (string) wp_get_attachment_url($a->ID) : ''; set_transient($ck, $cu, HOUR_IN_SECONDS); }
+				if ($cu) $i['img'] = $cu;
+			}
+		}
 		$deals_html .= '<a class="h2-deal" href="' . esc_url($week ? home_url('/weekdeals/') : home_url('/dagdeal/')) . '">' .
 			'<div class="h2-dealtxt"><span class="h2-pill">' . ($week ? 'Weekdeals' : 'Dagdeal van vandaag') . '</span>' .
 			'<h3>' . esc_html($week ? 'Alle dagdeals van deze week' : $i['titel']) . '</h3>' .
