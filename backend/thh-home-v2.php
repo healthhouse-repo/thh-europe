@@ -100,7 +100,17 @@ add_shortcode('thh_home_v2', function ($a) {
 	$brands = array_values($brands);
 	if (count($brands) < 6) $brands = get_terms(['taxonomy' => $btax, 'orderby' => 'count', 'order' => 'DESC', 'number' => 12, 'hide_empty' => true]);
 	$brand_html = '';
-	if (!is_wp_error($brands)) foreach ($brands as $b) { $lid = (int) get_term_meta($b->term_id, 'thumbnail_id', true); $logo = $lid ? wp_get_attachment_image($lid, 'medium', false, ['loading' => 'lazy', 'alt' => $b->name]) : ''; $brand_html .= '<a class="h2-brand-tile" href="' . esc_url(get_term_link($b)) . '">' . ($logo ?: '<span>' . esc_html($b->name) . '</span>') . '</a>'; }
+	if (!is_wp_error($brands)) $alias = ['huge supplements' => 'huge', 'nutri+' => 'nutri', "lenny & larry's" => 'lenny-larrys', '5% nutrition rich piana' => '5-nutrition', "doctor's best" => 'docters-best'];
+	foreach ($brands as $b) {
+		$lid = (int) get_term_meta($b->term_id, 'thumbnail_id', true);
+		$src = $lid ? wp_get_attachment_image_url($lid, 'medium') : '';
+		if (!$src) {
+			$k = mb_strtolower(trim($b->name));
+			$slug = $alias[$k] ?? preg_replace('/^-+|-+$/', '', preg_replace('/[^a-z0-9]+/', '-', str_replace(['\'', '’', '`', '&'], '', remove_accents($k))));
+			$src = 'https://cdn.jsdelivr.net/gh/healthhouse-repo/thh-xxl-images@main/brand-logos/' . $slug . '.png';
+		}
+		$brand_html .= '<a class="h2-brand-tile" href="' . esc_url(get_term_link($b)) . '"><img src="' . esc_url($src) . '" alt="' . esc_attr($b->name) . '" loading="lazy" data-name="' . esc_attr($b->name) . '" onerror="this.outerHTML=\'<span>\'+this.dataset.name+\'</span>\'"></a>';
+	}
 
 	$posts = get_posts(['numberposts' => 3, 'post_status' => 'publish']);
 	$blog_html = '';
@@ -149,8 +159,8 @@ add_shortcode('thh_home_v2', function ($a) {
 	<section class="h2-band">
 		<div class="h2-bandtxt"><span class="h2-kicker">Meer dan een webshop</span><h2>Echte winkels, eerlijk advies, <em>geen onzin</em></h2><p>Van één winkel naar winkels door heel Nederland en een webshop met ruim 1.800 producten. Onze specialisten denken met je mee — online of in de winkel. Advies dat past bij jouw doel, je niveau en je budget.</p><div class="h2-ctas"><a class="h2-btn h2-btn-red" href="<?php echo $u('/advies/'); ?>">Gratis advies</a><a class="h2-btn h2-btn-ghost" href="<?php echo $u('/locaties/'); ?>">Vind een winkel</a></div></div>
 		<div class="h2-bandcards">
-			<a href="<?php echo $u('/locaties/'); ?>"><strong>Winkels</strong><span>Amsterdam, Hoofddorp, Heerhugowaard, Uithoorn en binnenkort Halfweg (outlet)</span></a>
-			<a href="<?php echo $u('/loyalty/'); ?>"><strong>THH Club</strong><span>Voor elke € 10 een punt. 10 punten = € 5 korting</span></a>
+			<a href="<?php echo $u('/locaties/'); ?>"><strong>Zoek een winkel</strong><span>Amsterdam, Hoofddorp, Heerhugowaard, Uithoorn en binnenkort Halfweg (outlet)</span></a>
+			<a href="<?php echo $u('/loyalty/'); ?>"><strong>Meld je aan voor The Health House Loyalty</strong><span>Voor elke € 10 een punt. 10 punten = € 5 korting</span></a>
 			<a href="<?php echo $u('/gratis-tools/'); ?>"><strong>Gratis tools</strong><span>Caloriebehoefte, eiwitbehoefte en meer</span></a>
 		</div>
 	</section>
@@ -162,12 +172,6 @@ add_shortcode('thh_home_v2', function ($a) {
 
 	<?php if ($brand_html) : ?><section class="h2-sec"><div class="h2-sechead"><h2>Onze merken</h2></div><div class="h2-brands"><?php echo $brand_html; ?></div><div class="h2-center"><a class="h2-btn h2-btn-nv" href="<?php echo $u('/merken/'); ?>">Bekijk alle merken</a></div></section><?php endif; ?>
 
-	<?php if ($blog_html) : ?>
-	<section class="h2-sec">
-		<div class="h2-sechead"><h2>De no-nonsense blog</h2><a href="<?php echo $u('/blog/'); ?>">Alle artikelen →</a></div>
-		<div class="h2-posts"><?php echo $blog_html; ?></div>
-	</section>
-	<?php endif; ?>
 </div>
 <style>
 .h2{--nv:#14204a;--rd:#e2373f;--bg:#f5f6fa;--tx:#1b1f2e;--mut:#5a6072;max-width:1240px;margin:0 auto;padding:16px 20px 40px;color:var(--tx);font-family:inherit}
@@ -227,7 +231,7 @@ add_shortcode('thh_home_v2', function ($a) {
 /* merken */
 .h2-brands{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
 .h2 .h2-brand-tile{color:var(--nv);background:#fff;border:1px solid #e6e8f0;border-radius:14px;height:88px;display:grid;place-items:center;padding:14px;text-align:center}
-.h2-brand-tile img{max-height:48px;max-width:80%;object-fit:contain;filter:grayscale(1);opacity:.8}.h2-brand-tile:hover img{filter:none;opacity:1}
+.h2-brand-tile img{max-height:44px;max-width:78%;object-fit:contain}
 .h2-brand-tile span{font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#6b7187}.h2-brand-tile:hover span{color:var(--nv)}
 /* blog */
 .h2-posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
