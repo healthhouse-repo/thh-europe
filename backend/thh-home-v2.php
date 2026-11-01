@@ -70,7 +70,7 @@ add_shortcode('thh_home_v2', function ($a) {
 		'kicker' => '', 'titel' => 'ALLES VOOR', 'titel2' => 'JOUW DOEL', 'sub' => 'Eiwitten, creatine, pre-workouts en vitamines van de merken die je kent. Online besteld, morgen in huis — of haal het op in één van onze winkels.',
 		'cta' => 'Shop de bestsellers', 'cta_url' => '/product-category/best-verkocht/', 'cta2' => 'Start de keuzehulp', 'cta2_url' => '/advies/',
 		'img' => 'https://thh-outlet.vercel.app/outlet/assets/weekdeals/hero-weekdeals.png', 'thema' => 'navy',
-		'banner' => 'https://thehealthhouse.nl/wp-content/uploads/2026/11/homepage-banner-clear-whey.webp', 'banner_url' => '/product/clear-whey-isolate/', 'banner_alt' => 'Nieuw: Clear Whey Isolate met collageen – 20% korting',
+		'banner_mobiel' => '', 'banner' => 'https://thehealthhouse.nl/wp-content/uploads/2026/11/homepage-banner-clear-whey.webp', 'banner_url' => '/product/clear-whey-isolate/', 'banner_alt' => 'Nieuw: Clear Whey Isolate met collageen – 20% korting',
 	], $a, 'thh_home_v2');
 	$u = function ($p) { return esc_url(strpos($p, 'http') === 0 ? $p : home_url($p)); };
 	$up = 'https://thehealthhouse.nl/wp-content/uploads/';
@@ -179,7 +179,7 @@ add_shortcode('thh_home_v2', function ($a) {
 		<div class="h2-grid h2-grid4"><?php echo $best_html; ?></div>
 	</section>
 
-	<?php if ($a['banner']) : ?><section class="h2-sec h2-bannersec"><a class="h2-banner" href="<?php echo $u($a['banner_url']); ?>"><img src="<?php echo esc_url($a['banner']); ?>" alt="<?php echo esc_attr($a['banner_alt']); ?>" loading="lazy"></a></section><?php endif; ?>
+	<?php if ($a['banner']) : ?><section class="h2-sec h2-bannersec"><a class="h2-banner" href="<?php echo $u($a['banner_url']); ?>"><picture><?php if ($a['banner_mobiel']) : ?><source media="(max-width:640px)" srcset="<?php echo esc_url($a['banner_mobiel']); ?>"><?php endif; ?><img src="<?php echo esc_url($a['banner']); ?>" alt="<?php echo esc_attr($a['banner_alt']); ?>" loading="lazy"></picture></a></section><?php endif; ?>
 
 	<section class="h2-sec">
 		<div class="h2-sechead"><h2>Nieuw binnen</h2><a href="<?php echo $u('/product-category/nieuw/'); ?>">Alle nieuwe producten →</a></div>
@@ -265,7 +265,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-timer{display:flex;gap:8px}.h2-timer span{background:rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;min-width:56px;text-align:center;display:flex;flex-direction:column}.h2-timer b{font-size:20px;font-weight:600}.h2-timer small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
 .h2-dealimg{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:36%;height:72%;object-fit:contain;filter:drop-shadow(0 24px 30px rgba(0,0,0,.45))}
 /* banner */
-.h2-bannersec{margin-top:40px}.h2-banner{display:block;border-radius:20px;overflow:hidden}.h2-banner img{display:block;width:100%;height:auto}
+.h2-bannersec{margin-top:40px}.h2-banner{display:block;border-radius:20px;overflow:hidden}.h2-banner img{display:block;width:100%;height:auto}.h2-banner picture{display:block}
 /* band */
 .h2-band{margin-top:56px;background:var(--nv);color:#fff;border-radius:24px;padding:48px 56px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
 .h2-bandtxt{display:flex;flex-direction:column;gap:16px}.h2-band h2{color:#fff;font-size:36px;font-weight:700}.h2-band h2 em{font-style:normal;color:transparent;-webkit-text-stroke:1.5px #fff}
