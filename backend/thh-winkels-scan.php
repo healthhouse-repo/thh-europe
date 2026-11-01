@@ -26,3 +26,24 @@ add_action('rest_api_init', function () {
 		return ['zoek' => $z, 'posts' => $out, 'menu_items' => $menus, 'snippets' => (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}snippets WHERE code LIKE %s AND active = 1", $like))];
 	}]);
 });
+
+// Boomstructuur van een Elementor-template (om te zien hoe winkelblokken zijn opgebouwd)
+add_action('rest_api_init', function () {
+	register_rest_route('thh/v1', '/winkels/boom', ['methods' => 'GET', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function ($r) {
+		$id = (int) $r['id'];
+		$data = json_decode((string) get_post_meta($id, '_elementor_data', true), true);
+		if (!$data) return new WP_Error('leeg', 'geen elementor data', ['status' => 404]);
+		$walk = function ($els, $depth, $path) use (&$walk) {
+			$out = [];
+			foreach ($els as $i => $el) {
+				$s = $el['settings'] ?? [];
+				$txt = $s['title'] ?? ($s['description_text'] ?? ($s['editor'] ?? ($s['text'] ?? ($s['title_text'] ?? ''))));
+				$txt = is_string($txt) ? trim(wp_strip_all_tags($txt)) : '';
+				$out[] = str_repeat('  ', $depth) . $path . $i . ' ' . $el['elType'] . ($el['widgetType'] ?? '' ? ':' . $el['widgetType'] : '') . ' #' . $el['id'] . ($txt !== '' ? ' "' . mb_substr($txt, 0, 60) . '"' : '') . (!empty($s['_css_classes']) ? ' .' . $s['_css_classes'] : '');
+				if (!empty($el['elements'])) $out = array_merge($out, $walk($el['elements'], $depth + 1, $path . $i . '.'));
+			}
+			return $out;
+		};
+		return $walk($data, 0, '');
+	}]);
+});
