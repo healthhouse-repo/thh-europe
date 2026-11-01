@@ -125,8 +125,8 @@ function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$m
 		$raw = $m[3];
 		$t = $tr($raw);
 		if ($t === null) return $raw;
-		preg_match('/^\s*/u', $raw, $a);
-		preg_match('/\s*$/u', $raw, $b);
+		preg_match('/^(?:\s|&nbsp;|&#0*160;|\x{00A0})*/u', $raw, $a);
+		preg_match('/(?:\s|&nbsp;|&#0*160;|\x{00A0})*$/u', $raw, $b);
 		return $a[0] . htmlspecialchars($t, ENT_NOQUOTES, 'UTF-8') . $b[0];
 	}, $html);
 	if ($out === null) return $html; // regex-limiet: liever onvertaald dan kapot
