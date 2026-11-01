@@ -9,7 +9,7 @@ add_filter('wpseo_robots', function ($r) { return is_page('over-the-health-house
 
 add_shortcode('thh_over_v2', function ($a) {
 	$a = shortcode_atts([
-		'img' => 'https://thh-outlet.vercel.app/outlet/assets/weekdeals/hero-weekdeals.png',
+		'img' => 'https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies.webp',
 	], $a, 'thh_over_v2');
 	$u = function ($p) { return esc_url(strpos($p, 'http') === 0 ? $p : home_url($p)); };
 	$svg = function ($d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $d . '</svg>'; };
@@ -37,7 +37,7 @@ add_shortcode('thh_over_v2', function ($a) {
 			<p>We zijn begonnen met één idee: een gezond leven moet voor iedereen haalbaar zijn. Met eerlijk advies, een winkel waar je je thuis voelt en verstand van supplementen helpen we iedereen die binnenloopt.</p>
 			<div class="ov-ctas"><a class="ov-btn ov-btn-red" href="<?php echo $u('/locaties/'); ?>">Bekijk onze winkels</a><a class="ov-btn ov-btn-ghost" href="<?php echo $u('/advies/'); ?>">Vraag gratis advies</a></div>
 		</div>
-		<div class="ov-herovis"><img src="<?php echo esc_url($a['img']); ?>" alt="Producten van The Health House" loading="eager"></div>
+		<div class="ov-herovis"><img src="<?php echo esc_url($a['img']); ?>" alt="Medewerker van The Health House geeft advies in de winkel" loading="eager" fetchpriority="high"></div>
 	</section>
 
 	<section class="ov-story">
@@ -47,6 +47,14 @@ add_shortcode('thh_over_v2', function ($a) {
 			<p>Ons assortiment is de afgelopen jaren flink gegroeid. We verkopen niet meer alleen sportproducten, maar ook producten voor iedereen die gezonder wil leven. Denk aan producten voor je weerstand, je gewrichten en je organen, en producten die helpen met focus en energie.</p>
 			<p>Naast ons eigen merk hebben we een groeiend aanbod van andere merken. Die selecteren we streng: alleen de beste supplementen komen in onze winkels en webshop.</p>
 		</div>
+	</section>
+
+	<section class="ov-gal" aria-label="Foto's uit onze winkels">
+		<figure class="ov-g1"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-winkel-advies.webp" alt="Advies aan een klant in de winkel" loading="lazy"></figure>
+		<figure class="ov-g2"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-kiosk-vier-meren.webp" alt="The Health House kiosk in winkelcentrum Vier Meren" loading="lazy"></figure>
+		<figure class="ov-g3"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies-2.webp" alt="Klant krijgt advies over supplementen" loading="lazy"></figure>
+		<figure class="ov-g4"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-winkel-binnen.webp" alt="Binnenkant van een The Health House winkel" loading="lazy"></figure>
+		<figure class="ov-g5"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-schap.webp" alt="Klant kiest producten uit het schap" loading="lazy"></figure>
 	</section>
 
 	<section class="ov-sec">
@@ -85,11 +93,13 @@ add_shortcode('thh_over_v2', function ($a) {
 .ov-ctas{display:flex;gap:12px;flex-wrap:wrap}
 .ov-kicker{display:inline-block;align-self:flex-start;background:rgba(255,255,255,.14);color:#fff;font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:6px}
 .ov-hero{background:var(--nv);color:#fff;border-radius:24px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:24px;min-height:460px;padding:48px 56px;position:relative;overflow:hidden}
-.ov-hero:before{content:"";position:absolute;right:-10%;top:-20%;width:60%;height:140%;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.06) 40%,rgba(255,255,255,.06) 55%,transparent 55%);pointer-events:none}
-.ov-herotxt{display:flex;flex-direction:column;justify-content:center;gap:18px;position:relative;z-index:1}
+.ov-hero:before{z-index:2;content:"";position:absolute;right:-10%;top:-20%;width:60%;height:140%;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.06) 40%,rgba(255,255,255,.06) 55%,transparent 55%);pointer-events:none}
+.ov-herotxt{display:flex;flex-direction:column;justify-content:center;gap:18px;position:relative;z-index:3}
 .ov .ov-hero h1{color:#fff;font-size:clamp(38px,5vw,68px);font-weight:900;text-transform:uppercase;line-height:1.02}.ov-hero h1 em{display:block;font-style:normal;color:transparent;-webkit-text-stroke:2px #fff}
 .ov-hero p{margin:0;font-size:17px;line-height:1.55;max-width:520px;color:rgba(255,255,255,.85)}
-.ov-herovis{position:relative;display:flex;align-items:center;justify-content:center}.ov-herovis img{max-width:100%;max-height:380px;object-fit:contain;filter:drop-shadow(0 24px 30px rgba(0,0,0,.35))}
+.ov-herovis{position:relative;margin:-48px -56px -48px 0;min-height:100%}.ov-herovis img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 30%}.ov-herovis:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--nv) 0%,rgba(20,32,74,0) 28%)}
+.ov-gal{margin-top:40px;display:grid;grid-template-columns:1fr 1.4fr 1fr;grid-template-rows:220px 220px;gap:12px}.ov-gal figure{margin:0;border-radius:18px;overflow:hidden;background:var(--bg)}.ov-gal img{width:100%;height:100%;object-fit:cover;display:block}
+.ov-g1{grid-row:1/3}.ov-g5{grid-row:1/3;grid-column:3}.ov-g2{grid-column:2}.ov-g3{display:none}.ov-g4{grid-column:2}
 .ov-story{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;margin-top:64px;align-items:start}
 .ov-label{display:block;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--rd);margin-bottom:12px}
 .ov .ov-storyhead h2{font-size:clamp(26px,3vw,36px);font-weight:700}
@@ -115,8 +125,8 @@ add_shortcode('thh_over_v2', function ($a) {
 .ov .ov-links a{background:var(--bg);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px;color:var(--nv);transition:transform .15s}
 .ov .ov-links a:hover{transform:translateY(-2px);color:var(--nv)}.ov-links .ov-ico{margin-bottom:6px}
 .ov-links strong{font-size:16px;font-weight:600}.ov-links small{font-size:13px;color:var(--mut);line-height:1.45}
-@media(max-width:900px){.ov-hero{grid-template-columns:minmax(0,1fr);padding:32px 28px}.ov-herovis img{max-height:260px}.ov-story{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:40px}.ov-values{grid-template-columns:minmax(0,1fr)}.ov-band{grid-template-columns:minmax(0,1fr);padding:32px 28px;gap:24px}.ov-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.ov{padding:12px 14px 32px}.ov-hero{border-radius:18px;padding:24px 20px;min-height:0;gap:12px}.ov .ov-hero h1{font-size:34px}.ov-hero p{font-size:15px}.ov-ctas{flex-direction:column;align-items:stretch}.ov-btn{min-height:44px;padding:10px 16px;font-size:14px}.ov-herovis{order:-1}.ov-herovis img{max-height:180px}.ov-sec,.ov-motto,.ov-band{margin-top:40px}.ov-value{padding:22px}.ov-motto{gap:12px}.ov-band{border-radius:18px;padding:26px 20px}.ov .ov-band h2{font-size:28px}.ov-links{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.ov .ov-links a{padding:16px}}
+@media(max-width:900px){.ov-hero{grid-template-columns:minmax(0,1fr);padding:32px 28px}.ov-herovis{margin:16px -28px -32px;height:300px}.ov-herovis:after{background:linear-gradient(180deg,var(--nv) 0%,rgba(20,32,74,0) 30%)}.ov-gal{grid-template-columns:1fr 1fr;grid-template-rows:200px 200px 200px}.ov-g1{grid-row:1/3}.ov-g5{grid-row:auto;grid-column:auto}.ov-g2{grid-column:2}.ov-g4{grid-column:2}.ov-g3{display:block;grid-column:1}.ov-story{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:40px}.ov-values{grid-template-columns:minmax(0,1fr)}.ov-band{grid-template-columns:minmax(0,1fr);padding:32px 28px;gap:24px}.ov-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.ov{padding:12px 14px 32px}.ov-hero{border-radius:18px;padding:24px 20px;min-height:0;gap:12px}.ov .ov-hero h1{font-size:34px}.ov-hero p{font-size:15px}.ov-ctas{flex-direction:column;align-items:stretch}.ov-btn{min-height:44px;padding:10px 16px;font-size:14px}.ov-herovis{order:-1;margin:-24px -20px 4px;height:230px}.ov-herovis:after{background:linear-gradient(0deg,var(--nv) 0%,rgba(20,32,74,0) 35%)}.ov-gal{grid-template-rows:150px 150px 150px;gap:8px}.ov-gal figure{border-radius:12px}.ov-sec,.ov-motto,.ov-band{margin-top:40px}.ov-value{padding:22px}.ov-motto{gap:12px}.ov-band{border-radius:18px;padding:26px 20px}.ov .ov-band h2{font-size:28px}.ov-links{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.ov .ov-links a{padding:16px}}
 </style>
 <?php
 	return ob_get_clean();
