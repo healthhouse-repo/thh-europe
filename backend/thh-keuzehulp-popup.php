@@ -194,7 +194,7 @@ add_action('rest_api_init', function () {
 					$sec['waarom'] = thh_kp_t($sec['waarom'], $lang);
 					foreach ($sec['producten'] as &$pp) {
 						$pp['naam'] = thh_kp_t($pp['naam'], $lang);
-						if (function_exists('thh_i18n_url')) $pp['url'] = thh_i18n_url($pp['url'], $lang, thh_i18n_host());
+						if (function_exists('thh_i18n_url')) { $nu = thh_i18n_url($pp['url'], $lang, thh_i18n_host()); if ($nu) $pp['url'] = $nu; }
 						foreach ($pp['varianten'] as &$vv) { $vv['label'] = implode(' · ', array_map(function ($x) use ($lang) { return thh_kp_t($x, $lang); }, explode(' · ', $vv['label']))); }
 						unset($vv);
 					}
