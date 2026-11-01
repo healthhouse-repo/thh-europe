@@ -52,7 +52,7 @@ add_shortcode('thh_locaties_v2', function () {
 			<h1>Kom langs <em>in de winkel</em></h1>
 			<p>Persoonlijk advies, alles even vasthouden en proeven, of je online bestelling ophalen. Kies hieronder de winkel die het dichtst bij je is.</p>
 		</div>
-		<div class="lc-herostats"><div><b><?php echo count($w); ?></b><span>locaties</span></div><div><b>Gratis</b><span>ophalen</span></div><div><b>Gratis advies</b><span>van mensen die zelf trainen</span></div></div>
+		<div class="lc-herostats"><div><b>Meerdere</b><span>locaties</span></div><div><b>Gratis</b><span>ophalen, of thuisbezorgd vanaf € 59,95</span></div><div><b>Gratis advies</b><span>van mensen die zelf trainen</span></div></div>
 	</section>
 
 	<section class="lc-wrap">
