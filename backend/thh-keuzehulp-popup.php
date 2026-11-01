@@ -96,6 +96,19 @@ function thh_kp_varianten($p) {
 	return array_map(function ($x) { unset($x['p'], $x['s']); return $x; }, array_slice($out, 0, 60));
 }
 
+/* Vertaling van advies-teksten (gebruikt het woordenboek van de meertalige laag, snippet #446). */
+function thh_kp_t($txt, $lang) {
+	if (!$lang || $lang === 'nl' || !function_exists('thh_i18n_dict') || !function_exists('thh_i18n_norm')) return $txt;
+	list($dict) = thh_i18n_dict($lang);
+	$n = thh_i18n_norm($txt);
+	if (isset($dict[md5($n)])) return $dict[md5($n)];
+	$parts = preg_split('/(?<=[.!?])\s+/', $n);
+	if (count($parts) < 2) return $txt;
+	$out = [];
+	foreach ($parts as $p) { $out[] = $dict[md5(thh_i18n_norm($p))] ?? $p; }
+	return implode(' ', $out);
+}
+
 function thh_kp_advies($a) {
 	$doel = $a['doel'] ?? 'spier'; $freq = $a['freq'] ?? 'mid'; $sport = $a['sport'] ?? 'kracht'; $dieet = $a['dieet'] ?? 'geen'; $budget = $a['budget'] ?? 'basis';
 	$eiwit_cats = ['eiwitten']; $eiwit_opts = ['niet' => 'weight ?gainer|mass|vegan|plant|drink|lemonade|milkshake|pudding|pindakaas|peanut', 'pref' => [45196, 49348, 49356]];
@@ -169,9 +182,28 @@ add_action('rest_api_init', function () {
 		$ok = ['doel' => ['spier', 'afvallen', 'fit', 'duur', 'herstel'], 'freq' => ['laag', 'mid', 'hoog'], 'sport' => ['kracht', 'vecht', 'cardio', 'mix'], 'dieet' => ['geen', 'lactose', 'vegan'], 'budget' => ['basis', 'compleet']];
 		$a = [];
 		foreach ($ok as $k => $vals) $a[$k] = in_array($p[$k] ?? '', $vals, true) ? $p[$k] : $vals[0];
-		$key = 'thh_kp5_' . md5(wp_json_encode($a));
+		$lang = in_array($p['lang'] ?? '', ['de', 'en'], true) ? $p['lang'] : 'nl';
+		$key = 'thh_kp6_' . md5(wp_json_encode($a) . $lang);
 		$res = get_transient($key);
-		if (!$res) { $res = thh_kp_advies($a); set_transient($key, $res, 2 * HOUR_IN_SECONDS); }
+		if (!$res) {
+			$res = thh_kp_advies($a);
+			if ($lang !== 'nl') {
+				$res['intro'] = thh_kp_t($res['intro'], $lang);
+				foreach ($res['secties'] as &$sec) {
+					$sec['titel'] = thh_kp_t($sec['titel'], $lang);
+					$sec['waarom'] = thh_kp_t($sec['waarom'], $lang);
+					foreach ($sec['producten'] as &$pp) {
+						$pp['naam'] = thh_kp_t($pp['naam'], $lang);
+						if (function_exists('thh_i18n_url')) $pp['url'] = thh_i18n_url($pp['url'], $lang, thh_i18n_host());
+						foreach ($pp['varianten'] as &$vv) { $vv['label'] = implode(' · ', array_map(function ($x) use ($lang) { return thh_kp_t($x, $lang); }, explode(' · ', $vv['label']))); }
+						unset($vv);
+					}
+					unset($pp);
+				}
+				unset($sec);
+			}
+			set_transient($key, $res, 2 * HOUR_IN_SECONDS);
+		}
 		return $res;
 	}]);
 });
@@ -311,7 +343,7 @@ add_action('wp_footer', function () {
 		function result(){
 			st=V.length; prog(); back.hidden=false;
 			body.innerHTML='<div class="tkh-load"><div class="tkh-spin"></div>Even je advies samenstellen...</div>';
-			fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ans)}).then(function(r){return r.json();}).then(function(d){
+			fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({lang:(location.pathname.match(/^\/(de|en)(\/|$)/)||[])[1]||'nl'},ans))}).then(function(r){return r.json();}).then(function(d){
 				var chips=V.map(function(v){ return ans[v.k]?'<span class="tkh-chip">'+esc(LBL[v.k+':'+ans[v.k]])+'</span>':''; }).join('');
 				var h='<h2 class="tkh-q" id="tkhTitle">Jouw advies</h2><div class="tkh-intro"><div><div class="tkh-chips">'+chips+'</div>'+(d.intro?'<p>'+esc(d.intro)+'</p>':'')+'</div></div>';
 				var tot=0;
