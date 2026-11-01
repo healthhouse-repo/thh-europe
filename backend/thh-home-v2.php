@@ -106,7 +106,7 @@ add_shortcode('thh_home_v2', function ($a) {
 			'<div class="h2-dealtxt"><span class="h2-pill">' . ($week ? 'Weekdeals' : 'Dagdeal van vandaag') . '</span>' .
 			'<h3>' . esc_html($week ? 'Alle dagdeals nog één keer' : $i['titel']) . '</h3>' .
 			(!empty($i['sub']) && !$week ? '<p>' . esc_html($i['sub']) . '</p>' : '') .
-			'<div class="h2-dealprice">' . (!empty($i['van']) ? '<s>' . esc_html($i['van']) . '</s> ' : '') . '<strong>' . esc_html($i['voor'] ?? '') . '</strong>' . (!empty($i['off']) ? '<span class="h2-badge">-' . esc_html($i['off']) . '%</span>' : '') . '</div>' .
+			'<div class="h2-dealprice">' . (!empty($i['van']) ? '<s>' . esc_html(str_replace('.', ',', $i['van'])) . '</s> ' : '') . '<strong>' . esc_html(str_replace('.', ',', $i['voor'] ?? '')) . '</strong>' . (!empty($i['off']) ? '<span class="h2-badge">-' . esc_html($i['off']) . '%</span>' : '') . '</div>' .
 			'<div class="h2-timer" data-h2-timer><span><b>00</b><small>uur</small></span><span><b>00</b><small>min</small></span><span><b>00</b><small>sec</small></span></div>' .
 			'<span class="h2-btn h2-btn-red">Pak de deal</span></div>' .
 			(!empty($i['img']) ? '<img class="h2-dealimg" src="' . esc_url($i['img']) . '" alt="" loading="lazy">' : '') . '</a>';
@@ -254,6 +254,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-vanaf{font-size:12px;font-weight:500;color:#a5a2a2}
 .h2-now{font-size:17px;font-weight:700}.h2-now-sale{color:var(--rd)}
 .h2-eur sup{font-size:.62em;top:-.45em;position:relative;vertical-align:baseline;margin-left:1px}
+.h2-dealgrid .h2-grid3{align-items:stretch}.h2-dealgrid .h2-card{height:100%}.h2-dealgrid .h2-cimg{aspect-ratio:auto;flex:1;min-height:380px}.h2-dealgrid .h2-cbody{flex:0 0 auto;min-height:62px}
 .h2-price del{font-size:12px;color:#a5a2a2;font-weight:500}.h2-price del .h2-eur{font-size:12px}
 /* deals */
 .h2-dealgrid{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;align-items:stretch}
