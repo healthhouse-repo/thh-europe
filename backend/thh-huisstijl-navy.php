@@ -87,6 +87,11 @@ add_action('rest_api_init', function () {
 	}]);
 });
 
+// Thema-CSS (o.a. body .header-main, html p, buttons: 249 regels) en inline styles: de oude kleur wordt bij het bundelen
+// door Autoptimize vervangen, zodat het thema zelf onaangeroerd blijft (terugdraaien = deze snippet uit + AO-cache legen).
+add_filter('autoptimize_css_after_minify', 'thh_navy_swap');
+add_filter('autoptimize_html_after_minify', 'thh_navy_swap');
+
 // Vangnet voor hardgecodeerde kleuren in thema-CSS en snippets (werkt direct, ook vóór de data-vervanging).
 add_action('wp_head', function () {
 	if (is_admin()) return;
