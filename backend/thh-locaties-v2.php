@@ -118,7 +118,7 @@ add_shortcode('thh_locaties_v2', function () {
 	function kaart(){
 		if(!window.L||!document.getElementById('lcMap'))return setTimeout(kaart,150);
 		var m=L.map('lcMap',{scrollWheelZoom:false}),mk={},b=[];
-		L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap, &copy; CARTO',maxZoom:19}).addTo(m);
+		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19,className:'lc-tiles'}).addTo(m);
 		var ic=L.divIcon({className:'lc-mk',html:'<span></span>',iconSize:[30,38],iconAnchor:[15,36],popupAnchor:[0,-30]});
 		W.forEach(function(s){if(!s.lat)return;var x=L.marker([s.lat,s.lng],{icon:ic}).addTo(m).bindPopup('<strong>'+s.n+'</strong><br>'+s.a);mk[s.id]=x;b.push([s.lat,s.lng])});
 		if(b.length)m.fitBounds(b,{padding:[30,30]});
@@ -162,6 +162,7 @@ add_shortcode('thh_locaties_v2', function () {
 .lc .lc-btn-ghost{background:transparent;border:2px solid rgba(255,255,255,.7);color:#fff;min-height:48px;padding:0 26px;font-size:15px}.lc .lc-btn-ghost:hover{background:rgba(255,255,255,.12);color:#fff}
 .lc-mapcol{position:sticky;top:110px}.lc-map{height:640px;border-radius:18px;overflow:hidden;background:var(--bg);border:1px solid #e6e8f0;z-index:0}
 .lc-mk span{display:block;width:30px;height:30px;border-radius:50% 50% 50% 0;background:var(--rd,#e2373f);transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.lc .lc-tiles{filter:saturate(.55) contrast(.95)}.lc-card:not(:has(.lc-foto img)){grid-template-columns:minmax(0,1fr);padding:18px 20px}.lc-card:not(:has(.lc-foto img)) .lc-foto{display:none}
 .lc .leaflet-popup-content{font-family:inherit;font-size:13px;color:#1b1f2e}
 .lc-band{margin-top:48px;background:var(--nv);color:#fff;border-radius:24px;padding:40px 56px;display:grid;grid-template-columns:minmax(0,1.3fr) auto;gap:32px;align-items:center}
 .lc-band>div:first-child{display:flex;flex-direction:column;gap:12px}.lc .lc-band h2{color:#fff;font-size:30px;font-weight:700}.lc-band p{margin:0;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.82);max-width:560px}
