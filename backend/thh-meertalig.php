@@ -34,6 +34,7 @@ function thh_i18n_translatable($n) {
 	if (!preg_match('/\p{L}{2,}/u', $n)) return false;           // geen woorden
 	if (preg_match('~^(https?:)?//\S+$~', $n)) return false;     // losse url
 	if (preg_match('/^[\w.+-]+@[\w-]+\.[\w.]+$/', $n)) return false; // e-mail
+	if (preg_match('~^[\d\s.,%/]+MB$~', $n)) return false;           // debug-regels
 	return true;
 }
 
@@ -70,10 +71,21 @@ function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$m
 		if (!thh_i18n_translatable($n)) return null;
 		$h = md5($n);
 		if (isset($dict[$h])) return $dict[$h];
-		if (!isset($known[$h]) && count($miss) < 400) $miss[$h] = $n;
+		if (isset($known[$h])) return null;
+		// Vaste sjablonen: "<naam> | The Health House" en "<naam> Behaal jouw sportdoelen ..."
+		foreach ([' | The Health House', ' Behaal jouw sportdoelen met de supplementen van The Health House.'] as $suf) {
+			if (strlen($n) > strlen($suf) && substr($n, -strlen($suf)) === $suf) {
+				$pre = substr($n, 0, -strlen($suf));
+				$ps = $dict[md5($pre)] ?? $pre;
+				$ss = $suf[1] === '|' ? $suf : ' ' . ($dict[md5(trim($suf))] ?? trim($suf));
+				return $ps . $ss;
+			}
+		}
+		if (count($miss) < 400) $miss[$h] = $n;
 		return null;
 	};
 	$attr_tr = function ($tag) use ($tr) {
+		if (stripos($tag, '<link') === 0) return $tag; // feed-titels e.d. zijn onzichtbaar
 		$tag = preg_replace_callback('~\s(alt|title|placeholder|aria-label|data-title)="([^"]*)"~i', function ($m) use ($tr) {
 			$t = $tr($m[2]);
 			return $t === null ? $m[0] : ' ' . $m[1] . '="' . htmlspecialchars($t, ENT_QUOTES, 'UTF-8') . '"';
@@ -200,6 +212,7 @@ add_action('template_redirect', function () {
 		exit;
 	}
 	remove_action('template_redirect', 'redirect_canonical');
+	add_filter('show_admin_bar', '__return_false');
 	ob_start(function ($html) use ($lang) {
 		if (stripos($html, '<html') === false) return $html;
 		[$dict, $known] = thh_i18n_dict($lang);
