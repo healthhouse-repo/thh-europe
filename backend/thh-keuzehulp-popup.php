@@ -104,8 +104,16 @@ function thh_kp_t($txt, $lang) {
 	if (isset($dict[md5($n)])) return $dict[md5($n)];
 	$parts = preg_split('/(?<=[.!?])\s+/', $n);
 	if (count($parts) < 2) return $txt;
-	$out = [];
-	foreach ($parts as $p) { $out[] = $dict[md5(thh_i18n_norm($p))] ?? $p; }
+	$out = []; $i = 0; $c = count($parts);
+	while ($i < $c) {
+		$hit = false;
+		for ($k = $c; $k > $i; $k--) {
+			$seg = implode(' ', array_slice($parts, $i, $k - $i));
+			$h = md5(thh_i18n_norm($seg));
+			if (isset($dict[$h])) { $out[] = $dict[$h]; $i = $k; $hit = true; break; }
+		}
+		if (!$hit) { $out[] = $parts[$i]; $i++; }
+	}
 	return implode(' ', $out);
 }
 
@@ -211,6 +219,9 @@ add_action('rest_api_init', function () {
 add_action('wp_footer', function () {
 	if (is_admin()) return;
 	$api = esc_url_raw(rest_url('thh/v1/keuzehulp-advies'));
+	$lang = function_exists('thh_i18n_lang') ? thh_i18n_lang() : 'nl';
+	$ui = ['add' => 'In winkelwagen', 'view' => 'Bekijk product', 'adding' => 'Toevoegen...', 'added' => 'Toegevoegd ✓', 'retry' => 'Opnieuw proberen', 'pick' => 'Onze keuze', 'or' => 'Of kies', 'from' => 'vanaf', 'loading' => 'Even je advies samenstellen...', 'advice' => 'Jouw advies', 'none' => 'We konden nu geen producten vinden. Stuur ons gerust een WhatsApp, dan denken we mee.', 'total' => 'Je pakket met onze keuzes, vanaf', 'all' => 'Alles in winkelwagen', 'allok' => 'Alles toegevoegd ✓', 'note' => 'Smaak of maat kun je hierboven kiezen, of later nog aanpassen in je winkelwagen.', 'restart' => 'Opnieuw beginnen', 'wa' => 'Twijfel je? Vraag het via WhatsApp', 'err' => 'Er ging iets mis. Probeer het opnieuw.', 'step' => 'Stap', 'of' => 'van', 'varlabel' => 'Kies smaak of maat'];
+	foreach ($ui as $k => $v) $ui[$k] = thh_kp_t($v, $lang);
 	$ajax = esc_url_raw(add_query_arg('wc-ajax', 'add_to_cart', home_url('/')));
 	?>
 	<div class="tkh-ov" id="tkhOv" hidden>
@@ -311,6 +322,7 @@ add_action('wp_footer', function () {
 	(function(){
 		var ov=document.getElementById('tkhOv'); if(!ov) return;
 		var body=document.getElementById('tkhBody'), bar=ov.querySelector('.tkh-bar span'), back=ov.querySelector('.tkh-back');
+		var TX=<?php echo wp_json_encode($ui, JSON_UNESCAPED_UNICODE); ?>;
 		var API=<?php echo wp_json_encode($api); ?>, AJAX=<?php echo wp_json_encode($ajax); ?>;
 		var IC={"spier": "<path d=\"M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11\"/>", "afvallen": "<path d=\"M12 22c4 0 7-2.8 7-7 0-3.5-2-5.5-3.5-7.5-.5 2-1.5 3-3 3.5.5-3.5-.5-6.5-3-9 0 4-5.5 6.5-5.5 13 0 4.2 3.5 7 8 7z\"/><path d=\"M12 22c-1.7 0-3-1.3-3-3 0-1.8 1.4-2.8 3-5 1.6 2.2 3 3.2 3 5 0 1.7-1.3 3-3 3z\"/>", "fit": "<path d=\"M13 2L4 14h7l-1 8 9-12h-7z\"/>", "duur": "<path d=\"M3 12h4l3-8 4 16 3-8h4\"/>", "herstel": "<path d=\"M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z\"/>", "kracht": "<path d=\"M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11\"/>", "vecht": "<path d=\"M7 11V8a4 4 0 014-4h3a4 4 0 014 4v5a5 5 0 01-5 5h-1a5 5 0 01-5-5z\"/><path d=\"M7 12H5.5A1.5 1.5 0 004 13.5 3.5 3.5 0 007.5 17M8 20h9\"/>", "cardio": "<circle cx=\"6\" cy=\"17\" r=\"3.5\"/><circle cx=\"18\" cy=\"17\" r=\"3.5\"/><path d=\"M6 17l4-7h5l3 7M10 10L8.5 6H6M14 6h2\"/>", "mix": "<path d=\"M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5\"/>", "geen": "<path d=\"M20 6L9 17l-5-5\"/>", "lactose": "<path d=\"M8 2h8M9 2v3l-2 4v11a2 2 0 002 2h6a2 2 0 002-2V9l-2-4V2M7 12h10\"/><path d=\"M4 4l16 16\"/>", "vegan": "<path d=\"M11 20A7 7 0 014 13c0-6 7-9 16-9 0 9-3 16-9 16z\"/><path d=\"M4 20c4-5 7-8 11-10\"/>", "basis": "<path d=\"M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8\"/>", "compleet": "<path d=\"M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.5 5.8 21l1.4-7L2 9.3l7-.8z\"/>"};
 		var V=[
@@ -326,33 +338,33 @@ add_action('wp_footer', function () {
 		var st=0, ans={}, last=null;
 		function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 		var stepEl=document.getElementById('tkhStep');
-		function prog(){ bar.style.width=Math.round((Math.min(st+1,V.length)/V.length)*100)+'%'; back.hidden=st===0; stepEl.textContent=st<V.length?('Stap '+(st+1)+' van '+V.length):'Jouw advies'; }
+		function prog(){ bar.style.width=Math.round((Math.min(st+1,V.length)/V.length)*100)+'%'; back.hidden=st===0; stepEl.textContent=st<V.length?(TX.step+' '+(st+1)+' '+TX.of+' '+V.length):TX.advice; }
 		function step(){
 			prog(); var v=V[st];
 			body.innerHTML='<h2 class="tkh-q" id="tkhTitle">'+esc(v.q)+'</h2>'+(v.s?'<p class="tkh-sub">'+esc(v.s)+'</p>':'<p class="tkh-sub">&nbsp;</p>')+'<div class="tkh-opts'+(v.n?' is-3':'')+'">'+v.o.map(function(o){return '<button type="button" class="tkh-opt'+(ans[v.k]===o[0]?' is-on':'')+'" data-v="'+o[0]+'">'+icon(o[0],o[3])+'<span><strong>'+esc(o[1])+'</strong>'+(o[2]?'<small>'+esc(o[2])+'</small>':'')+'</span><span class="tkh-check" aria-hidden="true">'+CHECK+'</span></button>';}).join('')+'</div>';
 			body.scrollTop=0;
 		}
 		function card(p,i){
-			var pr=(p.van?'<del>€ '+esc(p.van)+'</del>':'')+(p.vanaf?'<small>vanaf </small>':'')+'€ '+esc(p.prijs);
+			var pr=(p.van?'<del>€ '+esc(p.van)+'</del>':'')+(p.vanaf?'<small>'+esc(TX.from)+' </small>':'')+'€ '+esc(p.prijs);
 			var vs=p.varianten||[], btn='';
-			if(p.direct) btn='<button type="button" class="tkh-add" data-id="'+p.id+'">In winkelwagen</button>';
-			else if(vs.length) btn='<select class="tkh-var" aria-label="Kies smaak of maat">'+vs.map(function(v){return '<option value="'+v.id+'">'+esc(v.label)+' · € '+esc(v.prijs)+'</option>';}).join('')+'</select><button type="button" class="tkh-add" data-var="1">In winkelwagen</button>';
-			else btn='<a class="tkh-add" href="'+esc(p.url)+'">Bekijk product</a>';
-			return '<div class="tkh-card '+(i===0?'is-top':'is-alt')+'"><span class="tkh-tag">'+(i===0?'Onze keuze':'Of kies')+'</span><a class="tkh-img" href="'+esc(p.url)+'"><img src="'+esc(p.img)+'" alt="" loading="lazy"></a><div class="tkh-info">'+(p.merk?'<span class="tkh-merk">'+esc(p.merk)+'</span>':'')+'<a class="tkh-naam" href="'+esc(p.url)+'" style="color:inherit;text-decoration:none">'+esc(p.naam)+'</a><span class="tkh-prijs">'+pr+'</span>'+btn+'</div></div>';
+			if(p.direct) btn='<button type="button" class="tkh-add" data-id="'+p.id+'">'+esc(TX.add)+'</button>';
+			else if(vs.length) btn='<select class="tkh-var" aria-label="'+esc(TX.varlabel)+'">'+vs.map(function(v){return '<option value="'+v.id+'">'+esc(v.label)+' · € '+esc(v.prijs)+'</option>';}).join('')+'</select><button type="button" class="tkh-add" data-var="1">'+esc(TX.add)+'</button>';
+			else btn='<a class="tkh-add" href="'+esc(p.url)+'">'+esc(TX.view)+'</a>';
+			return '<div class="tkh-card '+(i===0?'is-top':'is-alt')+'"><span class="tkh-tag">'+(i===0?esc(TX.pick):esc(TX.or))+'</span><a class="tkh-img" href="'+esc(p.url)+'"><img src="'+esc(p.img)+'" alt="" loading="lazy"></a><div class="tkh-info">'+(p.merk?'<span class="tkh-merk">'+esc(p.merk)+'</span>':'')+'<a class="tkh-naam" href="'+esc(p.url)+'" style="color:inherit;text-decoration:none">'+esc(p.naam)+'</a><span class="tkh-prijs">'+pr+'</span>'+btn+'</div></div>';
 		}
 		function result(){
 			st=V.length; prog(); back.hidden=false;
-			body.innerHTML='<div class="tkh-load"><div class="tkh-spin"></div>Even je advies samenstellen...</div>';
+			body.innerHTML='<div class="tkh-load"><div class="tkh-spin"></div>'+esc(TX.loading)+'</div>';
 			fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({lang:(location.pathname.match(/^\/(de|en)(\/|$)/)||[])[1]||'nl'},ans))}).then(function(r){return r.json();}).then(function(d){
 				var chips=V.map(function(v){ return ans[v.k]?'<span class="tkh-chip">'+esc(LBL[v.k+':'+ans[v.k]])+'</span>':''; }).join('');
-				var h='<h2 class="tkh-q" id="tkhTitle">Jouw advies</h2><div class="tkh-intro"><div><div class="tkh-chips">'+chips+'</div>'+(d.intro?'<p>'+esc(d.intro)+'</p>':'')+'</div></div>';
+				var h='<h2 class="tkh-q" id="tkhTitle">'+esc(TX.advice)+'</h2><div class="tkh-intro"><div><div class="tkh-chips">'+chips+'</div>'+(d.intro?'<p>'+esc(d.intro)+'</p>':'')+'</div></div>';
 				var tot=0;
 				(d.secties||[]).forEach(function(s,i){ if(s.producten[0]) tot+=parseFloat(String(s.producten[0].prijs).replace(/\./g,'').replace(',','.'))||0; h+='<div class="tkh-sec"><div class="tkh-sech"><span class="tkh-num">'+(i+1)+'</span><h3>'+esc(s.titel)+'</h3></div><p>'+esc(s.waarom)+'</p><div class="tkh-prods">'+s.producten.map(card).join('')+'</div></div>'; });
-				if(!(d.secties||[]).length) h+='<p class="tkh-sub">We konden nu geen producten vinden. Stuur ons gerust een WhatsApp, dan denken we mee.</p>';
-				if(tot>0) h+='<div class="tkh-total"><div><span>Je pakket met onze keuzes, vanaf</span><br><strong>€ '+tot.toFixed(2).replace('.',',')+'</strong></div><button type="button" class="tkh-btn tkh-btn-all" data-act="alles">Alles in winkelwagen</button></div><p class="tkh-note">Smaak of maat kun je hierboven kiezen, of later nog aanpassen in je winkelwagen.</p>';
-				h+='<div class="tkh-end"><button type="button" class="tkh-btn tkh-btn-gh" data-act="opnieuw">Opnieuw beginnen</button><a class="tkh-btn tkh-btn-nv" href="https://wa.me/31611789629" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>Twijfel je? Vraag het via WhatsApp</a></div>';
+				if(!(d.secties||[]).length) h+='<p class="tkh-sub">'+esc(TX.none)+'</p>';
+				if(tot>0) h+='<div class="tkh-total"><div><span>'+esc(TX.total)+'</span><br><strong>€ '+tot.toFixed(2).replace('.',',')+'</strong></div><button type="button" class="tkh-btn tkh-btn-all" data-act="alles">'+esc(TX.all)+'</button></div><p class="tkh-note">'+esc(TX.note)+'</p>';
+				h+='<div class="tkh-end"><button type="button" class="tkh-btn tkh-btn-gh" data-act="opnieuw">'+esc(TX.restart)+'</button><a class="tkh-btn tkh-btn-nv" href="https://wa.me/31611789629" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>'+esc(TX.wa)+'</a></div>';
 				body.innerHTML=h; body.scrollTop=0;
-			}).catch(function(){ body.innerHTML='<p class="tkh-sub">Er ging iets mis. Probeer het opnieuw.</p>'; });
+			}).catch(function(){ body.innerHTML='<p class="tkh-sub">'+esc(TX.err)+'</p>'; });
 		}
 		function open(e){ if(e) e.preventDefault(); last=document.activeElement; st=0; ans={}; step(); ov.hidden=false; document.documentElement.style.overflow='hidden'; }
 		function close(){ ov.hidden=true; document.documentElement.style.overflow=''; if(last&&last.focus) last.focus(); }
@@ -363,9 +375,9 @@ add_action('wp_footer', function () {
 			if(e.target.closest('.tkh-back')){ if(st>0){ st--; step(); } return; }
 			var o=e.target.closest('.tkh-opt'); if(o){ ans[V[st].k]=o.getAttribute('data-v'); o.classList.add('is-on'); setTimeout(function(){ st++; if(st<V.length) step(); else result(); },220); return; }
 			if(e.target.closest('[data-act="opnieuw"]')){ st=0; ans={}; step(); return; }
-			var all=e.target.closest('[data-act="alles"]'); if(all){ var btns=[].slice.call(body.querySelectorAll('.tkh-card.is-top button.tkh-add:not(.is-ok)')); all.disabled=true; all.textContent='Toevoegen...'; var i=0; (function next(){ if(i>=btns.length){ all.textContent='Alles toegevoegd ✓'; all.classList.add('is-ok'); setTimeout(function(){ location.href=<?php echo wp_json_encode(wc_get_cart_url()); ?>; },700); return; } var bb=btns[i++]; bb.click(); var t=setInterval(function(){ if(bb.classList.contains('is-ok')||!bb.disabled){ clearInterval(t); next(); } },150); })(); return; }
-			var b=e.target.closest('button.tkh-add'); if(b){ var pid=b.getAttribute('data-var')?(b.parentNode.querySelector('.tkh-var')||{}).value:b.getAttribute('data-id'); if(!pid) return; b.disabled=true; b.textContent='Toevoegen...'; var f=new FormData(); f.append('product_id',pid); f.append('quantity','1');
-				fetch(AJAX,{method:'POST',body:f,credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d&&d.error){ throw 0; } b.textContent='Toegevoegd ✓'; b.classList.add('is-ok'); if(window.jQuery&&d&&d.fragments){ jQuery(document.body).trigger('added_to_cart',[d.fragments,d.cart_hash]); } }).catch(function(){ b.disabled=false; b.textContent='Opnieuw proberen'; });
+			var all=e.target.closest('[data-act="alles"]'); if(all){ var btns=[].slice.call(body.querySelectorAll('.tkh-card.is-top button.tkh-add:not(.is-ok)')); all.disabled=true; all.textContent=TX.adding; var i=0; (function next(){ if(i>=btns.length){ all.textContent=TX.allok; all.classList.add('is-ok'); setTimeout(function(){ location.href=<?php echo wp_json_encode(wc_get_cart_url()); ?>; },700); return; } var bb=btns[i++]; bb.click(); var t=setInterval(function(){ if(bb.classList.contains('is-ok')||!bb.disabled){ clearInterval(t); next(); } },150); })(); return; }
+			var b=e.target.closest('button.tkh-add'); if(b){ var pid=b.getAttribute('data-var')?(b.parentNode.querySelector('.tkh-var')||{}).value:b.getAttribute('data-id'); if(!pid) return; b.disabled=true; b.textContent=TX.adding; var f=new FormData(); f.append('product_id',pid); f.append('quantity','1');
+				fetch(AJAX,{method:'POST',body:f,credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d&&d.error){ throw 0; } b.textContent=TX.added; b.classList.add('is-ok'); if(window.jQuery&&d&&d.fragments){ jQuery(document.body).trigger('added_to_cart',[d.fragments,d.cart_hash]); } }).catch(function(){ b.disabled=false; b.textContent=TX.retry; });
 			}
 		});
 		document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!ov.hidden) close(); });
