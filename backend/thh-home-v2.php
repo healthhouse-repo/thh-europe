@@ -246,7 +246,7 @@ add_shortcode('thh_home_v2', function ($a) {
 /* categorie-tegels */
 .h2-cats{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px;margin-top:16px}
 .h2 .h2-cat{color:#111827;background:#f5f5f6;border:0;border-radius:10px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-decoration:none;transition:background .15s}
-.h2 .h2-cat:hover{background:#ececee}.h2-catpic{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-catimg{max-width:96%;max-height:96%;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transition:transform .25s}.h2-cat:hover .h2-catimg{transform:scale(1.05)}
+.h2 .h2-cat:hover{background:#ececee}.h2-catpic{display:grid;place-items:center;aspect-ratio:1;overflow:hidden}.h2-catimg{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transform:scale(1.3);transition:transform .25s}.h2-cat:hover .h2-catimg{transform:scale(1.38)}
 .h2-catico{width:44px;height:44px;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--nv)}.h2-catico svg{width:24px;height:24px}
 .h2-catname{display:flex;justify-content:space-between;align-items:center;gap:4px;width:100%;font-weight:600;font-size:15px;color:#111827;padding:0 4px;line-height:1.2;white-space:nowrap}.h2-catname svg{color:#111827;flex:none}
 /* usp */
