@@ -251,7 +251,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-grid{display:grid;gap:20px 16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .h2-card{position:relative;display:flex;flex-direction:column;gap:10px;background:none;border:0;padding:0}
 .h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.22;background:#f5f5f6;border-radius:10px;overflow:hidden}
-.h2-cimg img{max-height:80%;width:auto;max-width:82%;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transition:transform .25s}
+.h2-cimg img{max-height:80%;width:auto;max-width:82%;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
 .h2-card:hover .h2-cimg img{transform:scale(1.04)}
 .h2-badge{position:absolute;top:12px;left:12px;z-index:3;background:var(--rd);color:#fff;font-weight:600;font-size:12px;padding:4px 9px;border-radius:999px}.h2-badge-nv{background:var(--nv)}
 .h2 .h2-cart{position:absolute;right:12px;bottom:12px;z-index:3;width:44px;height:44px;border-radius:50%;background:var(--nv);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,32,74,.18);transition:transform .15s,background .15s}
@@ -296,6 +296,34 @@ add_shortcode('thh_home_v2', function ($a) {
 @media(max-width:1024px){.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-usps{grid-template-columns:1fr 1fr}.h2-grid4{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-brands{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-dealgrid{grid-template-columns:1fr}.h2-band{grid-template-columns:1fr;padding:36px}.h2-hero{grid-template-columns:1fr;padding:36px 28px;min-height:0}.h2-herovis{min-height:260px}}
 @media(max-width:640px){.h2-only-mob{display:flex!important}.h2-dealgrid .h2-cimg{min-height:0;aspect-ratio:1/1.22}.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:1fr 1fr}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:200px;margin:0 auto;order:-1}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
 </style>
+<script id="thh-h2-cutout">
+(function(){
+	/* Maakt de (bijna) witte achtergrond van productfoto's transparant, alleen vanaf de rand (flood fill),
+	   zodat het grijze tegelvlak overal egaal is - ook op iOS/Safari waar mix-blend-mode + filter niet samengaan. */
+	function bg(d,i){var r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];if(a<10)return true;var mn=Math.min(r,g,b),mx=Math.max(r,g,b);return mn>=222&&mx-mn<=14;}
+	function cut(img){
+		if(img.dataset.cut)return; img.dataset.cut='1';
+		try{
+			var w=img.naturalWidth,h=img.naturalHeight; if(!w||!h)return;
+			var sc=Math.min(1,600/Math.max(w,h)); w=Math.round(w*sc); h=Math.round(h*sc);
+			var c=document.createElement('canvas'); c.width=w; c.height=h;
+			var x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(img,0,0,w,h);
+			var im=x.getImageData(0,0,w,h), d=im.data, seen=new Uint8Array(w*h), st=[], n=0;
+			for(var i=0;i<w;i++){st.push(i,(h-1)*w+i);} for(var j=0;j<h;j++){st.push(j*w,j*w+w-1);}
+			while(st.length){var p=st.pop(); if(seen[p])continue; seen[p]=1; var k=p*4; if(!bg(d,k))continue;
+				var m=Math.min(d[k],d[k+1],d[k+2]); d[k+3]=m>=240?0:Math.round(d[k+3]*(240-m)/18); n++;
+				var px=p%w; if(px>0)st.push(p-1); if(px<w-1)st.push(p+1); if(p>=w)st.push(p-w); if(p<w*(h-1))st.push(p+w);}
+			if(n<w*h*0.03)return; // geen (witte) achtergrond gevonden
+			x.putImageData(im,0,0);
+			var u=c.toDataURL('image/png'); img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src=u;
+		}catch(e){}
+	}
+	function run(img){ if(img.complete&&img.naturalWidth)cut(img); else img.addEventListener('load',function(){cut(img);},{once:true}); }
+	function all(){ document.querySelectorAll('.h2-cimg img').forEach(run); }
+	if(document.readyState!=='loading')all(); else document.addEventListener('DOMContentLoaded',all);
+})();
+</script>
+
 <script>
 (function(){var t=document.querySelector('[data-h2-timer]');if(!t)return;var b=t.querySelectorAll('b');function tick(){var n=new Date(),e=new Date(n);e.setHours(23,59,59,999);var s=Math.max(0,Math.floor((e-n)/1000));b[0].textContent=('0'+Math.floor(s/3600)).slice(-2);b[1].textContent=('0'+Math.floor(s%3600/60)).slice(-2);b[2].textContent=('0'+s%60).slice(-2)}tick();setInterval(tick,1000)})();
 </script>
