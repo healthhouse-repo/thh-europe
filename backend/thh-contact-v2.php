@@ -64,7 +64,7 @@ add_shortcode('thh_contact_v2', function () {
 	<section class="ct-sec ct-faqwrap">
 		<div class="ct-faqhead"><h2>Veelgestelde vragen</h2><a href="<?php echo $u('/faq/'); ?>">Alle vragen →</a></div>
 		<div class="ct-faq">
-			<?php foreach ($faq as $i => $f) : ?><details<?php echo $i === 0 ? ' open' : ''; ?>><summary><?php echo esc_html($f[0]); ?><span class="ct-plus" aria-hidden="true"></span></summary><p><?php echo esc_html($f[1]); ?></p></details><?php endforeach; ?>
+			<?php foreach ($faq as $i => $f) : ?><details><summary><?php echo esc_html($f[0]); ?><span class="ct-plus" aria-hidden="true"></span></summary><p><?php echo esc_html($f[1]); ?></p></details><?php endforeach; ?>
 		</div>
 	</section>
 
@@ -103,7 +103,7 @@ add_shortcode('thh_contact_v2', function () {
 .ct-tic{width:40px;height:40px;border-radius:10px;background:var(--bg);display:grid;place-items:center;color:var(--rd);flex:none}.ct-tic svg{width:22px;height:22px}
 .ct-tiles strong{flex:1;font-size:15px;font-weight:600}.ct-tiles a>svg{width:18px;height:18px;flex:none}
 .ct-faqhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}.ct .ct-faqhead a{color:var(--nv);font-weight:500;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
-.ct-faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 16px;align-items:start}
+.ct-faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 16px;align-items:start}.ct .ct-formcard select{text-transform:none!important;letter-spacing:0!important}
 .ct-faq details{background:var(--bg);border-radius:14px;padding:0 20px}
 .ct-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:15px;color:var(--nv)}.ct-faq summary::-webkit-details-marker{display:none}
 .ct-plus{position:relative;width:14px;height:14px;flex:none}.ct-plus:before,.ct-plus:after{content:"";position:absolute;left:0;top:6px;width:14px;height:2px;background:var(--nv);border-radius:2px;transition:transform .2s}.ct-plus:after{transform:rotate(90deg)}details[open] .ct-plus:after{transform:rotate(0)}
