@@ -210,6 +210,21 @@ add_action('wp_footer', function () {
 	.tkh-btn-nv{background:#14204A;color:#fff}.tkh-btn-gh{background:#f3f4f6;color:#14204A}
 	.tkh-load{padding:40px 0;text-align:center;color:#6b7280}
 	@media(max-width:600px){.tkh-ov{padding:0;align-items:flex-end}.tkh-modal{max-height:92vh;border-radius:18px 18px 0 0}.tkh-body{padding:14px 16px 20px}.tkh-q{font-size:21px}.tkh-opts,.tkh-prods{grid-template-columns:1fr}}
+	/* thema-hovers neutraliseren */
+	#tkhOv .tkh-opt,#tkhOv .tkh-opt:hover,#tkhOv .tkh-opt:focus{color:#111827!important;background:#fff!important;border-color:#e5e7eb;box-shadow:none!important;text-decoration:none!important}
+	#tkhOv .tkh-opt:hover,#tkhOv .tkh-opt:focus-visible{border-color:#14204A!important;background:#f3f5fa!important}
+	#tkhOv .tkh-opt.is-on,#tkhOv .tkh-opt.is-on:hover{background:#14204A!important;color:#fff!important;border-color:#14204A!important}
+	#tkhOv .tkh-opt strong{color:inherit!important}#tkhOv .tkh-opt small{color:#6b7280!important}#tkhOv .tkh-opt.is-on small{color:rgba(255,255,255,.75)!important}
+	#tkhOv .tkh-add,#tkhOv .tkh-add:hover,#tkhOv .tkh-add:focus,#tkhOv .tkh-add:visited{background:#14204A!important;color:#fff!important;border:0!important;text-decoration:none!important;box-shadow:none!important}
+	#tkhOv .tkh-add:hover{background:#0d1538!important}
+	#tkhOv .tkh-add.is-ok,#tkhOv .tkh-add.is-ok:hover{background:#16a34a!important}
+	#tkhOv .tkh-btn-nv,#tkhOv .tkh-btn-nv:hover,#tkhOv .tkh-btn-nv:visited{background:#14204A!important;color:#fff!important;text-decoration:none!important}
+	#tkhOv .tkh-btn-nv:hover{background:#0d1538!important}
+	#tkhOv .tkh-btn-gh,#tkhOv .tkh-btn-gh:hover{background:#f3f4f6!important;color:#14204A!important;border:0!important}
+	#tkhOv .tkh-btn-gh:hover{background:#e5e7eb!important}
+	#tkhOv .tkh-x,#tkhOv .tkh-back,#tkhOv .tkh-x:hover,#tkhOv .tkh-back:hover{background:#f3f4f6!important;color:#14204A!important;border:0!important}
+	#tkhOv .tkh-x:hover,#tkhOv .tkh-back:hover{background:#e5e7eb!important}
+	#tkhOv .tkh-naam,#tkhOv .tkh-naam:hover{color:#111827!important}#tkhOv .tkh-naam:hover{text-decoration:underline!important}
 	</style>
 	<script>
 	(function(){
