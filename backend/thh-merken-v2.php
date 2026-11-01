@@ -14,6 +14,8 @@ if (!function_exists('thh_brand_taxonomy')) {
 	}
 }
 
+if (!function_exists('thh_brand_logo_dark')) { function thh_brand_logo_dark($term) { return (bool) get_term_meta($term->term_id, '_thh_logo_dark', true); } }
+
 if (!function_exists('thh_brand_logo_src')) {
 	/** Geeft [url, bron] voor een merk-term; bron = media|thh|repo. */
 	function thh_brand_logo_src($term) {
@@ -42,7 +44,8 @@ function thh_merken_v2_shortcode($atts = []) {
 		list($src, $bron) = thh_brand_logo_src($t);
 		$n = $t->count;
 		$img = '<img src="' . esc_url($src) . '" alt="' . esc_attr($t->name) . '" loading="lazy" data-name="' . esc_attr($t->name) . '" data-bron="' . esc_attr($bron) . '" onload="thhMkLogo(this)" onerror="thhMkFail(this)">';
-		return '<a class="mk-tile ' . $cls . '" href="' . esc_url(get_term_link($t)) . '" data-naam="' . esc_attr(mb_strtolower(remove_accents($t->name))) . '" data-letter="' . esc_attr($letter($t->name)) . '" title="' . esc_attr($t->name) . '">'
+		$dark = get_term_meta($t->term_id, '_thh_logo_dark', true) ? ' mk-dark' : '';
+		return '<a class="mk-tile ' . $cls . $dark . '" href="' . esc_url(get_term_link($t)) . '" data-naam="' . esc_attr(mb_strtolower(remove_accents($t->name))) . '" data-letter="' . esc_attr($letter($t->name)) . '" title="' . esc_attr($t->name) . '">'
 			. '<span class="mk-logo">' . $img . '</span>'
 			. '<span class="mk-name">' . esc_html($t->name) . '</span>'
 			. '<span class="mk-count">' . (int) $n . ' ' . ($n === 1 ? 'product' : 'producten') . '</span></a>';
@@ -105,6 +108,7 @@ function thh_merken_v2_shortcode($atts = []) {
 	.thh-mk .mk-logo{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:60px}
 	.thh-mk .mk-logo img{max-width:100%;max-height:56px;object-fit:contain}
 	.thh-mk .mk-logo img.mk-icon{max-height:34px}
+	.thh-mk .mk-dark .mk-logo{background:var(--nv);border-radius:10px;padding:8px 12px;min-height:60px}.thh-mk .mk-dark .mk-logo img{max-height:40px}
 	.thh-mk .mk-logo .mk-txt{font-weight:800;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:var(--nv);line-height:1.15;word-break:break-word}
 	.thh-mk .mk-name{font-size:13px;font-weight:600;line-height:1.2;color:#1b1f2e}
 	.thh-mk .mk-logo .mk-txt + .mk-hide,.thh-mk .mk-tile.has-txt .mk-name{display:none}
@@ -149,7 +153,7 @@ add_action('rest_api_init', function () {
 		foreach ($terms as $t) { list($src, $bron) = thh_brand_logo_src($t); $out[] = ['id' => $t->term_id, 'slug' => $t->slug, 'name' => $t->name, 'count' => $t->count, 'bron' => $bron, 'src' => $src]; }
 		return $out;
 	}]);
-	$set_logo = function ($term, $url) {
+	$set_logo = function ($term, $url, $dark = false) {
 		if (!function_exists('media_sideload_image')) { require_once ABSPATH . 'wp-admin/includes/media.php'; require_once ABSPATH . 'wp-admin/includes/file.php'; require_once ABSPATH . 'wp-admin/includes/image.php'; }
 		$url = esc_url_raw(trim($url));
 		if (!preg_match('#^https?://#i', $url)) return new WP_Error('url', 'ongeldige url');
@@ -158,9 +162,14 @@ add_action('rest_api_init', function () {
 		if (!in_array($ext, ['png', 'jpg', 'jpeg', 'webp', 'svg', 'gif'], true)) $ext = 'png';
 		$tmp = download_url($url, 30);
 		if (is_wp_error($tmp)) return $tmp;
-		if ($ext === 'png' && function_exists('mime_content_type')) { $m = mime_content_type($tmp); $map = ['image/jpeg' => 'jpg', 'image/webp' => 'webp', 'image/svg+xml' => 'svg', 'image/gif' => 'gif', 'image/png' => 'png']; if (isset($map[$m])) $ext = $map[$m]; }
+		// echte bestandstype bepalen (Brandfetch-URL's hebben geen extensie)
+		$m = function_exists('wp_get_image_mime') ? wp_get_image_mime($tmp) : false;
+		if (!$m) { $head = (string) file_get_contents($tmp, false, null, 0, 512); if (stripos($head, '<svg') !== false || (stripos($head, '<?xml') !== false && stripos($head, 'svg') !== false)) $m = 'image/svg+xml'; }
+		$map = ['image/jpeg' => 'jpg', 'image/webp' => 'webp', 'image/svg+xml' => 'svg', 'image/gif' => 'gif', 'image/png' => 'png', 'image/avif' => 'avif'];
+		if ($m && isset($map[$m])) $ext = $map[$m];
+		elseif ($m) { @unlink($tmp); return new WP_Error('mime', 'onbekend bestandstype ' . $m); }
 		$file = ['name' => 'logo-' . $term->slug . '.' . $ext, 'tmp_name' => $tmp];
-		$allow = function ($mimes) { $mimes['svg'] = 'image/svg+xml'; return $mimes; };
+		$allow = function ($mimes) { $mimes['svg'] = 'image/svg+xml'; $mimes['avif'] = 'image/avif'; $mimes['webp'] = 'image/webp'; return $mimes; };
 		add_filter('upload_mimes', $allow);
 		$id = media_handle_sideload($file, 0, 'Logo ' . $term->name);
 		remove_filter('upload_mimes', $allow);
@@ -170,6 +179,7 @@ add_action('rest_api_init', function () {
 		if ($old && $old !== $id) update_term_meta($term->term_id, '_thh_logo_prev', $old);
 		update_term_meta($term->term_id, 'thumbnail_id', $id);
 		update_term_meta($term->term_id, '_thh_logo_src', $url);
+		if ($dark) update_term_meta($term->term_id, '_thh_logo_dark', 1); else delete_term_meta($term->term_id, '_thh_logo_dark');
 		return ['term' => $term->slug, 'attachment' => $id, 'url' => wp_get_attachment_image_url($id, 'medium')];
 	};
 	$find = function ($p) {
@@ -181,7 +191,7 @@ add_action('rest_api_init', function () {
 	register_rest_route('thh/v1', '/merken/logo', ['methods' => 'POST', 'permission_callback' => $adm, 'callback' => function ($r) use ($set_logo, $find) {
 		$t = $find($r->get_json_params());
 		if (!$t || is_wp_error($t)) return new WP_Error('term', 'merk niet gevonden', ['status' => 404]);
-		$res = $set_logo($t, (string) $r->get_json_params()['url']);
+		$res = $set_logo($t, (string) $r->get_json_params()['url'], !empty($r->get_json_params()['dark']));
 		if (is_wp_error($res)) return new WP_Error('logo', $res->get_error_message(), ['status' => 400]);
 		return $res;
 	}]);
@@ -190,7 +200,7 @@ add_action('rest_api_init', function () {
 		foreach ((array) ($r->get_json_params()['items'] ?? []) as $it) {
 			$t = $find($it);
 			if (!$t || is_wp_error($t)) { $out[] = ['slug' => $it['slug'] ?? '', 'error' => 'merk niet gevonden']; continue; }
-			$res = $set_logo($t, (string) ($it['url'] ?? ''));
+			$res = $set_logo($t, (string) ($it['url'] ?? ''), !empty($it['dark']));
 			$out[] = is_wp_error($res) ? ['slug' => $t->slug, 'error' => $res->get_error_message()] : $res;
 		}
 		if (isset($GLOBALS['kinsta_cache']) && !empty($GLOBALS['kinsta_cache']->kinsta_cache_purge)) $GLOBALS['kinsta_cache']->kinsta_cache_purge->purge_complete_caches();
