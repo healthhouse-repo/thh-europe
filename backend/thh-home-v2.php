@@ -19,14 +19,29 @@ function thh_h2_card($p, $tag = '') {
 	if (!$p || !$p->is_visible()) return '';
 	$img = $p->get_image('woocommerce_thumbnail', ['loading' => 'lazy', 'class' => 'h2-pimg']);
 	$badge = '';
-	$reg = $p->is_type('variable') ? (float) $p->get_variation_regular_price('min') : (float) $p->get_regular_price();
-	$now = $p->is_type('variable') ? (float) $p->get_variation_price('min') : (float) $p->get_price();
+	$vanaf = false;
+	if ($p->is_type('variable')) {
+		// laagste prijs van leverbare, normale varianten (samples/proefzakjes tellen niet mee)
+		$best = null; $prices = [];
+		foreach ($p->get_children() as $vid) {
+			$v = wc_get_product($vid);
+			if (!$v || !$v->is_purchasable() || !$v->is_in_stock() || (float) $v->get_price() <= 0) continue;
+			if (preg_match('/sample|proef|tester|30\s*gram|1\s*portie|single serv/i', implode(' ', $v->get_attributes()) . ' ' . $v->get_name())) continue;
+			$prices[] = (float) $v->get_price();
+			if (!$best || (float) $v->get_price() < (float) $best->get_price()) $best = $v;
+		}
+		if (!$best) { $reg = (float) $p->get_variation_regular_price('min'); $now = (float) $p->get_variation_price('min'); }
+		else { $reg = (float) $best->get_regular_price(); $now = (float) $best->get_price(); }
+		$vanaf = count(array_unique($prices)) > 1 || (!$best && (float) $p->get_variation_price('min') !== (float) $p->get_variation_price('max'));
+	} else {
+		$reg = (float) $p->get_regular_price();
+		$now = (float) $p->get_price();
+	}
 	$sale = $p->is_on_sale() && $reg > $now && $now > 0;
 	if ($sale) {
 		$off = round((1 - $now / $reg) * 100);
 		if ($off > 0) $badge = '<span class="h2-badge">-' . $off . '%</span>';
 	} elseif ($tag) $badge = '<span class="h2-badge h2-badge-nv">' . esc_html($tag) . '</span>';
-	$vanaf = $p->is_type('variable') && (float) $p->get_variation_price('min') !== (float) $p->get_variation_price('max');
 	$price = ($vanaf ? '<span class="h2-vanaf">Vanaf</span> ' : '') . ($sale ? '<del>' . thh_h2_eur($reg) . '</del> <span class="h2-now h2-now-sale">' . thh_h2_eur($now) . '</span>' : '<span class="h2-now">' . thh_h2_eur($now) . '</span>');
 	$rating = '';
 	if ($p->get_rating_count() > 0) {
@@ -223,8 +238,8 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2 .h2-sechead h2{font-size:24px;font-weight:700;letter-spacing:-.01em;text-transform:none}.h2 .h2-band h2{text-transform:none}.h2 .h2-sechead a{font-weight:500;color:var(--nv);white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
 .h2-grid{display:grid;gap:20px 16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .h2-card{position:relative;display:flex;flex-direction:column;gap:10px;background:none;border:0;padding:0}
-.h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.08;background:#f5f5f6;border-radius:10px;overflow:hidden}
-.h2-cimg img{max-height:84%;width:auto;max-width:84%;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
+.h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.22;background:#f5f5f6;border-radius:10px;overflow:hidden}
+.h2-cimg img{max-height:80%;width:auto;max-width:82%;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.08);transition:transform .25s}
 .h2-card:hover .h2-cimg img{transform:scale(1.04)}
 .h2-badge{position:absolute;top:12px;left:12px;z-index:3;background:var(--rd);color:#fff;font-weight:600;font-size:12px;padding:4px 9px;border-radius:999px}.h2-badge-nv{background:var(--nv)}
 .h2 .h2-cart{position:absolute;right:12px;bottom:12px;z-index:3;width:44px;height:44px;border-radius:50%;background:var(--nv);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,32,74,.18);transition:transform .15s,background .15s}
