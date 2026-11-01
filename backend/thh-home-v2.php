@@ -104,12 +104,13 @@ add_shortcode('thh_home_v2', function ($a) {
 	foreach ($brands as $b) {
 		$lid = (int) get_term_meta($b->term_id, 'thumbnail_id', true);
 		$src = $lid ? wp_get_attachment_image_url($lid, 'medium') : '';
+		if (!$src && mb_strtolower(trim($b->name)) === 'the health house') $src = 'https://thehealthhouse.nl/wp-content/uploads/2026/08/thh-logo-mail-navy-v2.png';
 		if (!$src) {
 			$k = mb_strtolower(trim($b->name));
 			$slug = $alias[$k] ?? preg_replace('/^-+|-+$/', '', preg_replace('/[^a-z0-9]+/', '-', str_replace(['\'', '’', '`', '&'], '', remove_accents($k))));
 			$src = 'https://cdn.jsdelivr.net/gh/healthhouse-repo/thh-xxl-images@main/brand-logos/' . $slug . '.png';
 		}
-		$brand_html .= '<a class="h2-brand-tile" href="' . esc_url(get_term_link($b)) . '"><img src="' . esc_url($src) . '" alt="' . esc_attr($b->name) . '" loading="lazy" data-name="' . esc_attr($b->name) . '" onerror="this.outerHTML=\'<span>\'+this.dataset.name+\'</span>\'"></a>';
+		$brand_html .= '<a class="h2-brand-tile" href="' . esc_url(get_term_link($b)) . '"><img src="' . esc_url($src) . '" alt="' . esc_attr($b->name) . '" loading="lazy" data-name="' . esc_attr($b->name) . '" onerror="this.outerHTML=\'<span>\'+this.dataset.name+\'</span>\'" onload="if(this.naturalWidth&amp;&amp;this.naturalWidth===this.naturalHeight&amp;&amp;this.naturalWidth>=200){this.outerHTML=\'<span>\'+this.dataset.name+\'</span>\'}else if(this.naturalWidth&amp;&amp;this.naturalWidth<=64){this.style.maxHeight=\'28px\';this.insertAdjacentHTML(\'afterend\',\'<span class=h2-bn>\'+this.dataset.name+\'</span>\')}"></a>';
 	}
 
 	$posts = get_posts(['numberposts' => 3, 'post_status' => 'publish']);
@@ -232,7 +233,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-brands{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
 .h2 .h2-brand-tile{color:var(--nv);background:#fff;border:1px solid #e6e8f0;border-radius:14px;height:88px;display:grid;place-items:center;padding:14px;text-align:center}
 .h2-brand-tile img{max-height:44px;max-width:78%;object-fit:contain}
-.h2-brand-tile span{font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#6b7187}.h2-brand-tile:hover span{color:var(--nv)}
+.h2 .h2-brand-tile{flex-direction:column;gap:6px;display:flex;align-items:center;justify-content:center}.h2-brand-tile .h2-bn{font-size:12px!important;letter-spacing:0!important;text-transform:none!important;font-weight:500!important}.h2-brand-tile span{font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#6b7187}.h2-brand-tile:hover span{color:var(--nv)}
 /* blog */
 .h2-posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .h2 .h2-post{color:var(--nv)}.h2-post{display:flex;flex-direction:column;gap:12px}.h2-post img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px}
