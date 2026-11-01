@@ -305,16 +305,12 @@ add_action('rest_api_init', function () {
 		$rows = $wpdb->get_results("SELECT lang, SUM(tr IS NOT NULL AND tr<>'') done, SUM(tr IS NULL OR tr='') pending FROM {$wpdb->prefix}thh_i18n GROUP BY lang", ARRAY_A);
 		return ['live' => thh_i18n_live(), 'langs' => array_keys(THH_I18N_LANGS), 'counts' => $rows];
 	}]);
-	// Openbaar leesbaar: het zijn alleen teksten die al op de publieke site staan (zonder url/metadata voor niet-beheerders).
-	register_rest_route('thh/v1', '/i18n/pending', ['methods' => 'GET', 'permission_callback' => '__return_true', 'callback' => function ($r) use ($lang_ok) {
+	register_rest_route('thh/v1', '/i18n/pending', ['methods' => 'GET', 'permission_callback' => $can, 'callback' => function ($r) use ($lang_ok) {
 		global $wpdb;
 		$lang = (string) $r['lang'];
 		if (!$lang_ok($lang)) return new WP_Error('lang', 'onbekende taal', ['status' => 400]);
 		$lim = min(500, max(1, (int) ($r['limit'] ?: 200)));
-		$off = max(0, (int) $r['offset']);
-		$cols = current_user_can('manage_woocommerce') ? 'h, src, url' : 'h, src';
-		nocache_headers();
-		return $wpdb->get_results($wpdb->prepare("SELECT $cols FROM {$wpdb->prefix}thh_i18n WHERE lang=%s AND (tr IS NULL OR tr='') ORDER BY h LIMIT %d OFFSET %d", $lang, $lim, $off), ARRAY_A);
+		return $wpdb->get_results($wpdb->prepare("SELECT h, src, url FROM {$wpdb->prefix}thh_i18n WHERE lang=%s AND (tr IS NULL OR tr='') ORDER BY seen DESC LIMIT %d", $lang, $lim), ARRAY_A);
 	}]);
 	register_rest_route('thh/v1', '/i18n', ['methods' => 'POST', 'permission_callback' => $can, 'callback' => function ($r) use ($lang_ok) {
 		global $wpdb;
