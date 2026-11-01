@@ -93,7 +93,7 @@ add_shortcode('thh_contact_v2', function () {
 .ct .ct-intro h1{color:#fff;font-size:clamp(38px,5vw,64px);font-weight:900;text-transform:uppercase;line-height:1.02}
 .ct-intro h1 em{display:block;font-style:normal;color:transparent;-webkit-text-stroke:2px #fff;font-size:.62em;margin-top:.15em}
 .ct-intro>p{margin:0;font-size:16px;line-height:1.6;color:rgba(255,255,255,.85);max-width:520px}
-.ct-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;max-width:540px}
+.ct .ct-list{list-style:none;margin:8px 0 0!important;padding:0!important;display:flex;flex-direction:column;gap:10px;max-width:540px}
 .ct .ct-list a{display:grid;grid-template-columns:36px 110px minmax(0,1fr) 18px;align-items:center;gap:12px;padding:12px 16px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;transition:background .15s}
 .ct .ct-list a:hover{background:rgba(255,255,255,.15);color:#fff}
 .ct-list strong{font-size:15px;font-weight:600}.ct-list span:not(.ct-ic){font-size:14.5px;overflow-wrap:anywhere;color:rgba(255,255,255,.85)}
