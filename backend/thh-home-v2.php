@@ -95,7 +95,10 @@ add_shortcode('thh_home_v2', function ($a) {
 	if (count($nw) < 4) $nw = thh_h2_products(['limit' => 4, 'orderby' => 'date', 'order' => 'DESC']);
 	foreach ($nw as $p) $new_html .= thh_h2_card($p, 'Nieuw');
 
-	$brands = get_terms(['taxonomy' => 'pa_merk', 'orderby' => 'count', 'order' => 'DESC', 'number' => 12, 'hide_empty' => true]);
+	$wish = ['XXL Nutrition', 'Applied Nutrition', 'Optimum Nutrition', 'Cellucor', 'Quamtrax', 'Kosso Nutrition', 'Grenade', 'Barebells', 'Per4m', 'USN', 'Nutrend', 'The Health House'];
+	$brands = [];
+	foreach ($wish as $w) { $t = get_term_by('name', $w, 'pa_merk'); if ($t && !is_wp_error($t)) $brands[] = $t; }
+	if (count($brands) < 6) $brands = get_terms(['taxonomy' => 'pa_merk', 'orderby' => 'count', 'order' => 'DESC', 'number' => 12, 'hide_empty' => true]);
 	$brand_html = '';
 	if (!is_wp_error($brands)) foreach ($brands as $b) { $lid = (int) get_term_meta($b->term_id, 'thumbnail_id', true); $logo = $lid ? wp_get_attachment_image($lid, 'medium', false, ['loading' => 'lazy', 'alt' => $b->name]) : ''; $brand_html .= '<a class="h2-brand-tile" href="' . esc_url(get_term_link($b)) . '">' . ($logo ?: '<span>' . esc_html($b->name) . '</span>') . '</a>'; }
 
@@ -195,7 +198,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-usps strong{font-size:14px;font-weight:600;color:var(--nv);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.h2-usps span{font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* secties */
 .h2-sec{margin-top:56px}.h2-sechead{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:20px}
-.h2-sechead h2{font-size:28px;font-weight:600}.h2 .h2-sechead a{font-weight:500;color:var(--nv);white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+.h2 .h2-sechead h2{font-size:28px;font-weight:600;text-transform:none}.h2 .h2-band h2{text-transform:none}.h2 .h2-sechead a{font-weight:500;color:var(--nv);white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
 .h2-grid{display:grid;gap:16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .h2-card{background:#fff;border:1px solid #e6e8f0;border-radius:18px;padding:16px;position:relative;display:flex;flex-direction:column;gap:10px;transition:transform .15s,box-shadow .15s}
 .h2-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(20,32,74,.12)}
