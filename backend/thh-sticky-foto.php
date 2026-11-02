@@ -31,7 +31,8 @@ add_action('wp_head', function () {
 	?>
 <style id="thh-sticky-foto-css">
 @media (min-width:1025px){
-	body.thh-sticky-foto .elementor-location-single .thh-sticky-rij{align-items:flex-start}
+	.elementor-location-single .thh-sticky-rij{align-items:flex-start}
+	.elementor-location-single .thh-sticky-kolom{align-self:flex-start}
 	body.thh-sticky-foto .elementor-location-single .thh-sticky-kolom{position:sticky;top:var(--thh-sf-top,24px);align-self:flex-start}
 	.elementor-location-single .woocommerce-product-gallery .flex-viewport,
 	.elementor-location-single .woocommerce-product-gallery__wrapper,
