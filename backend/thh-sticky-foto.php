@@ -34,6 +34,8 @@ add_action('wp_head', function () {
 	.elementor-location-single .thh-sticky-rij{align-items:flex-start}
 	.elementor-location-single .thh-sticky-kolom{align-self:flex-start}
 	body.thh-sticky-foto .elementor-location-single .thh-sticky-kolom{position:sticky;top:var(--thh-sf-top,24px);align-self:flex-start}
+	.elementor-location-single .woocommerce-product-gallery__image img.wp-post-image,.elementor-location-single .woocommerce-product-gallery__image img{max-height:calc(100vh - 240px)!important;width:auto!important;max-width:100%!important;margin:0 auto!important;object-fit:contain}
+	.elementor-location-single .woocommerce-product-gallery__image>a{display:flex;justify-content:center}
 	.elementor-location-single .woocommerce-product-gallery .flex-viewport,
 	.elementor-location-single .woocommerce-product-gallery__wrapper,
 	.elementor-location-single .woocommerce-product-gallery__wrapper > *{-webkit-transition:none!important;transition:none!important}
