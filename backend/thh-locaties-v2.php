@@ -16,6 +16,13 @@ function thh_loc_fotos() {
 	return (is_array($opt) ? $opt : []) + $def;
 }
 
+/** Brandpunt per foto, zodat de persoon(en) in beeld blijven. */
+function thh_loc_focus($url) {
+	$f = ['winkel-binnen' => '50% 40%', 'winkel-gevel' => '50% 50%', 'advies-2' => '42% 30%', 'schap' => '52% 28%', 'winkel-klant' => '42% 30%', 'advies-3' => '50% 28%', 'winkel-advies' => '62% 28%', 'kiosk-vier-meren' => '55% 55%', 'thh-over-advies' => '50% 30%'];
+	foreach ($f as $k => $v) { if (strpos($url, 'thh-over-' . $k . '.') !== false || strpos($url, $k . '.webp') !== false) return $v; }
+	return '50% 35%';
+}
+
 function thh_loc_winkels() {
 	$posts = get_posts(['post_type' => 'wpsl_stores', 'post_status' => 'publish', 'numberposts' => 50, 'orderby' => 'menu_order title', 'order' => 'ASC']);
 	$foto = thh_loc_fotos();
@@ -72,7 +79,7 @@ add_shortcode('thh_locaties_v2', function () {
 				$kaart[] = ['id' => $s['id'], 'n' => $s['naam'], 'lat' => $s['lat'], 'lng' => $s['lng'], 'a' => $adres];
 			?>
 			<article class="lc-card" id="winkel-<?php echo (int) $s['id']; ?>" data-id="<?php echo (int) $s['id']; ?>" data-uren='<?php echo esc_attr(wp_json_encode($uren_js)); ?>'>
-				<div class="lc-foto"><?php if ($s['foto']) : ?><img src="<?php echo esc_url($s['foto']); ?>" alt="<?php echo esc_attr($s['naam']); ?>" loading="lazy"><?php else : ?><span class="lc-ph"><?php echo $pin; ?></span><?php endif; ?></div>
+				<div class="lc-foto"><?php if ($s['foto']) : ?><img src="<?php echo esc_url($s['foto']); ?>" alt="<?php echo esc_attr($s['naam']); ?>" loading="lazy" style="object-position:<?php echo esc_attr(thh_loc_focus($s['foto'])); ?>"><?php else : ?><span class="lc-ph"><?php echo $pin; ?></span><?php endif; ?></div>
 				<div class="lc-info">
 					<div class="lc-top"><h2><?php echo esc_html($s['naam']); ?></h2><?php if ($heeft_uren) : ?><span class="lc-status" data-status></span><?php else : ?><span class="lc-status lc-soon">Binnenkort open</span><?php endif; ?></div>
 					<p class="lc-adres"><?php echo esc_html($s['adres']); ?><?php if ($s['adres2']) echo ' · ' . esc_html($s['adres2']); ?><br><?php echo esc_html(trim($s['pc'] . ' ' . $s['plaats'])); ?></p>
@@ -145,7 +152,7 @@ add_shortcode('thh_locaties_v2', function () {
 .lc-wrap{margin-top:32px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
 .lc-list{display:flex;flex-direction:column;gap:14px}
 .lc-card{display:grid;grid-template-columns:210px minmax(0,1fr);gap:18px;background:#fff;border:1px solid #e6e8f0;border-radius:18px;padding:14px;scroll-margin-top:120px}
-.lc-foto{border-radius:12px;overflow:hidden;background:var(--bg);height:158px;align-self:center}.lc-foto img{object-position:center 35%}.lc-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.lc-foto{border-radius:12px;overflow:hidden;background:var(--bg);height:158px;align-self:center}.lc-foto img{width:100%;height:100%;object-fit:cover;display:block}
 .lc-ph{display:grid;place-items:center;width:100%;height:100%;color:#c3c8d8}.lc-ph svg{width:40px;height:40px}
 .lc-info{display:flex;flex-direction:column;gap:8px;min-width:0;padding:4px 4px 2px 0}
 .lc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.lc .lc-top h2{font-size:18px;font-weight:700}
