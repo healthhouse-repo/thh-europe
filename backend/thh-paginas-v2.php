@@ -117,34 +117,91 @@ add_shortcode('thh_franchise_v2', function () {
 				<li><b>3</b><span>Klikt het? Dan bespreken we samen de volgende stappen.</span></li>
 			</ul>
 		</div>
-		<form class="pv-form" id="pvFranchise" novalidate>
-			<h3>Meld je aan</h3>
-			<input type="hidden" name="action" value="elementor_pro_forms_send_form">
-			<input type="hidden" name="post_id" value="41993">
-			<input type="hidden" name="form_id" value="aecf96b">
-			<input type="hidden" name="referer_title" value="Franchise">
-			<input type="hidden" name="queried_id" value="41993">
-			<div class="pv-grid2">
-				<label>Volledige naam<input type="text" name="form_fields[name]" autocomplete="name" required></label>
-				<label>Telefoonnummer<input type="tel" name="form_fields[field_f392297]" autocomplete="tel"></label>
-			</div>
-			<label>E-mail<input type="email" name="form_fields[email]" autocomplete="email" required></label>
-			<label>Waarom ben jij een match met The Health House?<textarea name="form_fields[message]"></textarea></label>
+		<form class="pv-form pv-fform" id="pvFranchise" novalidate>
+			<h3>Franchise-aanvraag</h3>
+			<p class="pv-fsub">Het invullen duurt ongeveer 3 minuten. Velden met * zijn verplicht. Je gegevens gebruiken we alleen om je aanvraag te beoordelen.</p>
+			<input type="text" name="website" class="pv-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+			<fieldset><legend><b>1</b>Over jou</legend>
+				<div class="pv-grid2">
+					<label>Voornaam *<input type="text" name="voornaam" autocomplete="given-name" required></label>
+					<label>Achternaam *<input type="text" name="achternaam" autocomplete="family-name" required></label>
+					<label>E-mail *<input type="email" name="email" autocomplete="email" required></label>
+					<label>Telefoonnummer *<input type="tel" name="telefoon" autocomplete="tel" required></label>
+					<label>Woonplaats *<input type="text" name="woonplaats" autocomplete="address-level2" required></label>
+					<label>LinkedIn-profiel<input type="url" name="linkedin" placeholder="https://linkedin.com/in/..."></label>
+				</div>
+			</fieldset>
+
+			<fieldset><legend><b>2</b>Je achtergrond</legend>
+				<div class="pv-grid2">
+					<label>Huidige situatie *<select name="situatie" required><option value="">Kies…</option><option>In loondienst</option><option>Ondernemer / zzp</option><option>Eigen winkel of horeca</option><option>Op zoek naar werk</option><option>Anders</option></select></label>
+					<label>Ervaring als ondernemer *<select name="ondernemerservaring" required><option value="">Kies…</option><option>Geen</option><option>Minder dan 3 jaar</option><option>3 tot 10 jaar</option><option>Meer dan 10 jaar</option></select></label>
+				</div>
+				<div class="pv-chkgroup"><span>Waar heb je ervaring mee?</span>
+					<label class="pv-chk"><input type="checkbox" name="ervaring[]" value="Retail / winkel">Retail / winkel</label>
+					<label class="pv-chk"><input type="checkbox" name="ervaring[]" value="Sport of fitness">Sport of fitness</label>
+					<label class="pv-chk"><input type="checkbox" name="ervaring[]" value="Voeding of supplementen">Voeding of supplementen</label>
+					<label class="pv-chk"><input type="checkbox" name="ervaring[]" value="Leidinggeven aan personeel">Leidinggeven aan personeel</label>
+					<label class="pv-chk"><input type="checkbox" name="ervaring[]" value="Verkoop of marketing">Verkoop of marketing</label>
+				</div>
+			</fieldset>
+
+			<fieldset><legend><b>3</b>Je plannen</legend>
+				<div class="pv-grid2">
+					<label>In welke stad of regio wil je starten? *<input type="text" name="regio" required></label>
+					<label>Heb je al een locatie op het oog?<select name="locatie"><option value="">Kies…</option><option>Ja, ik heb een pand op het oog</option><option>Ik heb een paar opties</option><option>Nee, ik zoek nog</option></select></label>
+					<label>Hoe wil je in de winkel staan? *<select name="rol" required><option value="">Kies…</option><option>Fulltime zelf in de winkel</option><option>Deels zelf, deels personeel</option><option>Alleen als investeerder</option></select></label>
+					<label>Start je alleen of met een partner?<select name="partner"><option value="">Kies…</option><option>Alleen</option><option>Met een zakenpartner</option><option>Met mijn partner of familie</option></select></label>
+					<label>Wanneer wil je starten? *<select name="start" required><option value="">Kies…</option><option>Binnen 3 maanden</option><option>Over 3 tot 6 maanden</option><option>Over 6 tot 12 maanden</option><option>Later dan een jaar</option></select></label>
+				</div>
+			</fieldset>
+
+			<fieldset><legend><b>4</b>Financiën</legend>
+				<div class="pv-grid2">
+					<label>Beschikbaar eigen vermogen *<select name="vermogen" required><option value="">Kies…</option><option>Minder dan € 25.000</option><option>€ 25.000 tot € 50.000</option><option>€ 50.000 tot € 100.000</option><option>Meer dan € 100.000</option><option>Bespreek ik liever in een gesprek</option></select></label>
+					<label>Heb je externe financiering nodig?<select name="financiering"><option value="">Kies…</option><option>Nee</option><option>Ja, gedeeltelijk</option><option>Ja, grotendeels</option><option>Weet ik nog niet</option></select></label>
+				</div>
+			</fieldset>
+
+			<fieldset><legend><b>5</b>Je motivatie</legend>
+				<label>Waarom ben jij een match met The Health House? *<textarea name="motivatie" required placeholder="Vertel kort wie je bent, wat je drijft en waarom je een eigen The Health House wilt."></textarea></label>
+				<label>Hoe ken je ons?<select name="bron"><option value="">Kies…</option><option>Klant in een van onze winkels</option><option>Social media</option><option>Google</option><option>Via iemand die ik ken</option><option>Franchisebeurs of -platform</option><option>Anders</option></select></label>
+			</fieldset>
+
+			<label class="pv-chk pv-akkoord"><input type="checkbox" name="akkoord" value="1" required>Ik ga akkoord met de verwerking van mijn gegevens volgens de <a href="<?php echo $u('/privacy-beleid/'); ?>" target="_blank" rel="noopener">privacyverklaring</a>. *</label>
 			<div class="pv-msg" role="status"></div>
-			<div><button class="pv-btn pv-btn-red" type="submit">Verstuur aanmelding</button></div>
+			<div><button class="pv-btn pv-btn-red" type="submit">Verstuur aanvraag</button></div>
 		</form>
 	</section>
 </div>
+<style>
+.pv-fsub{margin:-4px 0 4px!important;font-size:14px!important;color:rgba(255,255,255,.75)!important;line-height:1.5}
+.pv-fform fieldset{border:0;border-top:1px solid rgba(255,255,255,.14);margin:0;padding:18px 0 4px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pv-fform legend{float:left;width:100%;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#fff;padding:0;margin:0 0 12px}
+.pv-fform legend b{width:26px;height:26px;border-radius:50%;background:var(--rd);display:grid;place-items:center;font-size:13px}
+.pv-fform legend+*{clear:both}
+.pv .pv-form select{width:100%;background:#fff;border:1px solid transparent;border-radius:12px;padding:12px 14px;font-size:15px;color:var(--tx);font-family:inherit;box-shadow:none;outline:none;min-height:48px;appearance:auto}
+.pv .pv-form select:focus{border-color:var(--rd)}
+.pv-chkgroup{display:flex;flex-wrap:wrap;gap:8px}.pv-chkgroup>span{width:100%;font-size:14px;font-weight:500}
+.pv .pv-form label.pv-chk{flex-direction:row;align-items:center;gap:8px;font-size:14px;font-weight:400;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 14px;cursor:pointer}
+.pv .pv-form label.pv-chk input{width:16px;height:16px;padding:0;margin:0;accent-color:var(--rd);flex:none}
+.pv .pv-form label.pv-akkoord{border-radius:12px;align-items:flex-start;line-height:1.5;margin-top:8px}.pv-akkoord a{color:#fff!important;text-decoration:underline!important}
+.pv-fform .pv-invalid{border-color:var(--rd)!important;box-shadow:0 0 0 2px rgba(226,55,63,.35)!important}
+.pv-formwrap:has(.pv-fform){grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr)}.pv-formwrap:has(.pv-fform) .pv-formintro{align-self:start;position:sticky;top:110px}
+@media(max-width:900px){.pv-formwrap:has(.pv-fform){grid-template-columns:minmax(0,1fr)}.pv-formwrap:has(.pv-fform) .pv-formintro{position:static}}
+</style>
 <script>
 (function(){var f=document.getElementById('pvFranchise');if(!f)return;var m=f.querySelector('.pv-msg'),b=f.querySelector('button[type=submit]');
-f.addEventListener('submit',function(e){e.preventDefault();m.className='pv-msg';
-var n=f.querySelector('[name="form_fields[name]"]').value.trim(),em=f.querySelector('[name="form_fields[email]"]').value.trim();
-if(!n||!/^\S+@\S+\.\S+$/.test(em)){m.textContent='Vul je naam en een geldig e-mailadres in.';m.className='pv-msg err';return;}
+f.addEventListener('submit',function(e){e.preventDefault();m.className='pv-msg';var bad=null;
+f.querySelectorAll('[required]').forEach(function(el){var ok=el.type==='checkbox'?el.checked:(el.type==='email'?/^\S+@\S+\.\S+$/.test(el.value.trim()):el.value.trim()!=='');var t=el.type==='checkbox'?el.closest('label'):el;t.classList.toggle('pv-invalid',!ok);if(!ok&&!bad)bad=el;});
+if(bad){m.textContent='Vul alle verplichte velden (*) in en ga akkoord met de privacyverklaring.';m.className='pv-msg err';bad.focus();return;}
+var d={};new FormData(f).forEach(function(v,k){if(k.slice(-2)==='[]'){k=k.slice(0,-2);(d[k]=d[k]||[]).push(v);}else d[k]=v;});
 b.disabled=true;b.textContent='Bezig...';
-fetch(<?php echo wp_json_encode(admin_url('admin-ajax.php')); ?>,{method:'POST',body:new FormData(f),credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){
-if(j&&j.success){f.reset();m.textContent='Bedankt voor je aanmelding! We nemen zo snel mogelijk contact met je op.';m.className='pv-msg ok';}
-else{m.textContent='Er ging iets mis. Probeer het nog eens of stuur ons een WhatsApp.';m.className='pv-msg err';}
-}).catch(function(){m.textContent='Er ging iets mis. Probeer het nog eens of stuur ons een WhatsApp.';m.className='pv-msg err';}).then(function(){b.disabled=false;b.textContent='Verstuur aanmelding';});});})();
+fetch(<?php echo wp_json_encode(rest_url('thh/v1/franchise-aanvraag')); ?>,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(x){
+if(x.ok&&x.j&&x.j.ok){f.reset();m.textContent='Bedankt voor je aanvraag! We bekijken hem zorgvuldig en nemen binnenkort contact met je op.';m.className='pv-msg ok';}
+else{m.textContent=(x.j&&x.j.message)||'Er ging iets mis. Probeer het nog eens of stuur ons een WhatsApp.';m.className='pv-msg err';}
+}).catch(function(){m.textContent='Er ging iets mis. Probeer het nog eens of stuur ons een WhatsApp.';m.className='pv-msg err';}).then(function(){b.disabled=false;b.textContent='Verstuur aanvraag';});});})();
 </script>
 <?php
 	return ob_get_clean();
@@ -209,6 +266,41 @@ if(x.ok){f.reset();m.textContent='Bedankt. We hebben je gegevens ontvangen en ho
 
 /* Jennah-claim: gegevens van klanten opslaan en doorsturen naar klantenservice */
 add_action('rest_api_init', function () {
+	register_rest_route('thh/v1', '/franchise-aanvraag', [
+		'methods' => 'POST',
+		'permission_callback' => '__return_true',
+		'callback' => function ($req) {
+			if (trim((string) $req->get_param('website')) !== '') return ['ok' => true];
+			$ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+			$k = 'thh_fa_' . md5($ip); $n = (int) get_transient($k);
+			if ($n >= 5) return new WP_Error('te_vaak', 'Je hebt al een paar keer een aanvraag verstuurd. Probeer het later nog eens.', ['status' => 429]);
+			$velden = ['voornaam' => 'Voornaam', 'achternaam' => 'Achternaam', 'email' => 'E-mail', 'telefoon' => 'Telefoon', 'woonplaats' => 'Woonplaats', 'linkedin' => 'LinkedIn', 'situatie' => 'Huidige situatie', 'ondernemerservaring' => 'Ervaring als ondernemer', 'ervaring' => 'Ervaring met', 'regio' => 'Gewenste stad/regio', 'locatie' => 'Locatie op het oog', 'rol' => 'Rol in de winkel', 'partner' => 'Alleen of met partner', 'start' => 'Gewenste start', 'vermogen' => 'Eigen vermogen', 'financiering' => 'Financiering nodig', 'motivatie' => 'Motivatie', 'bron' => 'Hoe ken je ons'];
+			$d = [];
+			foreach ($velden as $f => $l) {
+				$v = $req->get_param($f);
+				if (is_array($v)) $v = implode(', ', array_map('sanitize_text_field', array_slice($v, 0, 10)));
+				$d[$f] = $f === 'motivatie' ? sanitize_textarea_field(mb_substr((string) $v, 0, 3000)) : sanitize_text_field(mb_substr((string) $v, 0, 300));
+			}
+			foreach (['voornaam', 'achternaam', 'telefoon', 'woonplaats', 'situatie', 'ondernemerservaring', 'regio', 'rol', 'start', 'vermogen', 'motivatie'] as $f) if ($d[$f] === '') return new WP_Error('ongeldig', 'Vul alle verplichte velden (*) in.', ['status' => 400]);
+			if (!is_email($d['email'])) return new WP_Error('ongeldig', 'Vul een geldig e-mailadres in.', ['status' => 400]);
+			if (!$req->get_param('akkoord')) return new WP_Error('ongeldig', 'Ga akkoord met de privacyverklaring.', ['status' => 400]);
+			set_transient($k, $n + 1, HOUR_IN_SECONDS);
+			$d['tijd'] = current_time('mysql');
+			$lijst = get_option('thh_franchise_aanvragen', []); if (!is_array($lijst)) $lijst = [];
+			$lijst[] = $d; update_option('thh_franchise_aanvragen', $lijst, false);
+			$naam = $d['voornaam'] . ' ' . $d['achternaam'];
+			$body = "Nieuwe franchise-aanvraag via thehealthhouse.nl/franchise/\n\n";
+			foreach ($velden as $f => $l) if ($d[$f] !== '') $body .= ($f === 'motivatie' ? "\n" . $l . ":\n" . $d[$f] . "\n\n" : $l . ': ' . $d[$f] . "\n");
+			$body .= "\nOntvangen: " . $d['tijd'] . "\n";
+			wp_mail('klantenservice@thehealthhouse.nl', 'Franchise-aanvraag: ' . $naam . ' (' . $d['regio'] . ')', $body, ['Reply-To: ' . $naam . ' <' . $d['email'] . '>']);
+			return ['ok' => true];
+		},
+	]);
+	register_rest_route('thh/v1', '/franchise-aanvraag/lijst', [
+		'methods' => 'GET',
+		'permission_callback' => function () { return current_user_can('manage_woocommerce'); },
+		'callback' => function () { $l = get_option('thh_franchise_aanvragen', []); return is_array($l) ? $l : []; },
+	]);
 	register_rest_route('thh/v1', '/jennah-claim', [
 		'methods' => 'POST',
 		'permission_callback' => '__return_true',
