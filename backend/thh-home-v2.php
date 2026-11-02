@@ -278,7 +278,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-grid{display:grid;gap:20px 16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .h2-card{position:relative;display:flex;flex-direction:column;gap:10px;background:none;border:0;padding:0}
 .h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.22;background:#f5f5f6;border-radius:10px;overflow:hidden}
-.h2-cimg img{width:78%;height:74%;max-width:none;max-height:none;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
+.h2-cimg img{position:absolute;inset:0;margin:auto;width:78%;height:74%;max-width:none;max-height:none;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
 .h2-card:hover .h2-cimg img{transform:scale(1.04)}
 .h2-badge{position:absolute;top:12px;left:12px;z-index:3;background:var(--rd);color:#fff;font-weight:600;font-size:12px;padding:4px 9px;border-radius:999px}.h2-badge-nv{background:var(--nv)}
 .h2 .h2-cart{position:absolute;right:12px;bottom:12px;z-index:3;width:44px;height:44px;border-radius:50%;background:var(--nv);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,32,74,.18);transition:transform .15s,background .15s}
@@ -351,7 +351,7 @@ add_shortcode('thh_home_v2', function ($a) {
 				for(var yy=0;yy<h;yy++){for(var xx=0;xx<w;xx++){if(d[(yy*w+xx)*4+3]>16){if(xx<x0)x0=xx;if(xx>x1)x1=xx;if(yy<y0)y0=yy;if(yy>y1)y1=yy;}}}
 				var out=c;
 				if(img.closest('.h2-cimg')&&x1>x0&&y1>y0){var pad=Math.round(Math.max(x1-x0,y1-y0)*0.04);x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(w-1,x1+pad);y1=Math.min(h-1,y1+pad);
-					var cw=x1-x0+1,ch=y1-y0+1;if(cw<w*0.97||ch<h*0.97){out=document.createElement('canvas');out.width=cw;out.height=ch;out.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);}}
+					var cw=x1-x0+1,ch=y1-y0+1;if((cw<w*0.97||ch<h*0.97)&&Math.max(cw,ch)>=420){out=document.createElement('canvas');out.width=cw;out.height=ch;out.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);}}
 				img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src=out.toDataURL('image/png');
 			}catch(e){}
 		};
