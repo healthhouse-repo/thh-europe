@@ -352,7 +352,8 @@ add_shortcode('thh_home_v2', function ($a) {
 				for(var yy=0;yy<h;yy++){for(var xx=0;xx<w;xx++){if(d[(yy*w+xx)*4+3]>16){if(xx<x0)x0=xx;if(xx>x1)x1=xx;if(yy<y0)y0=yy;if(yy>y1)y1=yy;}}}
 				var out=c;
 				if(img.closest('.h2-cimg')&&x1>x0&&y1>y0){var pad=Math.round(Math.max(x1-x0,y1-y0)*0.04);x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(w-1,x1+pad);y1=Math.min(h-1,y1+pad);
-					var cw=x1-x0+1,ch=y1-y0+1;if((cw<w*0.97||ch<h*0.97)&&Math.max(cw,ch)>=420){out=document.createElement('canvas');out.width=cw;out.height=ch;out.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);}}
+					var MIN=Math.min(380,w,h),ex=function(a0,a1,lim){var sz=a1-a0+1;if(sz>=MIN)return[a0,a1];var c0=Math.round((a0+a1)/2-MIN/2);c0=Math.max(0,Math.min(lim-MIN,c0));return[c0,c0+MIN-1];};var ex1=ex(x0,x1,w),ey1=ex(y0,y1,h);x0=ex1[0];x1=ex1[1];y0=ey1[0];y1=ey1[1];
+					var cw=x1-x0+1,ch=y1-y0+1;if(cw<w*0.97||ch<h*0.97){out=document.createElement('canvas');out.width=cw;out.height=ch;out.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);}}
 				img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src=out.toDataURL('image/png');
 			}catch(e){}
 		};
