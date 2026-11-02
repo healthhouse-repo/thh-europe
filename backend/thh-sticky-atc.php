@@ -53,3 +53,28 @@ b.addEventListener('click',function(){
 </script>
 	<?php
 }, 30);
+
+/**
+ * Standaardvariant: bij variabele producten zonder ingestelde standaard wordt automatisch
+ * de eerste variant geselecteerd die op voorraad is (volgorde zoals in WooCommerce).
+ * Een handmatig ingestelde standaard in WooCommerce blijft voorgaan.
+ */
+add_filter('woocommerce_product_get_default_attributes', function ($defaults, $product) {
+	if (is_admin() && !wp_doing_ajax()) return $defaults;
+	if (!empty($defaults) || !$product || !$product->is_type('variable')) return $defaults;
+	static $cache = [];
+	$id = $product->get_id();
+	if (isset($cache[$id])) return $cache[$id];
+	$gekozen = [];
+	foreach ($product->get_children() as $vid) {
+		$v = wc_get_product($vid);
+		if (!$v || $v->get_status() !== 'publish' || !$v->is_in_stock() || !$v->is_purchasable()) continue;
+		$attrs = $v->get_attributes();
+		$ok = true;
+		foreach ($attrs as $k => $val) if ($val === '') { $ok = false; break; } // "elke"-variant: overslaan
+		if (!$ok) continue;
+		$gekozen = $attrs;
+		break;
+	}
+	return $cache[$id] = $gekozen;
+}, 20, 2);
