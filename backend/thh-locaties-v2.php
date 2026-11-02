@@ -18,7 +18,7 @@ function thh_loc_fotos() {
 
 /** Brandpunt per foto, zodat de persoon(en) in beeld blijven. */
 function thh_loc_focus($url) {
-	$f = ['winkel-binnen' => '50% 40%', 'winkel-gevel' => '50% 50%', 'advies-2' => '30% 30%', 'schap' => '52% 28%', 'winkel-klant' => '40% 58%', 'advies-3' => '50% 28%', 'winkel-advies' => '62% 28%', 'kiosk-vier-meren' => '55% 55%', 'thh-over-advies' => '50% 30%'];
+	$f = ['winkel-binnen' => '50% 40%', 'winkel-gevel' => '50% 50%', 'advies-2' => '30% 30%', 'schap' => '52% 28%', 'winkel-klant' => '40% 36%', 'advies-3' => '50% 28%', 'winkel-advies' => '62% 28%', 'kiosk-vier-meren' => '55% 55%', 'thh-over-advies' => '50% 30%'];
 	foreach ($f as $k => $v) { if (strpos($url, 'thh-over-' . $k . '.') !== false || strpos($url, $k . '.webp') !== false) return $v; }
 	return '50% 35%';
 }
