@@ -67,7 +67,7 @@ function thh_h2_products($args) {
 
 add_shortcode('thh_home_v2', function ($a) {
 	$a = shortcode_atts([
-		'kicker' => '', 'titel' => 'ALLES VOOR', 'titel2' => 'JOUW DOEL', 'sub' => 'Eiwitten, creatine, pre-workouts en vitamines van bekende merken. Vandaag voor 22:00 besteld, binnen 2 werkdagen verzonden. Ophalen in een van onze winkels kan ook.',
+		'kicker' => '', 'titel' => 'ALLES VOOR', 'titel2' => 'JOUW DOEL', 'sub' => 'Eiwitten, creatine, pre-workouts en vitamines van bekende merken. Ruim 2.000 producten online te bestellen. Je favoriete product ophalen in een van onze winkels, met gratis advies, kan natuurlijk ook.',
 		'cta' => 'Shop de bestsellers', 'cta_url' => '/product-category/best-verkocht/', 'cta2' => 'Start de keuzehulp', 'cta2_url' => '#keuzehulp',
 		'img' => 'https://thh-outlet.vercel.app/outlet/assets/weekdeals/hero-weekdeals.png', 'thema' => 'navy',
 		'banner_mobiel' => '', 'banner' => 'https://thehealthhouse.nl/wp-content/uploads/2026/11/homepage-banner-clear-whey.webp', 'banner_url' => '/product/clear-whey-isolate/', 'banner_alt' => 'Nieuw: Clear Whey Isolate met collageen, 20% korting',
@@ -100,7 +100,7 @@ add_shortcode('thh_home_v2', function ($a) {
 		'accessoires-shakers' => '<path d="M34 14h22l2 8H32z" fill="#14204A"/><rect x="30" y="22" width="30" height="8" rx="2" fill="#14204A"/><path d="M31 30h28l-3 48a4 4 0 0 1-4 4H38a4 4 0 0 1-4-4z" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 56h24l-1.5 22a4 4 0 0 1-4 4H38.5a4 4 0 0 1-4-4z" fill="#E63946"/><path d="M38 40h8M38 47h5" stroke="#14204A" stroke-width="2.5" stroke-linecap="round"/><path d="M60 24c8 0 10 6 6 10" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
 		'eiwitrepen' => '<g transform="rotate(-18 48 48)"><rect x="18" y="30" width="58" height="16" rx="4" fill="#14204A"/><path d="M18 34l-5-4v16l5-4M76 34l5-4v16l-5-4" fill="#14204A"/><path d="M30 38h22" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></g><g transform="rotate(-18 48 48)"><rect x="18" y="52" width="58" height="16" rx="4" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 56l-5-4v16l5-4M76 56l5-4v16l-5-4" fill="#ffffff" fill="none" stroke="#14204A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="40" y="52" width="14" height="16" fill="#E63946"/></g>',
 	];
-	$catpics = array_merge(['eiwitten' => 49348, 'creatine' => 50071, 'pre-workout' => 49421, 'eiwitrepen' => 49365, 'vitamines' => 49498, 'fatburners' => 49519, 'fightgear' => 'att:92500', 'accessoires-shakers' => 65065], (array) get_option('thh_h2_cat_img', []));
+	$catpics = array_merge(['eiwitten' => 49348, 'creatine' => 50071, 'pre-workout' => 49421, 'eiwitrepen' => 49365, 'vitamines' => 45972, 'fatburners' => 49519, 'fightgear' => 'att:92500', 'accessoires-shakers' => 65065], (array) get_option('thh_h2_cat_img', []));
 	$cat_html = '';
 	foreach ($cats as [$name, $slug]) {
 		$t = get_term_by('slug', $slug, 'product_cat');
