@@ -1,7 +1,7 @@
 <?php
 /**
  * THH Sticky winkelwagenknop op de productpagina.
- * Zodra de gewone "In winkelwagen"-knop uit beeld scrolt, verschijnt rechtsonder een knop
+ * Na de eerste keer scrollen (vanaf 120px) verschijnt rechtsonder een knop
  * met productfoto, naam en prijs. Klik = dezelfde knop als in het formulier (dus met de gekozen
  * smaak/maat). Nog geen variant gekozen? Dan scrolt hij terug naar de keuze.
  * Desktop: zwevende kaart rechtsonder, boven de chatknop. Mobiel: balk onderin, chatknop schuift omhoog.
@@ -43,7 +43,7 @@ var b=bar.querySelector('.thh-satc-btn'),l=bar.querySelector('.thh-satc-lbl'),pr
 function needsChoice(){return btn.classList.contains('disabled')||btn.classList.contains('wc-variation-selection-needed')||btn.disabled;}
 function upd(){l.textContent=needsChoice()?kies:lbl;var vp=form.querySelector('.woocommerce-variation-price .price');if(vp&&vp.innerHTML.trim())pr.innerHTML=vp.innerHTML;}
 var shown=false;function show(on){if(on===shown)return;shown=on;bar.classList.toggle('is-on',on);bar.setAttribute('aria-hidden',on?'false':'true');document.body.classList.toggle('thh-satc-open',on);if(on)upd();}
-var tick=false;function chk(){tick=false;var r=btn.getBoundingClientRect();show(r.bottom<0||(r.width===0&&r.height===0&&window.scrollY>600));}
+var tick=false;function chk(){tick=false;var r=btn.getBoundingClientRect();show(window.scrollY>120);}
 window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(chk);}},{passive:true});window.addEventListener('resize',chk);chk();
 if(window.jQuery){jQuery(form).on('found_variation reset_data hide_variation show_variation woocommerce_variation_has_changed',function(){setTimeout(upd,30);});jQuery(document.body).on('added_to_cart',function(){b.classList.remove('is-busy');});}
 b.addEventListener('click',function(){
