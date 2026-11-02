@@ -297,6 +297,7 @@ add_shortcode('thh_advies_v2', function () {
 .av-herovis{margin:0;position:relative;min-height:100%}.av-herovis img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 30%}
 .av-cards{grid-template-columns:repeat(4,minmax(0,1fr))}
 .pv-steps a{color:var(--rd);font-weight:600}
+.pv .av-form{background:var(--bg);color:var(--tx)}.pv .av-form h3{color:var(--nv)!important}.av-form .gform_wrapper form,.av-form .gform-theme,.av-form>.gform_wrapper{box-shadow:0 10px 30px rgba(20,32,74,.08)!important}
 .av-form .gform_wrapper{margin:0!important}.av-form .gform_wrapper .gform_fields{row-gap:14px!important}
 .av-form .gform_wrapper .gfield_label,.av-form .gform_wrapper legend{color:#fff!important;font-weight:500!important;font-size:14px!important;text-transform:none!important;letter-spacing:0!important}
 .av-form .gform_wrapper input:not([type=submit]):not([type=checkbox]):not([type=radio]),.av-form .gform_wrapper textarea{width:100%!important;background:#fff!important;border:1px solid transparent!important;border-radius:12px!important;padding:12px 14px!important;font-size:15px!important;color:var(--tx)!important;box-shadow:none!important;font-family:inherit!important}
