@@ -43,7 +43,8 @@ var b=bar.querySelector('.thh-satc-btn'),l=bar.querySelector('.thh-satc-lbl'),pr
 function needsChoice(){return btn.classList.contains('disabled')||btn.classList.contains('wc-variation-selection-needed')||btn.disabled;}
 function upd(){l.textContent=needsChoice()?kies:lbl;var vp=form.querySelector('.woocommerce-variation-price .price');if(vp&&vp.innerHTML.trim())pr.innerHTML=vp.innerHTML;}
 var shown=false;function show(on){if(on===shown)return;shown=on;bar.classList.toggle('is-on',on);bar.setAttribute('aria-hidden',on?'false':'true');document.body.classList.toggle('thh-satc-open',on);if(on)upd();}
-if('IntersectionObserver' in window){new IntersectionObserver(function(e){var x=e[0];show(!x.isIntersecting&&x.boundingClientRect.top<0);},{threshold:0}).observe(btn);}
+var tick=false;function chk(){tick=false;var r=btn.getBoundingClientRect();show(r.bottom<0||(r.width===0&&r.height===0&&window.scrollY>600));}
+window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(chk);}},{passive:true});window.addEventListener('resize',chk);chk();
 if(window.jQuery){jQuery(form).on('found_variation reset_data hide_variation show_variation woocommerce_variation_has_changed',function(){setTimeout(upd,30);});jQuery(document.body).on('added_to_cart',function(){b.classList.remove('is-busy');});}
 b.addEventListener('click',function(){
  if(needsChoice()){var t=form.querySelector('.variations')||form;t.scrollIntoView({behavior:'smooth',block:'center'});t.classList.remove('thh-satc-flash');void t.offsetWidth;t.classList.add('thh-satc-flash');return;}
