@@ -66,7 +66,7 @@ add_shortcode('thh_instore_deals', function () {
 body.page-id-<?php echo (int) $pid; ?> .page-header{display:none}
 body.page-id-<?php echo (int) $pid; ?> .site-main,body.page-id-<?php echo (int) $pid; ?> .page-content{max-width:none!important;width:100%!important;padding:0!important;margin:0!important}
 .isd .isd-art img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:20px;display:block}
-.isd-ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.isd-ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:28px}.isd .isd-ctas .wd-cta{margin:0!important;min-height:48px;display:inline-flex;align-items:center}
 .isd .isd-ghost{display:inline-flex;align-items:center;min-height:48px;padding:0 26px;border:2px solid rgba(255,255,255,.7);border-radius:999px;color:#fff!important;font-weight:600;text-decoration:none!important}
 .isd .isd-ghost:hover{background:rgba(255,255,255,.12)}
 .isd-leeg{background:#fff;border-radius:20px;padding:36px;text-align:center;max-width:720px;margin:8px auto 0}
