@@ -280,6 +280,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.22;background:#f5f5f6;border-radius:10px;overflow:hidden}
 .h2-cimg img{position:absolute;inset:0;margin:auto;width:78%;height:74%;max-width:none;max-height:none;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
 .h2-card:hover .h2-cimg img{transform:scale(1.04)}
+.h2-cimg>:not(img){z-index:2}
 .h2-badge{position:absolute;top:12px;left:12px;z-index:3;background:var(--rd);color:#fff;font-weight:600;font-size:12px;padding:4px 9px;border-radius:999px}.h2-badge-nv{background:var(--nv)}
 .h2 .h2-cart{position:absolute;right:12px;bottom:12px;z-index:3;width:44px;height:44px;border-radius:50%;background:var(--nv);color:#fff;display:grid;place-items:center;box-shadow:0 4px 12px rgba(20,32,74,.18);transition:transform .15s,background .15s}
 .h2 .h2-cart:hover{transform:scale(1.07);background:#0d1538;color:#fff}.h2 .h2-cart.added::after,.h2-card .added_to_cart{display:none!important}
