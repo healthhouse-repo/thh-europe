@@ -4,7 +4,7 @@
  * Na de eerste keer scrollen (vanaf 120px) verschijnt rechtsonder een knop
  * met productfoto, naam en prijs. Klik = dezelfde knop als in het formulier (dus met de gekozen
  * smaak/maat). Nog geen variant gekozen? Dan scrolt hij terug naar de keuze.
- * Desktop: zwevende kaart rechtsonder, boven de chatknop. Mobiel: balk onderin, chatknop schuift omhoog.
+ * Desktop: zwevende kaart rechtsonder, de chatknop schuift erboven. Mobiel: balk onderin, chatknop schuift omhoog.
  */
 
 add_action('wp_footer', function () {
@@ -19,7 +19,7 @@ add_action('wp_footer', function () {
 	<button type="button" class="thh-satc-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 7H6"/></svg><span class="thh-satc-lbl">In winkelwagen</span></button>
 </div>
 <style>
-.thh-satc{position:fixed;right:22px;bottom:96px;z-index:9990;display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:10px 10px 10px 12px;box-shadow:0 14px 40px rgba(20,32,74,.22);max-width:440px;transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .25s ease,opacity .25s ease;font-family:inherit}
+.thh-satc{position:fixed;right:22px;bottom:22px;z-index:9990;display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:10px 10px 10px 12px;box-shadow:0 14px 40px rgba(20,32,74,.22);max-width:440px;transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .25s ease,opacity .25s ease;font-family:inherit}
 .thh-satc.is-on{transform:none;opacity:1;pointer-events:auto}
 .thh-satc-img{width:52px;height:52px;object-fit:contain;border-radius:10px;background:#f5f6fa;flex:none}
 .thh-satc-info{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
@@ -29,6 +29,7 @@ add_action('wp_footer', function () {
 .thh-satc .thh-satc-btn:hover{background:#c92c33!important}
 .thh-satc .thh-satc-btn.is-busy{opacity:.7;pointer-events:none}
 .thh-satc-flash{animation:thhSatcFlash 1.2s ease 1}@keyframes thhSatcFlash{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 4px rgba(226,55,63,.45)}}
+@media(min-width:768px){body.thh-satc-open .thhc-launch,body.thh-satc-open .thhc-panel{bottom:108px!important;transition:bottom .25s ease}}
 @media(max-width:767px){
 .thh-satc{left:0;right:0;bottom:0;max-width:none;border-radius:16px 16px 0 0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(20,32,74,.16);transform:translateY(100%)}
 .thh-satc-img{width:44px;height:44px}.thh-satc-info strong{font-size:13px;-webkit-line-clamp:1}.thh-satc .thh-satc-btn{padding:0 16px!important}
