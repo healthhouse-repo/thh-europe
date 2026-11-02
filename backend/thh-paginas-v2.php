@@ -5,7 +5,7 @@
  * Het franchiseformulier post naar het bestaande Elementor-formulier (zelfde mail naar klantenservice@).
  */
 
-function thh_pv2_ids() { return [41993 => 'thh_franchise_v2', 41090 => 'thh_terugroep_v2', 3430 => 'thh_locaties_v2', 5913 => 'thh_over_v2', 5996 => 'thh_contact_v2']; }
+function thh_pv2_ids() { return [41993 => 'thh_franchise_v2', 41090 => 'thh_terugroep_v2', 3430 => 'thh_locaties_v2', 5913 => 'thh_over_v2', 5996 => 'thh_contact_v2', 13929 => 'thh_advies_v2']; }
 
 add_filter('elementor/frontend/the_content', function ($c) {
 	if (!is_page()) return $c;
@@ -18,7 +18,7 @@ add_filter('the_content', function ($c) {
 	return (isset($ids[$id]) && in_the_loop() && !did_action('elementor/frontend/before_render')) ? do_shortcode('[' . $ids[$id] . ']') : $c;
 }, 999);
 
-add_action('wp_head', function () { if (is_page([3430, 5913, 5996])) echo '<style>body.page .site-main>.page-header{display:none!important}</style>'; });
+add_action('wp_head', function () { if (is_page([3430, 5913, 5996, 13929])) echo '<style>body.page .site-main>.page-header{display:none!important}</style>'; });
 
 function thh_pv2_css() {
 	static $done = false; if ($done) return ''; $done = true;
@@ -238,3 +238,78 @@ add_action('rest_api_init', function () {
 	]);
 });
 
+add_shortcode('thh_advies_v2', function () {
+	$u = function ($p) { return esc_url(home_url($p)); };
+	$s = 'thh_pv2_svg';
+	$onderwerpen = [
+		['<path d="M3 12h4l3-8 4 16 3-8h4"/>', 'Afvallen', 'Gezond gewicht verliezen zonder je spieren kwijt te raken. We kijken naar je voeding, je ritme en wat wel en niet werkt.'],
+		['<path d="M6.5 6.5h11M6.5 17.5h11M4 9v6M20 9v6M2 10.5v3M22 10.5v3"/>', 'Spieropbouw en aankomen', 'Meer kracht en spiermassa. Hoeveel eiwit je nodig hebt, wanneer je het neemt en welke producten echt iets toevoegen.'],
+		['<path d="M10.5 20.5 3.5 13.5a5 5 0 017-7l7 7a5 5 0 01-7 7z"/><path d="m8.5 8.5 7 7"/>', 'De juiste supplementen', 'Door het aanbod zie je soms de producten niet meer. We helpen je kiezen wat past bij jouw doel en budget, en vertellen ook wat je niet nodig hebt.'],
+		['<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 'Training en herstel', 'Veel van onze coaches trainen zelf. Ze denken mee over je schema, je herstel en hoe je sterker, sneller en fitter wordt.'],
+	];
+	$form = function_exists('gravity_form') ? do_shortcode('[gravityform id="2" title="false" description="false" ajax="true"]') : '';
+	ob_start();
+	echo thh_pv2_css(); ?>
+<div class="pv av">
+	<section class="pv-hero av-hero">
+		<div class="av-herotxt">
+			<span class="pv-kicker">Gratis en vrijblijvend</span>
+			<h1>Persoonlijk <em>advies</em></h1>
+			<p>Wil je afvallen, aankomen of weet je niet welk supplement bij je past? Onze specialisten helpen je gratis, in de winkel en online.</p>
+			<div class="pv-ctas"><a class="pv-btn pv-btn-red" href="#advies-formulier">Stel je vraag</a><a class="pv-btn pv-btn-ghost" href="https://wa.me/31611789629" target="_blank" rel="noopener nofollow">WhatsApp ons</a></div>
+		</div>
+		<figure class="av-herovis"><img src="https://thehealthhouse.nl/wp-content/uploads/2026/11/thh-over-advies-2.webp" alt="Specialist van The Health House geeft een klant advies" loading="eager" fetchpriority="high"></figure>
+	</section>
+
+	<section class="pv-sec">
+		<h2>Waar we je mee helpen</h2>
+		<div class="pv-cards av-cards">
+			<?php foreach ($onderwerpen as $o) : ?><div class="pv-card"><span class="pv-ico"><?php echo $s($o[0]); ?></span><h3><?php echo esc_html($o[1]); ?></h3><p><?php echo esc_html($o[2]); ?></p></div><?php endforeach; ?>
+		</div>
+	</section>
+
+	<section class="pv-sec pv-two av-story">
+		<div><span class="pv-label">Speciaal voor jou</span><h2>Advies van mensen die zelf trainen</h2></div>
+		<div class="pv-txt">
+			<p>In al onze winkels en online staan onze medewerkers klaar om je te helpen. Wil je weten hoe je op een gezonde manier afvalt of aankomt? Onze coaches adviseren je altijd vrijblijvend.</p>
+			<p>Naast advies over voeding en supplementen geven veel van onze coaches ook advies over training. Wil je weten hoe je sterker, sneller en fitter wordt? Kom eens langs in een van onze winkels of stel je vraag hieronder.</p>
+			<p>We verkopen alleen producten waar we zelf achter staan: ons eigen merk en een strenge selectie van de beste merken uit Europa en de VS.</p>
+		</div>
+	</section>
+
+	<section class="pv-sec pv-formwrap" id="advies-formulier">
+		<div class="pv-formintro">
+			<span class="pv-label">Je hoeft het niet alleen te doen</span>
+			<h2>Stel je vraag aan een specialist</h2>
+			<p>Vertel ons kort wat je doel is. Je krijgt zo snel mogelijk persoonlijk antwoord van een van onze specialisten.</p>
+			<ol class="pv-steps">
+				<li><b>1</b><span>Vul het formulier in met je doel of vraag.</span></li>
+				<li><b>2</b><span>Een specialist neemt contact met je op, per mail of telefoon.</span></li>
+				<li><b>3</b><span>Je krijgt advies op maat. Liever face to face? Kom langs in een van <a href="<?php echo $u('/locaties/'); ?>">onze winkels</a>.</span></li>
+			</ol>
+		</div>
+		<div class="pv-form av-form"><h3>Adviesformulier</h3><?php echo $form; ?></div>
+	</section>
+</div>
+<style>
+.av-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:24px;min-height:440px;padding:0 0 0 56px!important}
+.av-herotxt{display:flex;flex-direction:column;justify-content:center;padding:48px 0}.av-herotxt .pv-kicker{align-self:flex-start}
+.av-herovis{margin:0;position:relative;min-height:100%}.av-herovis img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 30%}
+.av-cards{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pv-steps a{color:var(--rd);font-weight:600}
+.av-form .gform_wrapper{margin:0!important}.av-form .gform_wrapper .gform_fields{row-gap:14px!important}
+.av-form .gform_wrapper .gfield_label,.av-form .gform_wrapper legend{color:#fff!important;font-weight:500!important;font-size:14px!important;text-transform:none!important;letter-spacing:0!important}
+.av-form .gform_wrapper input:not([type=submit]):not([type=checkbox]):not([type=radio]),.av-form .gform_wrapper textarea{width:100%!important;background:#fff!important;border:1px solid transparent!important;border-radius:12px!important;padding:12px 14px!important;font-size:15px!important;color:var(--tx)!important;box-shadow:none!important;font-family:inherit!important}
+.av-form .gform_wrapper textarea{min-height:130px!important}.av-form .gform_wrapper input:focus,.av-form .gform_wrapper textarea:focus{border-color:var(--rd)!important;outline:none!important}
+.av-form .gform_wrapper .gfield_description,.av-form .gform_wrapper .gfield_required{color:rgba(255,255,255,.75)!important}
+.av-form .gform_wrapper .gform_footer{padding:0!important;margin:16px 0 0!important}
+.av-form .gform_wrapper .gform_footer input[type=submit],.av-form .gform_wrapper .gform_footer button{background:var(--rd)!important;color:#fff!important;border:0!important;border-radius:999px!important;padding:14px 30px!important;font-weight:600!important;font-size:15px!important;text-transform:none!important;letter-spacing:0!important;cursor:pointer;width:auto!important}
+.av-form .gform_wrapper .gform_footer input[type=submit]:hover{background:#c92c33!important}
+.av-form .gform_confirmation_message{color:#fff;font-size:16px}
+@media(max-width:1100px){.av-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.av-hero{grid-template-columns:minmax(0,1fr);padding:0!important;min-height:0}.av-herotxt{padding:28px 28px 32px}.av-herovis{order:-1;height:280px}}
+@media(max-width:640px){.av-herotxt{padding:22px 20px 26px}.av-herovis{height:220px}.av-cards{grid-template-columns:minmax(0,1fr)}}
+</style>
+<?php
+	return ob_get_clean();
+});
