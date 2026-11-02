@@ -350,7 +350,7 @@ add_shortcode('thh_home_v2', function ($a) {
 				var x0=w,y0=h,x1=-1,y1=-1;
 				for(var yy=0;yy<h;yy++){for(var xx=0;xx<w;xx++){if(d[(yy*w+xx)*4+3]>16){if(xx<x0)x0=xx;if(xx>x1)x1=xx;if(yy<y0)y0=yy;if(yy>y1)y1=yy;}}}
 				var out=c;
-				if(x1>x0&&y1>y0){var pad=Math.round(Math.max(x1-x0,y1-y0)*0.04);x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(w-1,x1+pad);y1=Math.min(h-1,y1+pad);
+				if(img.closest('.h2-cimg')&&x1>x0&&y1>y0){var pad=Math.round(Math.max(x1-x0,y1-y0)*0.04);x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(w-1,x1+pad);y1=Math.min(h-1,y1+pad);
 					var cw=x1-x0+1,ch=y1-y0+1;if(cw<w*0.97||ch<h*0.97){out=document.createElement('canvas');out.width=cw;out.height=ch;out.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);}}
 				img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src=out.toDataURL('image/png');
 			}catch(e){}
