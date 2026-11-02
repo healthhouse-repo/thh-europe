@@ -176,6 +176,7 @@ add_shortcode('thh_franchise_v2', function () {
 	</section>
 </div>
 <style>
+.pv #pvFranchise h3,#pvFranchise h3{color:#fff!important;-webkit-text-fill-color:#fff}
 .pv-fsub{margin:-4px 0 4px!important;font-size:14px!important;color:rgba(255,255,255,.75)!important;line-height:1.5}
 .pv-fform fieldset{border:0;border-top:1px solid rgba(255,255,255,.14);margin:0;padding:18px 0 4px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .pv-fform legend{float:left;width:100%;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#fff;padding:0;margin:0 0 12px}
