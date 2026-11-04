@@ -35,11 +35,13 @@ if (!function_exists('thh_seo_meta_gen')) {
 		foreach ([$p->get_short_description(), $p->get_description()] as $bron) {
 			$tekst = $schoon($bron);
 			if ($tekst === '') continue;
-			$tekst = preg_replace('/^' . preg_quote($naam, '/') . '\s*[:\-–—]?\s*/iu', '', $tekst);
+			$kort = trim(preg_replace('/\s*\([^)]*\)\s*/u', ' ', $naam));
+			$tekst = preg_replace('/^(' . preg_quote($naam, '/') . '|' . preg_quote($kort, '/') . ')\s*[:\-–—]?\s*/iu', '', $tekst);
 			foreach (preg_split('/(?<=[.!?])\s+/u', $tekst) as $zin) {
 				$zin = trim($zin);
 				if (mb_strlen($zin) < 25 || mb_strlen($zin) > 120) continue;
-				if (preg_match('/kopen doe je bij|the health house|behaal jouw|bestel(len)? (je )?(nu|vandaag)|gratis verzending/i', $zin)) continue;
+				if (preg_match('/kopen doe je bij|the health house|behaal jouw|bestel(len)? (je )?(nu|vandaag)|gratis verzending|\bonze\b|\bbekijk\b|klik|hieronder|^(als|ben|wil|zoek|op zoek|heb|wist)\b/iu', $zin)) continue;
+				if (preg_match('/^[a-z]/u', $zin)) continue;
 				if (mb_stripos($zin, $naam) === 0) continue;
 				$kern = rtrim($zin, '.!? ');
 				break 2;
@@ -67,9 +69,8 @@ if (!function_exists('thh_seo_meta_gen')) {
 
 		$delen = [];
 		$kop = $naam;
-		if ($cat && mb_stripos($naam, $cat) === false && mb_strlen($naam) < 60) $kop .= ' (' . $cat . ')';
 		if ($merk && mb_stripos($naam, $merk) === false) $kop .= ' van ' . $merk;
-		$delen[] = $kop . ($prijstekst ? ' ' . $prijstekst : '') . '.';
+		$delen[] = $kop . ' kopen' . ($prijstekst ? ' ' . $prijstekst : '') . '.';
 		if ($kern) $delen[] = $kern . '.';
 		if ($extra) $delen[] = $extra . '.';
 		$delen[] = 'Gratis verzending vanaf €60 of ophalen in onze winkels.';
