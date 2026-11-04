@@ -40,7 +40,7 @@ if (!function_exists('thh_seo_meta_gen')) {
 			foreach (preg_split('/(?<=[.!?])\s+/u', $tekst) as $zin) {
 				$zin = trim($zin);
 				if (mb_strlen($zin) < 25 || mb_strlen($zin) > 120) continue;
-				if (preg_match('/kopen doe je bij|the health house|behaal jouw|bestel(len)? (je )?(nu|vandaag)|gratis verzending|\bonze\b|\bbekijk\b|klik|hieronder|^(als|ben|wil|zoek|op zoek|heb|wist)\b/iu', $zin)) continue;
+				if (preg_match('/kopen doe je bij|the health house|behaal jouw|bestel(len)? (je )?(nu|vandaag)|gratis verzending|\bonze\b|\bbekijk\b|klik|hieronder|praktische keuze|inmiddels|beschikbaar in varianten|actieve routine|^(als|ben|wil|zoek|op zoek|heb|wist)\b/iu', $zin)) continue;
 				if (preg_match('/^[a-z]/u', $zin)) continue;
 				if (mb_stripos($zin, $naam) === 0) continue;
 				$kern = rtrim($zin, '.!? ');
