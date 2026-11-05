@@ -14,7 +14,9 @@ if (!function_exists('thh_seo_meta_gen')) {
 		if (!$p) return '';
 		static $c = [];
 		$id = $p->get_id();
-		if (isset($c[$id])) return $c[$id];
+		$lang = function_exists('thh_i18n_lang') ? thh_i18n_lang() : 'nl';
+		if (!in_array($lang, ['de', 'en'], true)) $lang = 'nl';
+		if (isset($c[$id . $lang])) return $c[$id . $lang];
 		$schoon = function ($s) { return trim(preg_replace('/\s+/', ' ', html_entity_decode(wp_strip_all_tags((string) $s), ENT_QUOTES, 'UTF-8'))); };
 		$naam = $schoon($p->get_name());
 
@@ -32,15 +34,33 @@ if (!function_exists('thh_seo_meta_gen')) {
 
 		// kerninfo: eerste zin uit de korte of lange omschrijving die niet alleen de naam herhaalt
 		$kern = '';
-		foreach ([$p->get_short_description(), $p->get_description()] as $bron) {
+		$lang_desc = $p->get_description();
+		$bronnen = str_word_count(wp_strip_all_tags($lang_desc)) > 150 ? [$lang_desc, $p->get_short_description()] : [$p->get_short_description(), $lang_desc];
+		// anderstalig: neem de vertaalde eerste alinea van de omschrijving
+		if ($lang !== 'nl' && function_exists('thh_i18n_dict')) {
+			$bronnen = [];
+			[$dict] = thh_i18n_dict($lang);
+			if (preg_match_all('~<p[^>]*>(.*?)</p>~is', $lang_desc, $mm)) {
+				foreach (array_slice($mm[1], 0, 3) as $par) {
+					foreach (preg_split('~</?strong>~i', $par) as $stuk) {
+						$k = md5(thh_i18n_norm(wp_strip_all_tags($stuk)));
+						if (isset($dict[$k])) $bronnen[] = $dict[$k];
+					}
+				}
+			}
+		}
+		foreach ($bronnen as $bron) {
 			$tekst = $schoon($bron);
 			if ($tekst === '') continue;
 			$kort = trim(preg_replace('/\s*\([^)]*\)\s*/u', ' ', $naam));
 			$tekst = preg_replace('/^(' . preg_quote($naam, '/') . '|' . preg_quote($kort, '/') . ')\s*[:\-–—]?\s*/iu', '', $tekst);
 			foreach (preg_split('/(?<=[.!?])\s+/u', $tekst) as $zin) {
 				$zin = trim($zin);
+				$zin = preg_replace('/^(is|zijn|ist|sind|are|is a|is an)\s+/u', '', $zin, 1, $hadWerkw);
+				if ($hadWerkw) $zin = preg_replace('/^(een|ein|eine|an|a)\s+/iu', '', $zin);
+				if ($hadWerkw) $zin = mb_strtoupper(mb_substr($zin, 0, 1)) . mb_substr($zin, 1);
 				if (mb_strlen($zin) < 25 || mb_strlen($zin) > 120) continue;
-				if (preg_match('/kopen doe je bij|the health house|behaal jouw|bestel(len)? (je )?(nu|vandaag)|gratis verzending|\bonze\b|\bbekijk\b|klik|hieronder|praktische keuze|inmiddels|beschikbaar in varianten|actieve routine|^(als|ben|wil|zoek|op zoek|heb|wist)\b/iu', $zin)) continue;
+				if (preg_match('/kopen doe je bij|in unseren geschäften|in our stores|the health house|behaal jouw|bestel(len)? (je )?(nu|vandaag)|gratis verzending|\bonze\b|\bbekijk\b|klik|hieronder|praktische keuze|inmiddels|beschikbaar in varianten|actieve routine|^(als|ben|wil|zoek|op zoek|heb|wist)\b/iu', $zin)) continue;
 				if (preg_match('/^[a-z]/u', $zin)) continue;
 				if (mb_stripos($zin, $naam) === 0) continue;
 				$kern = rtrim($zin, '.!? ');
@@ -56,24 +76,29 @@ if (!function_exists('thh_seo_meta_gen')) {
 				$n = count(array_filter((array) $vals));
 				if ($n < 2) continue;
 				$lab = mb_strtolower(wc_attribute_label($k, $p));
-				if (preg_match('/smaak|flavou?r/i', $lab)) { $extra = 'In ' . $n . ' smaken'; break; }
-				if (preg_match('/kleur|colou?r/i', $lab)) { $extra = 'In ' . $n . ' kleuren'; break; }
-				if (preg_match('/maat|size/i', $lab)) { $extra = 'In ' . $n . ' maten'; break; }
-				if (!$extra) $extra = 'In ' . $n . ' varianten';
+				$w = ['nl' => ['smaken', 'kleuren', 'maten', 'varianten'], 'de' => ['Geschmacksrichtungen', 'Farben', 'Größen', 'Varianten'], 'en' => ['flavours', 'colours', 'sizes', 'variants']][$lang];
+				$in = $lang === 'en' ? 'Available in ' : ($lang === 'de' ? 'Erhältlich in ' : 'In ');
+				if (preg_match('/smaak|flavou?r/i', $lab)) { $extra = $in . $n . ' ' . $w[0]; break; }
+				if (preg_match('/kleur|colou?r/i', $lab)) { $extra = $in . $n . ' ' . $w[1]; break; }
+				if (preg_match('/maat|size/i', $lab)) { $extra = $in . $n . ' ' . $w[2]; break; }
+				if (!$extra) $extra = $in . $n . ' ' . $w[3];
 			}
 		}
 
 		// prijs
 		$prijs = $p->is_type('variable') ? (float) $p->get_variation_price('min', true) : (float) wc_get_price_to_display($p);
-		$prijstekst = $prijs > 0 ? (($p->is_type('variable') && (float) $p->get_variation_price('max', true) > $prijs ? 'vanaf ' : 'voor ') . '€' . number_format($prijs, 2, ',', '.')) : '';
+		$vanaf = $p->is_type('variable') && (float) $p->get_variation_price('max', true) > $prijs;
+		$wrd = ['nl' => ['vanaf ', 'voor ', ' kopen', ' van ', 'Gratis verzending vanaf €60 of ophalen in onze winkels.'], 'de' => ['ab ', 'für ', ' kaufen', ' von ', 'Kostenloser Versand ab 60 € oder Abholung in unseren Geschäften.'], 'en' => ['from ', 'for ', '', ' by ', 'Free shipping from €60 or collect in our stores.']][$lang];
+		$bedrag = $lang === 'en' ? '€' . number_format($prijs, 2, '.', ',') : ($lang === 'de' ? number_format($prijs, 2, ',', '.') . ' €' : '€' . number_format($prijs, 2, ',', '.'));
+		$prijstekst = $prijs > 0 ? ($vanaf ? $wrd[0] : $wrd[1]) . $bedrag : '';
 
 		$delen = [];
 		$kop = $naam;
-		if ($merk && mb_stripos($naam, $merk) === false) $kop .= ' van ' . $merk;
-		$delen[] = $kop . ' kopen' . ($prijstekst ? ' ' . $prijstekst : '') . '.';
+		if ($merk && mb_stripos($naam, $merk) === false) $kop .= $wrd[3] . $merk;
+		$delen[] = ($lang === 'en' ? 'Buy ' : '') . $kop . $wrd[2] . ($prijstekst ? ' ' . $prijstekst : '') . '.';
 		if ($kern) $delen[] = $kern . '.';
 		if ($extra) $delen[] = $extra . '.';
-		$delen[] = 'Gratis verzending vanaf €60 of ophalen in onze winkels.';
+		$delen[] = $wrd[4];
 
 		$uit = '';
 		foreach ($delen as $d) {
@@ -81,7 +106,7 @@ if (!function_exists('thh_seo_meta_gen')) {
 			if (mb_strlen($probeer) <= 158) { $uit = $probeer; continue; }
 			if ($uit === '') $uit = rtrim(mb_substr($d, 0, 155), ' ,.;:') . '…';
 		}
-		return $c[$id] = $uit;
+		return $c[$id . $lang] = $uit;
 	}
 }
 
