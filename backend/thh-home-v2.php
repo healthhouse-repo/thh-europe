@@ -158,8 +158,9 @@ add_shortcode('thh_home_v2', function ($a) {
 	$best_html = '';
 	foreach (thh_h2_products(['limit' => 8, 'orderby' => 'meta_value_num', 'meta_key' => 'total_sales', 'order' => 'DESC']) as $p) $best_html .= thh_h2_card($p);
 	$new_html = '';
-	$nw = thh_h2_products(['category' => ['nieuw'], 'limit' => 4, 'orderby' => 'date', 'order' => 'DESC']);
-	if (count($nw) < 4) $nw = thh_h2_products(['limit' => 4, 'orderby' => 'date', 'order' => 'DESC']);
+	// Nieuw binnen: de 20 nieuwste producten op voorraad; de pagina toont er 4 en rouleert (zie script)
+	$nw = thh_h2_products(['category' => ['nieuw'], 'limit' => 20, 'orderby' => 'date', 'order' => 'DESC']);
+	if (count($nw) < 4) $nw = thh_h2_products(['limit' => 20, 'orderby' => 'date', 'order' => 'DESC']);
 	foreach ($nw as $p) $new_html .= thh_h2_card($p, 'Nieuw');
 
 	$wish = ['XXL Nutrition', 'Applied Nutrition', 'Optimum Nutrition', 'Cellucor', 'Quamtrax', 'Kosso Nutrition', 'Grenade', 'Barebells', 'Per4m', 'USN', 'Nutrend', 'The Health House'];
@@ -215,7 +216,8 @@ add_shortcode('thh_home_v2', function ($a) {
 
 	<section class="h2-sec">
 		<div class="h2-sechead"><h2>Nieuw binnen</h2><a href="<?php echo $u('/product-category/nieuw/'); ?>">Alle nieuwe producten →</a></div>
-		<div class="h2-grid h2-grid4"><?php echo $new_html; ?></div>
+		<div class="h2-grid h2-grid4 h2-rot" id="h2-new"><?php echo $new_html; ?></div>
+		<script>(function(){var g=document.getElementById('h2-new');if(!g)return;var c=[].slice.call(g.children);for(var i=c.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=c[i];c[i]=c[k];c[k]=t;}c.forEach(function(e){g.appendChild(e);});var per=function(){var w=window.innerWidth;return (w<=1024&&w>640)?3:4;};var start=0;function show(){var p=per();c.forEach(function(e,i){var idx=(i-start+c.length)%c.length;e.style.display=idx<p?'':'none';});}show();window.addEventListener('resize',show);if(c.length<=per())return;var paused=false;g.addEventListener('mouseenter',function(){paused=true;});g.addEventListener('mouseleave',function(){paused=false;});g.addEventListener('touchstart',function(){paused=true;setTimeout(function(){paused=false;},8000);},{passive:true});setInterval(function(){if(paused||document.hidden)return;g.style.opacity=0;setTimeout(function(){start=(start+per())%c.length;show();g.style.opacity=1;},350);},6000);})();</script>
 	</section>
 
 	<?php if ($a['banner']) : ?><section class="h2-sec h2-bannersec"><a class="h2-banner" href="<?php echo $u($a['banner_url']); ?>"><picture><?php if ($a['banner_mobiel']) : ?><source media="(max-width:640px)" srcset="<?php echo esc_url($a['banner_mobiel']); ?>"><?php endif; ?><img src="<?php echo esc_url($a['banner']); ?>" alt="<?php echo esc_attr($a['banner_alt']); ?>" loading="lazy"></picture></a></section><?php endif; ?>
@@ -275,7 +277,7 @@ add_shortcode('thh_home_v2', function ($a) {
 /* secties */
 .h2-sec{margin-top:56px}.h2-sechead{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:20px}
 .h2 .h2-sechead h2{font-size:24px;font-weight:700;letter-spacing:-.01em;text-transform:none}.h2 .h2-band h2{text-transform:none}.h2 .h2-sechead a{font-weight:500;color:var(--nv);white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
-.h2-grid{display:grid;gap:20px 16px}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.h2-grid{display:grid;gap:20px 16px}.h2-rot{transition:opacity .35s ease}.h2-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .h2-card{position:relative;display:flex;flex-direction:column;gap:10px;background:none;border:0;padding:0}
 .h2-cimg{position:relative;display:grid;place-items:center;aspect-ratio:1/1.22;background:#f5f5f6;border-radius:10px;overflow:hidden}
 .h2-cimg img{position:absolute;inset:0;margin:auto;width:78%;height:74%;max-width:none;max-height:none;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s}
