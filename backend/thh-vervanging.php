@@ -31,6 +31,22 @@ function thh_vv_save($order, $tickets) {
 	$idx[(int) $order->get_id()] = time();
 	arsort($idx);
 	update_option('thh_vv_index', array_slice($idx, 0, 1000, true), false);
+	thh_vv_status_sync($order, $tickets);
+}
+/** Order op "Wacht op klant" zolang er een open keuze is; daarna terug naar de vorige status. */
+function thh_vv_status_sync($order, $tickets) {
+	$open = false;
+	foreach ($tickets as $t) if ($t['status'] === 'open') $open = true;
+	$st = $order->get_status();
+	if ($open && in_array($st, ['processing', 'on-hold'], true)) {
+		$order->update_meta_data('_thh_vv_prev_status', $st);
+		$order->set_status('wacht-klant', 'Wacht op keuze van de klant (nalevering/vervanging). ');
+		$order->save();
+	} elseif (!$open && $st === 'wacht-klant') {
+		$prev = $order->get_meta('_thh_vv_prev_status') ?: 'processing';
+		$order->set_status($prev, 'Keuze klant afgehandeld, order kan verder. ');
+		$order->save();
+	}
 }
 function thh_vv_url($order, $t, $choice = null) {
 	$args = ['thh_vv' => $order->get_id() . '.' . $t['token']];
@@ -88,7 +104,7 @@ function thh_vv_btn($url, $label, $primary = true) {
 	$fg = $primary ? '#ffffff' : '#14204a';
 	return '<a href="' . esc_url($url) . '" style="display:inline-block;background:' . $bg . ';color:' . $fg . ';border:2px solid #14204a;text-decoration:none;font-weight:bold;font-size:15px;padding:11px 20px;border-radius:999px">' . esc_html($label) . '</a>';
 }
-function thh_vv_send_customer($order, $t) {
+function thh_vv_send_customer($order, $t, $reminder = false) {
 	$to = $order->get_billing_email();
 	if (!$to) return false;
 	$item = $order->get_item($t['item_id']);
@@ -117,7 +133,8 @@ function thh_vv_send_customer($order, $t) {
 		. (!empty($t['note']) ? '<p style="font-size:15px;line-height:1.6;margin:0 0 14px;padding:12px 14px;background:#f5f6fa;border-radius:10px">' . nl2br(esc_html($t['note'])) . '</p>' : '')
 		. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 18px">' . $rows . '</table>'
 		. '<p style="font-size:14px;line-height:1.6;margin:0 0 14px;color:#5a6072">De rest van je bestelling loopt gewoon door. Je kunt je keuze op de volgende pagina nog even controleren voordat je bevestigt.</p>';
-	$subject = 'Bestelling #' . $order->get_order_number() . ': kies een alternatief voor ' . $t['item_name'];
+	$subject = ($reminder ? 'Herinnering: ' : '') . 'Bestelling #' . $order->get_order_number() . ': kies een alternatief voor ' . $t['item_name'];
+	if ($reminder) $inner = '<p style="font-size:15px;line-height:1.6;margin:0 0 14px;padding:10px 14px;background:#fff6e5;border-radius:10px">We hebben je keuze nog niet ontvangen. Zodra je kiest, versturen we je bestelling.</p>' . $inner;
 	return wp_mail($to, $subject, thh_vv_mail_wrap('Even je keuze nodig', $inner), ['Content-Type: text/html; charset=UTF-8', 'Reply-To: The Health House <' . thh_vv_cs_mail() . '>']);
 }
 
@@ -352,7 +369,10 @@ function thh_vv_apply($order, &$t, $choice) {
 	} elseif ($o['type'] === 'wait') {
 		$item->update_meta_data('Nalevering', 'Ja, klant wacht' . (!empty($t['eta']) ? ' (verwacht: ' . $t['eta'] . ')' : ''));
 		$item->save();
-		$order->add_order_note('Klant kiest nalevering voor ' . $t['item_name'] . '.');
+		$item->update_meta_data('_thh_nalevering_open', 1);
+		$item->save();
+		$order->update_meta_data('_thh_nalevering_open', 1);
+		$order->add_order_note('Klant kiest nalevering voor ' . $t['item_name'] . '. NALEVERING: dit artikel later nasturen.');
 		$staff = 'Klant wacht op nalevering van ' . $t['item_name'] . '. De rest van de order kan alvast verstuurd worden.';
 		$cust = 'We sturen <strong>' . esc_html($t['item_name']) . '</strong> na zodra het binnen is' . (!empty($t['eta']) ? ' (verwacht: ' . esc_html($t['eta']) . ')' : '') . '. De rest van je bestelling komt alvast je kant op.';
 	} else {
@@ -463,6 +483,121 @@ add_action('admin_menu', function () {
 		}
 		echo '</tbody></table></div>';
 	});
+});
+
+
+/* ---------- Status "Wacht op klant" ---------- */
+add_action('init', function () {
+	register_post_status('wc-wacht-klant', [
+		'label' => 'Wacht op klant', 'public' => false, 'exclude_from_search' => false,
+		'show_in_admin_all_list' => true, 'show_in_admin_status_list' => true,
+		'label_count' => _n_noop('Wacht op klant <span class="count">(%s)</span>', 'Wacht op klant <span class="count">(%s)</span>'),
+	]);
+});
+add_filter('wc_order_statuses', function ($s) {
+	$out = [];
+	foreach ($s as $k => $v) { $out[$k] = $v; if ($k === 'wc-processing') $out['wc-wacht-klant'] = 'Wacht op klant'; }
+	if (!isset($out['wc-wacht-klant'])) $out['wc-wacht-klant'] = 'Wacht op klant';
+	return $out;
+});
+add_filter('woocommerce_order_is_paid_statuses', function ($s) { $s[] = 'wacht-klant'; return $s; });
+add_filter('woocommerce_reports_order_statuses', function ($s) { if (is_array($s)) $s[] = 'wacht-klant'; return $s; });
+add_filter('woocommerce_analytics_excluded_statuses', function ($s) { return array_diff((array) $s, ['wacht-klant']); });
+add_filter('woocommerce_valid_order_statuses_for_payment_complete', function ($s) { $s[] = 'wacht-klant'; return $s; });
+add_action('admin_head', function () {
+	echo '<style>.order-status.status-wacht-klant{background:#fde7b0;color:#7a5200}.thh-vv-pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;line-height:1.5;margin:1px 0}.thh-vv-pill.w{background:#fde7b0;color:#7a5200}.thh-vv-pill.n{background:#dfe8ff;color:#14204a}.thh-vv-pill.r{background:#fbe0e0;color:#8a1c1c}</style>';
+});
+
+/* ---------- Kolom in het orderoverzicht ---------- */
+function thh_vv_col_html($order) {
+	if (!$order) return '';
+	$h = '';
+	foreach (thh_vv_tickets($order) as $t) if ($t['status'] === 'open') { $h .= '<span class="thh-vv-pill w" title="' . esc_attr($t['item_name']) . '">Keuze klant</span><br>'; break; }
+	foreach ($order->get_items() as $it) {
+		if ($it->get_meta('_thh_nalevering_open')) $h .= '<span class="thh-vv-pill n" title="' . esc_attr($it->get_name()) . '">Nalevering: ' . esc_html(wp_trim_words($it->get_name(), 4, '…')) . '</span><br>';
+		if ($it->get_meta('Terugbetalen') && !$it->get_meta('_thh_refund_done') && !$order->get_total_refunded()) $h .= '<span class="thh-vv-pill r">Terugbetalen</span><br>';
+	}
+	return $h;
+}
+$thh_vv_cols = function ($cols) {
+	$out = [];
+	foreach ($cols as $k => $v) { $out[$k] = $v; if ($k === 'order_status') $out['thh_vv'] = 'Nalevering'; }
+	if (!isset($out['thh_vv'])) $out['thh_vv'] = 'Nalevering';
+	return $out;
+};
+add_filter('manage_woocommerce_page_wc-orders_columns', $thh_vv_cols);
+add_filter('manage_edit-shop_order_columns', $thh_vv_cols);
+add_action('manage_woocommerce_page_wc-orders_custom_column', function ($col, $order) { if ($col === 'thh_vv') echo thh_vv_col_html($order); }, 10, 2);
+add_action('manage_shop_order_posts_custom_column', function ($col, $id) { if ($col === 'thh_vv') echo thh_vv_col_html(wc_get_order($id)); }, 10, 2);
+
+/* ---------- Nalevering afmelden ---------- */
+add_action('admin_post_thh_vv_nageleverd', function () {
+	$oid = absint($_GET['order'] ?? 0); $iid = absint($_GET['item'] ?? 0);
+	if (!current_user_can('edit_shop_orders') || !wp_verify_nonce($_GET['_n'] ?? '', 'thh_vv_nl_' . $oid . '_' . $iid)) wp_die('Geen rechten');
+	$order = wc_get_order($oid);
+	$item = $order ? $order->get_item($iid) : null;
+	if ($item) {
+		$item->delete_meta_data('_thh_nalevering_open');
+		$item->update_meta_data('Nalevering', 'Nageleverd op ' . wp_date('d-m-Y'));
+		$item->save();
+		$still = false;
+		foreach ($order->get_items() as $it) if ($it->get_meta('_thh_nalevering_open')) $still = true;
+		if (!$still) $order->delete_meta_data('_thh_nalevering_open');
+		$order->add_order_note($item->get_name() . ' nageleverd (afgemeld door ' . wp_get_current_user()->display_name . ').');
+		$order->save();
+	}
+	wp_safe_redirect(wp_get_referer() ?: admin_url('admin.php?page=thh-naleveringen'));
+	exit;
+});
+function thh_vv_open_naleveringen() {
+	$rows = [];
+	foreach ((array) get_option('thh_vv_index', []) as $oid => $ts) {
+		$o = wc_get_order($oid);
+		if (!$o) continue;
+		foreach ($o->get_items() as $iid => $it) if ($it->get_meta('_thh_nalevering_open')) $rows[] = [$o, $iid, $it];
+	}
+	return $rows;
+}
+add_action('admin_notices', function () {
+	if (($_GET['page'] ?? '') !== 'thh-naleveringen') return;
+	$rows = thh_vv_open_naleveringen();
+	echo '<div class="wrap"><h2>Nog na te leveren (' . count($rows) . ')</h2><table class="widefat striped" style="margin-bottom:20px"><thead><tr><th>Order</th><th>Klant</th><th>Artikel</th><th>Aantal</th><th>Orderstatus</th><th></th></tr></thead><tbody>';
+	if (!$rows) echo '<tr><td colspan="6">Niets na te leveren.</td></tr>';
+	foreach ($rows as [$o, $iid, $it]) {
+		$url = wp_nonce_url(admin_url('admin-post.php?action=thh_vv_nageleverd&order=' . $o->get_id() . '&item=' . $iid), 'thh_vv_nl_' . $o->get_id() . '_' . $iid, '_n');
+		echo '<tr><td><a href="' . esc_url($o->get_edit_order_url()) . '">#' . esc_html($o->get_order_number()) . '</a></td><td>' . esc_html($o->get_formatted_billing_full_name()) . '</td><td>' . esc_html($it->get_name()) . '</td><td>' . (int) $it->get_quantity() . '</td><td>' . esc_html(wc_get_order_status_name($o->get_status())) . '</td><td><a class="button button-small" href="' . esc_url($url) . '" onclick="return confirm(\'Is dit artikel nagestuurd?\')">Nageleverd</a></td></tr>';
+	}
+	echo '</tbody></table></div>';
+});
+
+/* ---------- Herinnering na 2 dagen, melding klantenservice na 4 dagen ---------- */
+add_action('init', function () {
+	if (!wp_next_scheduled('thh_vv_cron')) wp_schedule_event(time() + 300, 'hourly', 'thh_vv_cron');
+});
+add_action('thh_vv_cron', function () {
+	$now = time();
+	foreach ((array) get_option('thh_vv_index', []) as $oid => $ts) {
+		if ($now - (int) $ts > 30 * DAY_IN_SECONDS) continue;
+		$o = wc_get_order($oid);
+		if (!$o) continue;
+		$tickets = thh_vv_tickets($o);
+		$changed = false;
+		foreach ($tickets as $k => $t) {
+			if ($t['status'] !== 'open') continue;
+			$age = $now - (int) $t['sent_at'];
+			if ($age > 2 * DAY_IN_SECONDS && empty($t['reminded'])) {
+				thh_vv_send_customer($o, $t, true);
+				$tickets[$k]['reminded'] = $now; $changed = true;
+				$o->add_order_note('Automatische herinnering keuzemail verstuurd voor ' . $t['item_name'] . '.');
+			} elseif ($age > 4 * DAY_IN_SECONDS && empty($t['escalated'])) {
+				wp_mail(thh_vv_cs_mail(), 'Geen keuze van klant, order #' . $o->get_order_number(),
+					thh_vv_mail_wrap('Klant heeft nog niet gekozen', '<p style="font-size:15px;line-height:1.6">Order <strong>#' . esc_html($o->get_order_number()) . '</strong> (' . esc_html($o->get_formatted_billing_full_name()) . ', ' . esc_html($o->get_billing_phone()) . ') wacht al 4 dagen op een keuze voor ' . esc_html($t['item_name']) . '. Bel of mail de klant, of kies zelf via de klantpagina.</p><p>' . thh_vv_btn($o->get_edit_order_url(), 'Open order') . ' ' . thh_vv_btn(thh_vv_url($o, $t), 'Klantpagina', false) . '</p>'),
+					['Content-Type: text/html; charset=UTF-8']);
+				$tickets[$k]['escalated'] = $now; $changed = true;
+			}
+		}
+		if ($changed) { $o->update_meta_data('_thh_vv_tickets', array_values($tickets)); $o->save(); }
+	}
 });
 
 } // function_exists
