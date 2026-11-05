@@ -214,15 +214,15 @@ add_shortcode('thh_home_v2', function ($a) {
 	<?php endif; ?>
 
 	<section class="h2-sec">
-		<div class="h2-sechead"><h2>Populair bij onze klanten</h2><a href="<?php echo $u('/product-category/best-verkocht/'); ?>">Bekijk de top 25 →</a></div>
-		<div class="h2-grid h2-grid4"><?php echo $best_html; ?></div>
+		<div class="h2-sechead"><h2>Nieuw binnen</h2><a href="<?php echo $u('/product-category/nieuw/'); ?>">Alle nieuwe producten →</a></div>
+		<div class="h2-grid h2-grid4"><?php echo $new_html; ?></div>
 	</section>
 
 	<?php if ($a['banner']) : ?><section class="h2-sec h2-bannersec"><a class="h2-banner" href="<?php echo $u($a['banner_url']); ?>"><picture><?php if ($a['banner_mobiel']) : ?><source media="(max-width:640px)" srcset="<?php echo esc_url($a['banner_mobiel']); ?>"><?php endif; ?><img src="<?php echo esc_url($a['banner']); ?>" alt="<?php echo esc_attr($a['banner_alt']); ?>" loading="lazy"></picture></a></section><?php endif; ?>
 
 	<section class="h2-sec">
-		<div class="h2-sechead"><h2>Nieuw binnen</h2><a href="<?php echo $u('/product-category/nieuw/'); ?>">Alle nieuwe producten →</a></div>
-		<div class="h2-grid h2-grid4"><?php echo $new_html; ?></div>
+		<div class="h2-sechead"><h2>Populair bij onze klanten</h2><a href="<?php echo $u('/product-category/best-verkocht/'); ?>">Bekijk de top 25 →</a></div>
+		<div class="h2-grid h2-grid4"><?php echo $best_html; ?></div>
 	</section>
 
 	<section class="h2-usps">
