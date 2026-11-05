@@ -72,6 +72,9 @@ function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$m
 		$h = md5($n);
 		if (isset($dict[$h])) return $dict[$h];
 		if (isset($known[$h])) return null;
+		// zelfde tekst met rechte aanhalingstekens/streepjes (wptexturize-verschil)
+		$plat = strtr($n, ["\u{2019}" => "'", "\u{2018}" => "'", "\u{201C}" => '"', "\u{201D}" => '"', "\u{2013}" => '-', "\u{2026}" => '...', "\u{2032}" => "'"]);
+		if ($plat !== $n && isset($dict[md5($plat)])) return $dict[md5($plat)];
 		// Vaste sjablonen: "<naam> | The Health House" en "<naam> Behaal jouw sportdoelen ..."
 		foreach ([' | The Health House', ' Behaal jouw sportdoelen met de supplementen van The Health House.'] as $suf) {
 			if (strlen($n) > strlen($suf) && substr($n, -strlen($suf)) === $suf) {
