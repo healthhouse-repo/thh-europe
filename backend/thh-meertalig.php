@@ -66,7 +66,7 @@ function thh_i18n_url($url, $lang, $host) {
  * $miss: wordt gevuld met hash => NL-bron van teksten zonder vertaling.
  */
 function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$miss, $rewrite_links = true) {
-	$tr = function ($raw) use ($dict, $known, &$miss) {
+	$tr = function ($raw) use ($dict, $known, &$miss, $lang) {
 		$n = thh_i18n_norm($raw);
 		if (!thh_i18n_translatable($n)) return null;
 		$h = md5($n);
@@ -83,6 +83,16 @@ function thh_i18n_html($html, $lang, $host, array $dict, array $known, array &$m
 				$ss = $suf[1] === '|' ? $suf : ' ' . ($dict[md5(trim($suf))] ?? trim($suf));
 				return $ps . $ss;
 			}
+		}
+		// Sjablonen met variabel deel (variant, aantal, prijs)
+		static $tpl = [
+			'~^Deze waarden gelden voor de variant (.+?)[;,] andere smaken kunnen licht afwijken\.$~u' => ['de' => 'Diese Werte gelten für die Variante $1; andere Geschmacksrichtungen können leicht abweichen.', 'en' => 'These values apply to the $1 variant; other flavours may differ slightly.'],
+			'~^Je hebt (\d+) producten? in je winkelwagen\.$~u' => ['de' => 'Du hast $1 Produkt(e) im Warenkorb.', 'en' => 'You have $1 product(s) in your basket.'],
+			'~^Per portie \((.+)\)$~u' => ['de' => 'Pro Portion ($1)', 'en' => 'Per serving ($1)'],
+			'~^Portiegrootte: (.+)$~u' => ['de' => 'Portionsgröße: $1', 'en' => 'Serving size: $1'],
+		];
+		foreach ($tpl as $re => $out) {
+			if (isset($out[$lang]) && preg_match($re, $n)) return preg_replace($re, $out[$lang], $n);
 		}
 		if (count($miss) < 400) $miss[$h] = $n;
 		return null;
