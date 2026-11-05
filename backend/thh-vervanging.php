@@ -225,7 +225,7 @@ function thh_vv_metabox($obj) {
 				<div style="margin-top:10px">
 					<label><input type="checkbox" id="thh-vv-wait" checked> Optie: wachten op nalevering</label>
 					<input type="text" id="thh-vv-eta" placeholder="verwacht, bv. volgende week" style="width:100%;margin-top:4px">
-					<label style="display:block;margin-top:6px"><input type="checkbox" id="thh-vv-refund" checked> Optie: laten vervallen en terugbetalen</label>
+					<label style="display:block;margin-top:6px"><input type="checkbox" id="thh-vv-refund" checked> Optie: annuleren en terugbetalen</label>
 				</div>
 			</div>
 		</div>
