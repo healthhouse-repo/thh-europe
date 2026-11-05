@@ -16,6 +16,20 @@ if (!defined('ABSPATH')) return;
 if (!function_exists('thh_vv_tickets')) {
 
 function thh_vv_cs_mail() { return 'klantenservice@thehealthhouse.nl'; }
+/** wp_mail, maar altijd vanaf klantenservice@ (ook als WP Mail SMTP het afzenderadres forceert). */
+function thh_vv_mail($to, $subject, $message, $headers = []) {
+	$force = function ($value, $group = '', $key = '') { return ($group === 'mail' && in_array($key, ['from_email_force', 'from_name_force'], true)) ? false : $value; };
+	$from = function () { return thh_vv_cs_mail(); };
+	$name = function () { return 'The Health House Klantenservice'; };
+	add_filter('wp_mail_smtp_options_get', $force, 99, 3);
+	add_filter('wp_mail_from', $from, PHP_INT_MAX);
+	add_filter('wp_mail_from_name', $name, PHP_INT_MAX);
+	$ok = wp_mail($to, $subject, $message, $headers);
+	remove_filter('wp_mail_smtp_options_get', $force, 99);
+	remove_filter('wp_mail_from', $from, PHP_INT_MAX);
+	remove_filter('wp_mail_from_name', $name, PHP_INT_MAX);
+	return $ok;
+}
 function thh_vv_money($a, $order) { return html_entity_decode(wp_strip_all_tags(wc_price($a, ['currency' => $order->get_currency()])), ENT_QUOTES, 'UTF-8'); }
 function thh_vv_logo() { return 'https://thehealthhouse.nl/wp-content/uploads/2026/08/thh-logo-mail-navy-v2.png'; }
 
@@ -135,7 +149,7 @@ function thh_vv_send_customer($order, $t, $reminder = false) {
 		. '<p style="font-size:14px;line-height:1.6;margin:0 0 14px;color:#5a6072">De rest van je bestelling loopt gewoon door. Je kunt je keuze op de volgende pagina nog even controleren voordat je bevestigt.</p>';
 	$subject = ($reminder ? 'Herinnering: ' : '') . 'Bestelling #' . $order->get_order_number() . ': kies een alternatief voor ' . $t['item_name'];
 	if ($reminder) $inner = '<p style="font-size:15px;line-height:1.6;margin:0 0 14px;padding:10px 14px;background:#fff6e5;border-radius:10px">We hebben je keuze nog niet ontvangen. Zodra je kiest, versturen we je bestelling.</p>' . $inner;
-	return wp_mail($to, $subject, thh_vv_mail_wrap('Even je keuze nodig', $inner), ['Content-Type: text/html; charset=UTF-8', 'Reply-To: The Health House <' . thh_vv_cs_mail() . '>']);
+	return thh_vv_mail($to, $subject, thh_vv_mail_wrap('Even je keuze nodig', $inner), ['Content-Type: text/html; charset=UTF-8', 'Reply-To: The Health House <' . thh_vv_cs_mail() . '>']);
 }
 
 /* ---------- Admin: meta box ---------- */
@@ -388,11 +402,11 @@ function thh_vv_apply($order, &$t, $choice) {
 	$t['chosen_at'] = time();
 	$order->save();
 
-	wp_mail($cs, 'Keuze klant order #' . $order->get_order_number() . ': ' . thh_vv_label($o, $t),
+	thh_vv_mail($cs, 'Keuze klant order #' . $order->get_order_number() . ': ' . thh_vv_label($o, $t),
 		thh_vv_mail_wrap('Klant heeft gekozen', '<p style="font-size:15px;line-height:1.6">Order <strong>#' . esc_html($order->get_order_number()) . '</strong> (' . esc_html($order->get_formatted_billing_full_name()) . ')<br>Niet leverbaar: ' . esc_html($t['item_name']) . '<br>Keuze: <strong>' . esc_html(thh_vv_label($o, $t)) . '</strong></p><p style="font-size:15px;line-height:1.6">' . esc_html($staff) . '</p><p>' . thh_vv_btn($order->get_edit_order_url(), 'Open order') . '</p>'),
 		['Content-Type: text/html; charset=UTF-8']);
 	if ($order->get_billing_email()) {
-		wp_mail($order->get_billing_email(), 'Bestelling #' . $order->get_order_number() . ': je keuze is verwerkt',
+		thh_vv_mail($order->get_billing_email(), 'Bestelling #' . $order->get_order_number() . ': je keuze is verwerkt',
 			thh_vv_mail_wrap('Bedankt, je keuze is verwerkt', '<p style="font-size:15px;line-height:1.6">' . $cust . '</p>'),
 			['Content-Type: text/html; charset=UTF-8', 'Reply-To: The Health House <' . $cs . '>']);
 	}
@@ -590,7 +604,7 @@ add_action('thh_vv_cron', function () {
 				$tickets[$k]['reminded'] = $now; $changed = true;
 				$o->add_order_note('Automatische herinnering keuzemail verstuurd voor ' . $t['item_name'] . '.');
 			} elseif ($age > 4 * DAY_IN_SECONDS && empty($t['escalated'])) {
-				wp_mail(thh_vv_cs_mail(), 'Geen keuze van klant, order #' . $o->get_order_number(),
+				thh_vv_mail(thh_vv_cs_mail(), 'Geen keuze van klant, order #' . $o->get_order_number(),
 					thh_vv_mail_wrap('Klant heeft nog niet gekozen', '<p style="font-size:15px;line-height:1.6">Order <strong>#' . esc_html($o->get_order_number()) . '</strong> (' . esc_html($o->get_formatted_billing_full_name()) . ', ' . esc_html($o->get_billing_phone()) . ') wacht al 4 dagen op een keuze voor ' . esc_html($t['item_name']) . '. Bel of mail de klant, of kies zelf via de klantpagina.</p><p>' . thh_vv_btn($o->get_edit_order_url(), 'Open order') . ' ' . thh_vv_btn(thh_vv_url($o, $t), 'Klantpagina', false) . '</p>'),
 					['Content-Type: text/html; charset=UTF-8']);
 				$tickets[$k]['escalated'] = $now; $changed = true;
