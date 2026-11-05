@@ -52,7 +52,7 @@ function thh_vv_label($o, $t) {
 		case 'wait':
 			return 'Wachten op nalevering' . (!empty($t['eta']) ? ' (verwacht: ' . $t['eta'] . ')' : '');
 		case 'refund':
-			return 'Artikel laten vervallen, bedrag terug';
+			return 'Ik wil dit product annuleren en een terugbetaling ontvangen';
 	}
 	return '';
 }
@@ -104,7 +104,7 @@ function thh_vv_send_customer($order, $t) {
 		} elseif ($o['type'] === 'wait') {
 			$sub = 'We houden het artikel voor je apart en sturen het na zodra het binnen is.';
 		} else {
-			$sub = 'We laten dit artikel vervallen en storten het bedrag terug.';
+			$sub = 'We annuleren dit product en storten het bedrag terug.';
 		}
 		$rows .= '<tr><td style="padding:12px 0;border-top:1px solid #e8eaf1"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
 			. ($img ? '<td width="76" valign="middle">' . $img . '</td>' : '')
@@ -361,7 +361,7 @@ function thh_vv_apply($order, &$t, $choice) {
 		$item->save();
 		$order->add_order_note('Klant laat ' . $t['item_name'] . ' vervallen. TERUGBETALING NOG UITVOEREN: ' . thh_vv_money($amt, $order) . ' via Terugbetalen in deze order.');
 		$staff = 'Klant laat ' . $t['item_name'] . ' vervallen. Voer de terugbetaling van ' . thh_vv_money($amt, $order) . ' handmatig uit via "Terugbetalen" in de order.';
-		$cust = 'We laten <strong>' . esc_html($t['item_name']) . '</strong> vervallen en storten ' . wc_price($amt, ['currency' => $order->get_currency()]) . ' terug. Dat zie je binnen een paar werkdagen terug op je rekening.';
+		$cust = 'We annuleren <strong>' . esc_html($t['item_name']) . '</strong> en storten ' . wc_price($amt, ['currency' => $order->get_currency()]) . ' terug. Dat zie je binnen een paar werkdagen terug op je rekening.';
 	}
 	$t['status'] = 'chosen';
 	$t['choice'] = (int) $choice;
@@ -428,7 +428,7 @@ add_action('template_redirect', function () {
 				} elseif ($o['type'] === 'wait') {
 					$sub = 'We sturen het na zodra het binnen is; de rest komt alvast';
 				} else {
-					$sub = 'We laten het vervallen en storten het bedrag terug';
+					$sub = 'We annuleren dit product en storten het bedrag terug';
 				}
 				echo '<label class="card"><input type="radio" name="thh_vv_c" value="' . (int) $i . '"' . checked($pre, $i, false) . ' required>' . $img . '<span><strong>' . esc_html(thh_vv_label($o, $t)) . '</strong><small>' . esc_html($sub) . '</small></span></label>';
 			}
