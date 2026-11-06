@@ -47,6 +47,23 @@ function thh_vv_save($order, $tickets) {
 	update_option('thh_vv_index', array_slice($idx, 0, 1000, true), false);
 	thh_vv_status_sync($order, $tickets);
 }
+/**
+ * Het artikel dat op is, direct in de webshop op "uitverkocht" zetten zodat niemand het nog bestelt.
+ * Variatie: alleen die variatie; ouder wordt gesynchroniseerd. Geeft een korte melding voor de ordernotitie.
+ */
+function thh_vv_mark_out_of_stock($item) {
+	$pid = (int) $item->get_product_id();
+	$vid = (int) $item->get_variation_id();
+	$p = wc_get_product($vid ?: $pid);
+	if (!$p) return '';
+	if ($p->get_stock_status() === 'outofstock') return 'Artikel stond al op uitverkocht in de webshop.';
+	if ($p->get_manage_stock()) $p->set_stock_quantity(0);
+	$p->set_stock_status('outofstock');
+	$p->save();
+	if ($vid) WC_Product_Variable::sync($pid);
+	if (function_exists('wc_delete_product_transients')) wc_delete_product_transients($pid);
+	return 'Artikel in de webshop op uitverkocht gezet.';
+}
 /** Order op "Wacht op klant" zolang er een open keuze is; daarna terug naar de vorige status. */
 function thh_vv_status_sync($order, $tickets) {
 	$open = false;
@@ -323,7 +340,8 @@ add_action('wp_ajax_thh_vv', function () {
 		thh_vv_save($order, $tickets);
 		$ok = thh_vv_send_customer($order, $t);
 		$labels = array_map(function ($o) use ($t) { return thh_vv_label($o, $t); }, $opts);
-		$order->add_order_note('Nalevering/vervanging: keuzemail ' . ($ok ? 'verstuurd' : 'NIET verstuurd (mailfout)') . ' voor ' . $t['item_name'] . '. Opties: ' . implode(', ', $labels) . '. Door ' . $user . '.');
+		$oos = thh_vv_mark_out_of_stock($item);
+		$order->add_order_note('Nalevering/vervanging: keuzemail ' . ($ok ? 'verstuurd' : 'NIET verstuurd (mailfout)') . ' voor ' . $t['item_name'] . '. Opties: ' . implode(', ', $labels) . '. Door ' . $user . '.' . ($oos ? ' ' . $oos : ''));
 		wp_send_json_success(['html' => thh_vv_ticket_list_html($order), 'msg' => $ok ? 'Mail verstuurd naar ' . $order->get_billing_email() : 'Ticket aangemaakt, maar de mail kon niet worden verstuurd.']);
 	}
 
