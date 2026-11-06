@@ -58,6 +58,62 @@ add_action('wp_footer', function () {
 	echo '<script>(function(){function z(){if(document.querySelector(".thh-b21-single"))return true;var g=document.querySelector(".woocommerce-product-gallery")||document.querySelector(".elementor-widget-woocommerce-product-images");if(!g)return false;g.style.position="relative";g.insertAdjacentHTML("beforeend",' . $svg . ');return true}if(!z()){var n=0,t=setInterval(function(){if(z()||++n>20)clearInterval(t)},300)}})();</script>';
 });
 
+/* Winkelwagen: per 3 stuks van een 2+1-product is de goedkoopste gratis (smaken/maten tellen samen) */
+function thh_b21_groepen($cart) {
+	$g = [];
+	foreach ($cart->get_cart() as $key => $item) {
+		$p = $item['data'] ?? null;
+		if (!$p || !thh_b21_actief($p)) continue;
+		$pid = $p->get_parent_id() ?: $p->get_id();
+		$qty = (int) $item['quantity'];
+		$unit = (float) $p->get_price();
+		$g[$pid]['naam'] = $p->get_parent_id() ? wc_get_product($pid)->get_name() : $p->get_name();
+		$g[$pid]['tax'] = $p->get_tax_class();
+		$g[$pid]['qty'] = ($g[$pid]['qty'] ?? 0) + $qty;
+		$g[$pid]['keys'][] = $key;
+		for ($i = 0; $i < $qty; $i++) $g[$pid]['prijzen'][] = $unit;
+	}
+	foreach ($g as &$x) { sort($x['prijzen']); $x['gratis'] = intdiv($x['qty'], 3); $x['korting'] = array_sum(array_slice($x['prijzen'], 0, $x['gratis'])); }
+	return $g;
+}
+add_action('woocommerce_cart_calculate_fees', function ($cart) {
+	if (is_admin() && !defined('DOING_AJAX')) return;
+	foreach (thh_b21_groepen($cart) as $x) {
+		if ($x['gratis'] < 1 || $x['korting'] <= 0) continue;
+		$cart->add_fee('2+1 gratis: ' . $x['naam'] . ($x['gratis'] > 1 ? ' (' . $x['gratis'] . 'x)' : ''), -$x['korting'], true, $x['tax']);
+	}
+}, 20);
+/* Melding bij de regel in de winkelwagen */
+add_filter('woocommerce_cart_item_name', function ($name, $item, $key) {
+	$p = $item['data'] ?? null;
+	if (!$p || !thh_b21_actief($p) || !WC()->cart) return $name;
+	$pid = $p->get_parent_id() ?: $p->get_id();
+	$g = thh_b21_groepen(WC()->cart);
+	if (empty($g[$pid])) return $name;
+	$q = $g[$pid]['qty']; $rest = $q % 3;
+	$txt = $g[$pid]['gratis'] ? $g[$pid]['gratis'] . ' gratis, al verrekend' : '';
+	if ($rest === 2) $txt = ($txt ? $txt . ' · ' : '') . 'nog 1 erbij en die is gratis';
+	elseif ($rest === 1) $txt = ($txt ? $txt . ' · ' : '') . 'nog 2 erbij en de 3e is gratis';
+	return $name . ($txt ? '<br><small style="color:#14204a;font-weight:600">2+1 gratis: ' . esc_html($txt) . '</small>' : '');
+}, 10, 3);
+/* Melding bovenaan winkelwagen en afrekenen */
+function thh_b21_melding() {
+	if (!WC()->cart || WC()->cart->is_empty()) return;
+	foreach (thh_b21_groepen(WC()->cart) as $x) {
+		$rest = $x['qty'] % 3;
+		if ($rest === 2) wc_print_notice('<strong>2+1 gratis:</strong> bestel je ' . esc_html($x['naam']) . ' nog een keer, dan ontvang je een derde verpakking helemaal gratis!', 'notice');
+		elseif ($rest === 1) wc_print_notice('<strong>2+1 gratis:</strong> bestel je ' . esc_html($x['naam']) . ' nog twee keer, dan ontvang je de derde verpakking helemaal gratis!', 'notice');
+	}
+}
+add_action('woocommerce_before_cart', 'thh_b21_melding', 5);
+add_action('woocommerce_before_checkout_form', 'thh_b21_melding', 5);
+
+/* Productpagina: uitleg onder de prijs */
+add_action('woocommerce_single_product_summary', function () {
+	global $product;
+	if (thh_b21_actief($product)) echo '<p class="thh-b21-uitleg" style="margin:6px 0 10px;font-weight:600;color:#14204a">2+1 gratis: zet er 3 in je winkelwagen, de goedkoopste wordt automatisch gratis. Smaken en maten mag je combineren.</p>';
+}, 11);
+
 /* Vinkje in het product (tabblad Algemeen) */
 add_action('woocommerce_product_options_general_product_data', function () {
 	woocommerce_wp_checkbox(['id' => '_thh_2plus1', 'label' => '2+1 gratis badge', 'description' => 'Toont de ronde badge "2+1 GRATIS" op de productkaart en de productfoto.', 'desc_tip' => false, 'cbvalue' => '1']);
