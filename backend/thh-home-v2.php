@@ -127,7 +127,7 @@ add_shortcode('thh_home_v2', function ($a) {
 			list(, $ddl) = thh_dd_vandaag();
 			$fid = !empty($ddl[0][0]) ? (int) reset($ddl[0][0]) : 0;
 			$pid = $fid ? ((int) wp_get_post_parent_id($fid) ?: $fid) : 0;
-			if ($pid) {
+			if ($pid && empty($i['lowres'])) {
 				$ck = 'thh_ddcut4_' . $pid;
 				$cu = get_transient($ck);
 				if ($cu === false) { $att = get_page_by_path('dagdeal-cutout-' . $pid, OBJECT, 'attachment'); $cu = $att ? (string) wp_get_attachment_url($att->ID) : ''; set_transient($ck, $cu, 10 * MINUTE_IN_SECONDS); }
@@ -152,6 +152,12 @@ add_shortcode('thh_home_v2', function ($a) {
 			$deals_html .= '<h3>' . esc_html($week ? 'Alle dagdeals van deze week' : $i['titel']) . '</h3>' .
 				(!empty($i['sub']) && !$week ? '<p>' . esc_html($i['sub']) . '</p>' : '') . $prijs($i);
 		}
+		if ($multi) {
+			// foto's op één vaste plek: rechts op desktop, op mobiel tussen prijs en timer
+			$deals_html .= '<div class="h2-dealimgs">';
+			foreach ($slides as $n => $d) $deals_html .= '<img class="h2-dealimg' . ($n === 0 ? ' is-on' : '') . (!empty($d['lowres']) ? ' h2-dealimg-box' : '') . '" src="' . esc_url($d['img']) . '" alt="" loading="' . ($n === 0 ? 'eager' : 'lazy') . '" draggable="false">';
+			$deals_html .= '</div>';
+		}
 		$deals_html .= '<div class="h2-timer" data-h2-timer><span><b>00</b><small>uur</small></span><span><b>00</b><small>min</small></span><span><b>00</b><small>sec</small></span></div>' .
 			'<span class="h2-btn h2-btn-red">' . ($multi ? 'Bekijk alle deals' : 'Pak de deal') . '</span>';
 		if ($multi) {
@@ -162,12 +168,8 @@ add_shortcode('thh_home_v2', function ($a) {
 				'<span class="h2-arr h2-arr-r" data-h2-go="1" aria-label="Volgende deal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span>';
 		}
 		$deals_html .= '</div>';
-		if ($multi) {
-			$deals_html .= '<div class="h2-dealimgs">';
-			foreach ($slides as $n => $d) $deals_html .= '<img class="h2-dealimg' . ($n === 0 ? ' is-on' : '') . '" src="' . esc_url($d['img']) . '" alt="" loading="' . ($n === 0 ? 'eager' : 'lazy') . '">';
-			$deals_html .= '</div>';
-		} elseif (!empty($i['img'])) {
-			$deals_html .= '<img class="h2-dealimg is-on" src="' . esc_url($i['img']) . '" alt="" loading="lazy">';
+		if (!$multi && !empty($i['img'])) {
+			$deals_html .= '<img class="h2-dealimg is-on' . (!empty($i['lowres']) ? ' h2-dealimg-box' : '') . '" src="' . esc_url($i['img']) . '" alt="" loading="lazy">';
 		}
 		$deals_html .= '</a>';
 	}
@@ -333,7 +335,8 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-dealprice{font-size:28px;font-weight:700;display:flex;align-items:center;gap:10px}.h2-dealprice s{color:rgba(255,255,255,.55);font-size:16px;font-weight:400}.h2-dealprice .h2-badge{position:static}
 .h2-timer{display:flex;gap:8px}.h2-timer span{background:rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;min-width:56px;text-align:center;display:flex;flex-direction:column}.h2-timer b{font-size:20px;font-weight:600}.h2-timer small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
 .h2-dealimg{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:37%;height:72%;object-fit:contain;filter:none;image-rendering:auto}
-.h2-deal-slider .h2-dealimg{opacity:0;transform:translateY(-50%) translateX(40px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}.h2-deal-slider .h2-dealimg.is-on{opacity:1;transform:translateY(-50%) translateX(0)}
+.h2-dealimgs{position:absolute;right:5%;top:14%;bottom:14%;width:37%;z-index:0}.h2-deal-slider .h2-dealimg{position:absolute;left:0;top:0;width:100%;height:100%;transform:translateX(40px);opacity:0;transition:opacity .5s ease,transform .5s ease;pointer-events:none}.h2-deal-slider .h2-dealimg.is-on{opacity:1;transform:none}
+.h2-dealimg-box{background:#fff;border-radius:16px;padding:10px;box-sizing:border-box}
 .h2-dealslides{position:relative;display:grid}.h2-dealslide{grid-area:1/1;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateX(-24px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}.h2-dealslide.is-on{opacity:1;transform:none;pointer-events:auto}.h2-dealslide h3{font-size:22px;line-height:1.2}
 .h2-dots{display:flex;gap:7px;margin-top:4px;position:relative;z-index:3}.h2-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:background .3s,width .3s;cursor:pointer;padding:0;box-shadow:0 0 0 6px transparent}.h2-dots i.is-on{background:#fff;width:22px;border-radius:999px}.h2-dots i:hover{background:rgba(255,255,255,.7)}
 .h2-deal-slider{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y}.h2-deal-slider.is-drag{cursor:grabbing}.h2-deal-slider .h2-dealimg{-webkit-user-drag:none}
@@ -357,7 +360,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2 .h2-post{color:var(--nv)}.h2-post{display:flex;flex-direction:column;gap:12px}.h2-post img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px}
 .h2-post span{display:flex;flex-direction:column;gap:4px}.h2-post em{font-style:normal;font-size:12px;color:var(--mut)}.h2-post strong{font-size:16px;font-weight:500;color:var(--nv);line-height:1.4}
 @media(max-width:1024px){.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-usps{grid-template-columns:1fr 1fr}.h2-grid4{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-brands{grid-template-columns:repeat(4,minmax(0,1fr))}.h2-dealgrid{grid-template-columns:1fr}.h2-band{grid-template-columns:1fr;padding:36px}.h2-hero{grid-template-columns:1fr;padding:36px 28px;min-height:0}.h2-herovis{min-height:260px}}
-@media(max-width:640px){.h2 .h2-hero{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;padding:20px 14px 20px 18px;gap:8px;border-radius:18px}.h2-herovis{order:0;min-height:0;height:auto;padding:0;align-self:center}.h2-heroimg{max-height:210px;width:100%}.h2-herotxt{gap:10px;justify-content:center}.h2 .h2-hero h1{font-size:26px;line-height:1}.h2-hero h1 em{-webkit-text-stroke:1.2px #fff}.h2-hero p{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.h2-ctas{flex-direction:column;flex-wrap:nowrap;gap:8px;align-items:stretch}.h2-ctas .h2-btn{min-height:40px;padding:8px 12px;font-size:13px;white-space:nowrap}.h2-herousp{display:none}.h2-only-mob{display:flex!important}.h2-dealgrid .h2-cimg{min-height:0;aspect-ratio:1/1.22}.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.h2 .h2-cat{padding:6px 4px 8px;gap:2px;border-radius:8px}.h2-catname{font-size:11.5px;justify-content:center;padding:0;white-space:nowrap;letter-spacing:-.01em;text-align:center}.h2-catname svg{display:none}.h2-catvec{width:84%;height:84%}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:210px;margin:0 auto;order:-1}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
+@media(max-width:640px){.h2 .h2-hero{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;padding:20px 14px 20px 18px;gap:8px;border-radius:18px}.h2-herovis{order:0;min-height:0;height:auto;padding:0;align-self:center}.h2-heroimg{max-height:210px;width:100%}.h2-herotxt{gap:10px;justify-content:center}.h2 .h2-hero h1{font-size:26px;line-height:1}.h2-hero h1 em{-webkit-text-stroke:1.2px #fff}.h2-hero p{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.h2-ctas{flex-direction:column;flex-wrap:nowrap;gap:8px;align-items:stretch}.h2-ctas .h2-btn{min-height:40px;padding:8px 12px;font-size:13px;white-space:nowrap}.h2-herousp{display:none}.h2-only-mob{display:flex!important}.h2-dealgrid .h2-cimg{min-height:0;aspect-ratio:1/1.22}.h2{padding:12px 14px 32px}.h2-cats{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.h2 .h2-cat{padding:6px 4px 8px;gap:2px;border-radius:8px}.h2-catname{font-size:11.5px;justify-content:center;padding:0;white-space:nowrap;letter-spacing:-.01em;text-align:center}.h2-catname svg{display:none}.h2-catvec{width:84%;height:84%}.h2-usps{grid-template-columns:1fr}.h2-grid4,.h2-grid3{grid-template-columns:1fr 1fr;gap:10px}.h2-brands{grid-template-columns:repeat(3,minmax(0,1fr))}.h2-posts{grid-template-columns:1fr}.h2-deal{grid-template-columns:1fr;padding:22px}.h2-dealimg{position:static;transform:none;width:70%;height:210px;margin:0 auto;order:-1}.h2-deal-slider{padding:18px 18px 20px;min-height:0}.h2-deal-slider .h2-dealtxt{gap:10px}.h2-deal-slider .h2-dealimgs{position:relative;right:auto;top:auto;bottom:auto;width:100%;height:150px;margin:2px 0}.h2-deal-slider .h2-dealimg{position:absolute;width:100%;height:100%;margin:0;order:0;object-fit:contain}.h2-deal-slider .h2-dealslide h3{font-size:18px}.h2-deal-slider .h2-dealprice{font-size:24px}.h2-deal-slider .h2-timer span{padding:8px 0}.h2-deal-slider .h2-arr{display:none}.h2-deal-slider .h2-dots{justify-content:center}.h2 .h2-sechead h2{font-size:20px}.h2-band h2{font-size:28px}.h2-hero h1{font-size:40px}.h2 .h2-cart{width:38px;height:38px;right:8px;bottom:8px}.h2-now{font-size:16px}}
 .h2-headlinks{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end}.h2 .h2-sechead .h2-weekbtn{background:var(--nv);color:#fff;text-decoration:none;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600}.h2 .h2-sechead .h2-weekbtn:hover{background:#0d1538;color:#fff}@media(max-width:640px){.h2-headlinks{gap:8px}.h2 .h2-sechead .h2-weekbtn{padding:6px 12px;font-size:12.5px}.h2-headlinks a:first-child{font-size:13px}}
 </style>
 <script id="thh-h2-cutout">

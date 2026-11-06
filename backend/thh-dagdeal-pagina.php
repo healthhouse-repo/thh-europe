@@ -15,12 +15,17 @@ function thh_ddp_info( $deal ) {
 	$parent = (int) wp_get_post_parent_id( $first );
 	$pid = $parent ? $parent : $first;
 	$p = function_exists( 'wc_get_product' ) ? wc_get_product( $pid ) : null;
-	$img = '';
+	$img = ''; $orig = ''; $lowres = false;
 	if ( $p ) {
 		$iid = $p->get_image_id();
-		if ( $iid ) { $img = wp_get_attachment_image_url( $iid, 'full' ); }
+		if ( $iid ) {
+			$img = wp_get_attachment_image_url( $iid, 'full' ); $orig = $img;
+			// lage resolutie (lange zijde onder 800 px): uitsnede wordt korrelig, dan liever de originele foto op wit
+			$src = wp_get_attachment_image_src( $iid, 'full' );
+			if ( $src && max( (int) $src[1], (int) $src[2] ) > 0 && max( (int) $src[1], (int) $src[2] ) < 800 ) { $lowres = true; }
+		}
 		$cut = get_page_by_path( 'dagdeal-cutout-' . $pid, OBJECT, 'attachment' );
-		if ( $cut ) { $cu = wp_get_attachment_url( $cut->ID ); if ( $cu ) { $img = $cu; } }
+		if ( $cut && ! $lowres ) { $cu = wp_get_attachment_url( $cut->ID ); if ( $cu ) { $img = $cu; } }
 	}
 	$van = (float) $deal[2];
 	$voor = (float) $deal[1];
@@ -42,7 +47,9 @@ function thh_ddp_info( $deal ) {
 		'off'   => $off,
 		'url'   => $p ? add_query_arg( array( 'utm_source' => 'site', 'utm_medium' => 'dagdealpagina', 'utm_campaign' => 'dagdeal' ), get_permalink( $pid ) ) : home_url( '/' ),
 		'img'   => $img,
-		'merk'  => $p ? wp_strip_all_tags( wc_get_product_category_list( $pid, ', ' ) ) : '',
+		'pid'   => $pid,
+		'lowres' => $lowres,
+		'merk' => $p ? wp_strip_all_tags( wc_get_product_category_list( $pid, ', ' ) ) : '',
 		'naam'  => $p ? $p->get_name() : (string) $deal[3],
 		'stock' => $stock,
 	);
