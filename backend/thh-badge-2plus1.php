@@ -55,7 +55,8 @@ add_action('wp_footer', function () {
 	$p = wc_get_product(get_the_ID());
 	if (!thh_b21_actief($p)) return;
 	$svg = wp_json_encode('<span class="thh-b21 thh-b21-single">' . thh_b21_svg(88) . '</span>');
-	echo '<script>(function(){function z(){if(document.querySelector(".thh-b21-single"))return true;var g=document.querySelector(".woocommerce-product-gallery")||document.querySelector(".elementor-widget-woocommerce-product-images");if(!g)return false;g.style.position="relative";g.insertAdjacentHTML("beforeend",' . $svg . ');return true}if(!z()){var n=0,t=setInterval(function(){if(z()||++n>20)clearInterval(t)},300)}})();</script>';
+	$uitleg = wp_json_encode('<p class="thh-b21-uitleg" style="margin:8px 0 12px;font-weight:600;color:#14204a">2+1 gratis: bestel er 3, de derde verpakking krijg je helemaal gratis. Smaken en maten mag je combineren.</p>');
+	echo '<script>(function(){function z(){if(document.querySelector(".thh-b21-single"))return true;var g=document.querySelector(".woocommerce-product-gallery")||document.querySelector(".elementor-widget-woocommerce-product-images");if(!g)return false;g.style.position="relative";g.insertAdjacentHTML("beforeend",' . $svg . ');var p=document.querySelector(".elementor-widget-woocommerce-product-price")||document.querySelector(".summary .price, p.price");if(p&&!document.querySelector(".thh-b21-uitleg"))p.insertAdjacentHTML("afterend",' . $uitleg . ');return true}if(!z()){var n=0,t=setInterval(function(){if(z()||++n>20)clearInterval(t)},300)}})();</script>';
 });
 
 /* Winkelwagen: per 3 stuks van een 2+1-product is de goedkoopste gratis (smaken/maten tellen samen) */
@@ -107,12 +108,6 @@ function thh_b21_melding() {
 }
 add_action('woocommerce_before_cart', 'thh_b21_melding', 5);
 add_action('woocommerce_before_checkout_form', 'thh_b21_melding', 5);
-
-/* Productpagina: uitleg onder de prijs */
-add_action('woocommerce_single_product_summary', function () {
-	global $product;
-	if (thh_b21_actief($product)) echo '<p class="thh-b21-uitleg" style="margin:6px 0 10px;font-weight:600;color:#14204a">2+1 gratis: zet er 3 in je winkelwagen, de goedkoopste wordt automatisch gratis. Smaken en maten mag je combineren.</p>';
-}, 11);
 
 /* Vinkje in het product (tabblad Algemeen) */
 add_action('woocommerce_product_options_general_product_data', function () {
