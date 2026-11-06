@@ -53,7 +53,7 @@ function thh_h2_card($p, $tag = '') {
 	$cart_lbl = $direct ? 'In winkelwagen' : 'Kies je smaak';
 	$cart = '<a class="h2-cart' . ($direct ? ' add_to_cart_button ajax_add_to_cart' : '') . '" href="' . esc_url($cart_url) . '" aria-label="' . esc_attr($cart_lbl . ': ' . $p->get_name()) . '"' . ($direct ? ' data-product_id="' . $p->get_id() . '" data-quantity="1" rel="nofollow"' : '') . '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2.6l2.4 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2L21 7H6"/></svg></a>';
 	return '<article class="h2-card">' .
-		'<div class="h2-cimg">' . $badge . $img . $cart . '</div>' .
+		'<div class="h2-cimg">' . $badge . $img . $cart . apply_filters('thh_h2_card_extra', '', $p) . '</div>' .
 		'<div class="h2-cbody">' . $rating .
 		'<a class="h2-cname" href="' . esc_url($p->get_permalink()) . '">' . esc_html($p->get_name()) . '</a>' .
 		'<div class="h2-price">' . $price . '</div></div></article>';
