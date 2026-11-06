@@ -52,6 +52,17 @@ if (!function_exists('thh_ddu_maak')) {
 			if ($A[$i] >= 10) { $x = $i % $w; $y = intdiv($i, $w); if ($x < $x0) $x0 = $x; if ($x > $x1) $x1 = $x; if ($y < $y0) $y0 = $y; if ($y > $y1) $y1 = $y; }
 		}
 		if ($x1 <= $x0 || $y1 <= $y0) return new WP_Error('leeg', 'Niets overgebleven na uitsnijden');
+		// uitsnede strak om het product: losse spikkels en schaduwresten tellen niet mee voor de rand,
+		// anders staat het product scheef in zijn vlak. Rij/kolom telt pas mee met voldoende dekkende pixels.
+		$cols = array_fill(0, $w, 0); $rows = array_fill(0, $h, 0);
+		for ($i = 0; $i < $n; $i++) if ($A[$i] >= 128) { $cols[$i % $w]++; $rows[intdiv($i, $w)]++; }
+		$mc = max(3, (int) round($h * 0.01)); $mr = max(3, (int) round($w * 0.01));
+		$fx0 = $x0; $fx1 = $x1; $fy0 = $y0; $fy1 = $y1;
+		for ($x = $x0; $x <= $x1; $x++) if ($cols[$x] >= $mc) { $fx0 = $x; break; }
+		for ($x = $x1; $x >= $x0; $x--) if ($cols[$x] >= $mc) { $fx1 = $x; break; }
+		for ($y = $y0; $y <= $y1; $y++) if ($rows[$y] >= $mr) { $fy0 = $y; break; }
+		for ($y = $y1; $y >= $y0; $y--) if ($rows[$y] >= $mr) { $fy1 = $y; break; }
+		if ($fx1 > $fx0 && $fy1 > $fy0) { $x0 = $fx0; $x1 = $fx1; $y0 = $fy0; $y1 = $fy1; }
 		$pad = 4; $cx0 = max(0, $x0 - $pad); $cy0 = max(0, $y0 - $pad); $cw = min($w, $x1 + $pad + 1) - $cx0; $ch = min($h, $y1 + $pad + 1) - $cy0;
 		$out = imagecreatetruecolor($cw, $ch); imagealphablending($out, false); imagesavealpha($out, true);
 		for ($y = 0; $y < $ch; $y++) for ($x = 0; $x < $cw; $x++) { $i = ($y + $cy0) * $w + ($x + $cx0); imagesetpixel($out, $x, $y, imagecolorallocatealpha($out, $R[$i], $G[$i], $B[$i], 127 - (int) round($A[$i] * 127 / 255))); }
