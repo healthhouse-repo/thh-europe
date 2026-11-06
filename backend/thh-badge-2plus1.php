@@ -45,7 +45,7 @@ add_filter('thh_h2_card_extra', function ($html, $p) {
 }, 10, 2);
 
 add_action('wp_head', function () {
-	echo '<style>.thh-b21{position:absolute;z-index:5;line-height:0;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(20,32,74,.35))}.thh-b21-loop{top:8px;right:8px}.thh-b21-loop .thh-b21-svg{width:64px;height:64px}@media(max-width:640px){.thh-b21-loop .thh-b21-svg{width:52px;height:52px}}.thh-b21-single{top:14px;left:14px}.thh-b21-single .thh-b21-svg{width:88px;height:88px}.woocommerce-product-gallery,li.product,.h2-cimg,.products .product{position:relative}@media(max-width:640px){.thh-b21-single .thh-b21-svg{width:68px;height:68px}}</style>';
+	echo '<style>.thh-b21{position:absolute;z-index:5;line-height:0;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(20,32,74,.35))}.thh-b21-loop{top:8px;right:8px}.thh-b21-loop .thh-b21-svg{width:64px;height:64px}@media(max-width:640px){.thh-b21-loop .thh-b21-svg{width:52px;height:52px}}.thh-b21-single{top:14px;right:14px}.thh-b21-single .thh-b21-svg{width:96px;height:96px}.woocommerce-product-gallery,li.product,.h2-cimg,.products .product{position:relative}@media(max-width:640px){.thh-b21-single .thh-b21-svg{width:68px;height:68px}}</style>';
 });
 
 /* Productpagina (Elementor-template slaat de WooCommerce-hook over): badge via de voet in de galerij zetten */
