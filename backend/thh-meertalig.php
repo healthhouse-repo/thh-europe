@@ -249,10 +249,16 @@ function thh_i18n_store_missing($lang, array $miss, $url) {
 	global $wpdb;
 	$now = current_time('mysql');
 	$vals = []; $args = [];
+	// teksten die al in de doeltaal staan (bijv. meta descriptions uit de SEO-snippet) of alleen uit
+	// codes/getallen bestaan, hoeven niet in de vertaalwachtrij
+	$al = ['de' => '/\b(und|oder|mit|für|kaufen|Versand|Erhältlich|unseren|Geschmacksrichtungen)\b/u', 'en' => '/\b(and|with|from|or|free shipping|available in|our stores|flavours)\b/i'];
 	foreach (array_slice($miss, 0, 400, true) as $h => $src) {
+		if (isset($al[$lang]) && preg_match($al[$lang], $src)) continue;
+		if (preg_match('/^[\d\s.,:%€\/\-–|x×*()]+$|^[A-Z0-9][A-Z0-9_\-]{3,}$/u', $src)) continue;
 		$vals[] = '(%s,%s,%s,%s,%s)';
 		array_push($args, $h, $lang, $src, substr($url, 0, 255), $now);
 	}
+	if (!$vals) return;
 	$wpdb->query($wpdb->prepare("INSERT IGNORE INTO {$wpdb->prefix}thh_i18n (h,lang,src,url,seen) VALUES " . implode(',', $vals), $args));
 }
 
