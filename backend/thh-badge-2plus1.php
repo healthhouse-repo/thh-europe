@@ -109,6 +109,25 @@ function thh_b21_melding() {
 add_action('woocommerce_before_cart', 'thh_b21_melding', 5);
 add_action('woocommerce_before_checkout_form', 'thh_b21_melding', 5);
 
+/* Staffelkorting (Bundelkiezer 1-2-3, snippet 143) uit voor 2+1-producten: ze gaan in de uitsluitlijst thh_bundel_excl */
+function thh_b21_ids() {
+	$ids = get_transient('thh_b21_ids');
+	if ($ids !== false) return $ids;
+	global $wpdb;
+	$ids = array_map('intval', $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_thh_2plus1' AND meta_value = '1'"));
+	$tag = get_posts(['post_type' => 'product', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'any', 'tax_query' => [['taxonomy' => 'product_tag', 'field' => 'slug', 'terms' => '2-plus-1']]]);
+	$ids = array_values(array_unique(array_merge($ids, array_map('intval', $tag))));
+	set_transient('thh_b21_ids', $ids, HOUR_IN_SECONDS);
+	return $ids;
+}
+add_filter('option_thh_bundel_excl', function ($excl) {
+	$excl = is_array($excl) ? $excl : [];
+	return array_values(array_unique(array_merge(array_map('strval', $excl), array_map('strval', thh_b21_ids()))));
+});
+add_filter('default_option_thh_bundel_excl', function ($d) { return array_map('strval', thh_b21_ids()); });
+add_action('woocommerce_process_product_meta', function () { delete_transient('thh_b21_ids'); }, 5);
+add_action('set_object_terms', function ($object_id, $terms, $tt_ids, $taxonomy) { if ($taxonomy === 'product_tag') delete_transient('thh_b21_ids'); }, 10, 4);
+
 /* Vinkje in het product (tabblad Algemeen) */
 add_action('woocommerce_product_options_general_product_data', function () {
 	woocommerce_wp_checkbox(['id' => '_thh_2plus1', 'label' => '2+1 gratis badge', 'description' => 'Toont de ronde badge "2+1 GRATIS" op de productkaart en de productfoto.', 'desc_tip' => false, 'cbvalue' => '1']);
