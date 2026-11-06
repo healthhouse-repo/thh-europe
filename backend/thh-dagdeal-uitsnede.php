@@ -78,6 +78,15 @@ if (!function_exists('thh_ddu_maak')) {
 			$ids = (array) $r[$k][0]; $f = (int) reset($ids); $par = (int) wp_get_post_parent_id($f);
 			$pids[$par ?: $f] = true;
 		}
+		// weekdeals: op een WEEK-dag staat er geen product in het rooster maar een lijst; die deals meenemen
+		if (function_exists('thh_dd_vandaag')) {
+			list(, $nu) = thh_dd_vandaag();
+			foreach ((array) $nu as $d) {
+				$ids = (array) ($d[0] ?? []); $f = (int) reset($ids); if (!$f) continue;
+				$par = (int) wp_get_post_parent_id($f);
+				$pids[$par ?: $f] = true;
+			}
+		}
 		return array_keys($pids);
 	}
 

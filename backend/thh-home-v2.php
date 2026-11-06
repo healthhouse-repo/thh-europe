@@ -155,9 +155,11 @@ add_shortcode('thh_home_v2', function ($a) {
 		$deals_html .= '<div class="h2-timer" data-h2-timer><span><b>00</b><small>uur</small></span><span><b>00</b><small>min</small></span><span><b>00</b><small>sec</small></span></div>' .
 			'<span class="h2-btn h2-btn-red">' . ($multi ? 'Bekijk alle deals' : 'Pak de deal') . '</span>';
 		if ($multi) {
-			$deals_html .= '<div class="h2-dots" aria-hidden="true">';
-			foreach ($slides as $n => $d) $deals_html .= '<i' . ($n === 0 ? ' class="is-on"' : '') . '></i>';
+			$deals_html .= '<div class="h2-dots">';
+			foreach ($slides as $n => $d) $deals_html .= '<i' . ($n === 0 ? ' class="is-on"' : '') . ' title="' . esc_attr($d['naam'] ?: $d['titel']) . '"></i>';
 			$deals_html .= '</div>';
+			$deals_html .= '<span class="h2-arr h2-arr-l" data-h2-go="-1" aria-label="Vorige deal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></span>' .
+				'<span class="h2-arr h2-arr-r" data-h2-go="1" aria-label="Volgende deal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span>';
 		}
 		$deals_html .= '</div>';
 		if ($multi) {
@@ -333,7 +335,9 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-dealimg{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:37%;height:72%;object-fit:contain;filter:none;image-rendering:auto}
 .h2-deal-slider .h2-dealimg{opacity:0;transform:translateY(-50%) translateX(40px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}.h2-deal-slider .h2-dealimg.is-on{opacity:1;transform:translateY(-50%) translateX(0)}
 .h2-dealslides{position:relative;display:grid}.h2-dealslide{grid-area:1/1;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateX(-24px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}.h2-dealslide.is-on{opacity:1;transform:none;pointer-events:auto}.h2-dealslide h3{font-size:22px;line-height:1.2}
-.h2-dots{display:flex;gap:7px;margin-top:4px}.h2-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:background .3s,width .3s}.h2-dots i.is-on{background:#fff;width:22px;border-radius:999px}
+.h2-dots{display:flex;gap:7px;margin-top:4px;position:relative;z-index:3}.h2-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:background .3s,width .3s;cursor:pointer;padding:0;box-shadow:0 0 0 6px transparent}.h2-dots i.is-on{background:#fff;width:22px;border-radius:999px}.h2-dots i:hover{background:rgba(255,255,255,.7)}
+.h2-deal-slider{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y}.h2-deal-slider.is-drag{cursor:grabbing}.h2-deal-slider .h2-dealimg{-webkit-user-drag:none}
+.h2-arr{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;z-index:3;cursor:pointer;opacity:0;transition:opacity .25s,background .25s}.h2-arr-l{left:12px}.h2-arr-r{right:12px}.h2-deal-slider:hover .h2-arr{opacity:1}.h2-arr:hover{background:rgba(255,255,255,.3)}@media(hover:none){.h2-arr{opacity:1;width:34px;height:34px}}
 @media(prefers-reduced-motion:reduce){.h2-deal-slider .h2-dealimg,.h2-dealslide{transition:none}}
 /* banner */
 .h2-bannersec{margin-top:40px}.h2-banner{display:block;border-radius:20px;overflow:hidden}.h2-banner img{display:block;width:100%;height:auto}.h2-banner picture{display:block}
@@ -398,7 +402,18 @@ add_shortcode('thh_home_v2', function ($a) {
 
 <script>
 (function(){var t=document.querySelector('[data-h2-timer]');if(!t)return;var b=t.querySelectorAll('b');function tick(){var n=new Date(),e=new Date(n);e.setHours(23,59,59,999);var s=Math.max(0,Math.floor((e-n)/1000));b[0].textContent=('0'+Math.floor(s/3600)).slice(-2);b[1].textContent=('0'+Math.floor(s%3600/60)).slice(-2);b[2].textContent=('0'+s%60).slice(-2)}tick();setInterval(tick,1000)})();
-(function(){var d=document.querySelector('[data-h2-slider]');if(!d)return;var sl=d.querySelectorAll('.h2-dealslide'),im=d.querySelectorAll('.h2-dealimg'),dt=d.querySelectorAll('.h2-dots i'),n=sl.length,i=0,p=false;if(n<2)return;function go(k){i=(k+n)%n;for(var j=0;j<n;j++){var on=j===i;sl[j].classList.toggle('is-on',on);if(im[j])im[j].classList.toggle('is-on',on);if(dt[j])dt[j].classList.toggle('is-on',on)}}setInterval(function(){if(!p&&!document.hidden)go(i+1)},5000);d.addEventListener('mouseenter',function(){p=true});d.addEventListener('mouseleave',function(){p=false});var x0=null;d.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;p=true},{passive:true});d.addEventListener('touchend',function(e){if(x0!==null){var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){go(dx<0?i+1:i-1);e.preventDefault()}}x0=null;setTimeout(function(){p=false},3000)})})();
+(function(){var d=document.querySelector('[data-h2-slider]');if(!d)return;var sl=d.querySelectorAll('.h2-dealslide'),im=d.querySelectorAll('.h2-dealimg'),dt=d.querySelectorAll('.h2-dots i'),n=sl.length,i=0,p=false,x0=null,moved=false,swiped=false;if(n<2)return;
+function go(k){i=(k+n)%n;for(var j=0;j<n;j++){var on=j===i;sl[j].classList.toggle('is-on',on);if(im[j])im[j].classList.toggle('is-on',on);if(dt[j])dt[j].classList.toggle('is-on',on)}}
+setInterval(function(){if(!p&&!document.hidden)go(i+1)},5000);
+d.addEventListener('mouseenter',function(){p=true});d.addEventListener('mouseleave',function(){p=false;x0=null;d.classList.remove('is-drag')});
+/* slepen met muis of vinger */
+d.addEventListener('pointerdown',function(e){if(e.button&&e.button!==0)return;x0=e.clientX;moved=false;swiped=false;p=true;d.classList.add('is-drag')});
+d.addEventListener('pointermove',function(e){if(x0===null)return;var dx=e.clientX-x0;if(Math.abs(dx)>6)moved=true;if(!swiped&&Math.abs(dx)>50){swiped=true;go(dx<0?i+1:i-1)}});
+function end(){x0=null;d.classList.remove('is-drag');setTimeout(function(){p=d.matches(':hover')},3000)}
+d.addEventListener('pointerup',end);d.addEventListener('pointercancel',end);
+d.addEventListener('click',function(e){var a=e.target.closest('[data-h2-go]');if(a){e.preventDefault();e.stopPropagation();go(i+parseInt(a.getAttribute('data-h2-go'),10));return}var k=e.target.closest('.h2-dots i');if(k){e.preventDefault();e.stopPropagation();go(Array.prototype.indexOf.call(dt,k));return}if(moved){e.preventDefault();e.stopPropagation()}},true);
+d.addEventListener('dragstart',function(e){e.preventDefault()});
+d.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){go(i+1);e.preventDefault()}if(e.key==='ArrowLeft'){go(i-1);e.preventDefault()}})})();
 </script>
 <?php
 	return ob_get_clean();
