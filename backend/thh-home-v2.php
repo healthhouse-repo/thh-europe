@@ -135,14 +135,39 @@ add_shortcode('thh_home_v2', function ($a) {
 				else { $pp = wc_get_product($pid); $iid = $pp ? $pp->get_image_id() : 0; if ($iid) { $full = wp_get_attachment_url($iid); if ($full) $i['img'] = $full; } }
 			}
 		}
-		$deals_html .= '<a class="h2-deal" href="' . esc_url($week ? home_url('/weekdeals/') : home_url('/dagdeal/')) . '">' .
-			'<div class="h2-dealtxt"><span class="h2-pill">' . ($week ? 'Weekdeals' : 'Dagdeal van vandaag') . '</span>' .
-			'<h3>' . esc_html($week ? 'Alle dagdeals van deze week' : $i['titel']) . '</h3>' .
-			(!empty($i['sub']) && !$week ? '<p>' . esc_html($i['sub']) . '</p>' : '') .
-			'<div class="h2-dealprice">' . (!empty($i['van']) ? '<s>' . esc_html(str_replace('.', ',', $i['van'])) . '</s> ' : '') . '<strong>' . esc_html(str_replace('.', ',', $i['voor'] ?? '')) . '</strong>' . (!empty($i['off']) ? '<span class="h2-badge">-' . esc_html($i['off']) . '%</span>' : '') . '</div>' .
-			'<div class="h2-timer" data-h2-timer><span><b>00</b><small>uur</small></span><span><b>00</b><small>min</small></span><span><b>00</b><small>sec</small></span></div>' .
-			'<span class="h2-btn h2-btn-red">Pak de deal</span></div>' .
-			(!empty($i['img']) ? '<img class="h2-dealimg" src="' . esc_url($i['img']) . '" alt="" loading="lazy">' : '') . '</a>';
+		// weekdeals: elke deal een eigen slide (titel, prijs, foto), schuift elke 5 s; dagdeal: één vaste kaart
+		$slides = $week ? array_values(array_filter($deal['deals'], function ($d) { return !empty($d['img']); })) : [$i];
+		if (!$slides) $slides = [$i];
+		$multi = count($slides) > 1;
+		$prijs = function ($d) { return '<div class="h2-dealprice">' . (!empty($d['van']) ? '<s>' . esc_html(str_replace('.', ',', number_format((float) $d['van'], 2, '.', ''))) . '</s> ' : '') . '<strong>' . esc_html(str_replace('.', ',', number_format((float) ($d['voor'] ?? 0), 2, '.', ''))) . '</strong>' . (!empty($d['off']) ? '<span class="h2-badge">-' . esc_html($d['off']) . '%</span>' : '') . '</div>'; };
+		$deals_html .= '<a class="h2-deal' . ($multi ? ' h2-deal-slider' : '') . '" href="' . esc_url($week ? home_url('/weekdeals/') : home_url('/dagdeal/')) . '"' . ($multi ? ' data-h2-slider' : '') . '>' .
+			'<div class="h2-dealtxt"><span class="h2-pill">' . ($week ? 'Weekdeals' : 'Dagdeal van vandaag') . '</span>';
+		if ($multi) {
+			$deals_html .= '<div class="h2-dealslides">';
+			foreach ($slides as $n => $d) {
+				$deals_html .= '<div class="h2-dealslide' . ($n === 0 ? ' is-on' : '') . '"><h3>' . esc_html($d['naam'] ?: $d['titel']) . '</h3>' . (!empty($d['sub']) ? '<p>' . esc_html($d['sub']) . '</p>' : '') . $prijs($d) . '</div>';
+			}
+			$deals_html .= '</div>';
+		} else {
+			$deals_html .= '<h3>' . esc_html($week ? 'Alle dagdeals van deze week' : $i['titel']) . '</h3>' .
+				(!empty($i['sub']) && !$week ? '<p>' . esc_html($i['sub']) . '</p>' : '') . $prijs($i);
+		}
+		$deals_html .= '<div class="h2-timer" data-h2-timer><span><b>00</b><small>uur</small></span><span><b>00</b><small>min</small></span><span><b>00</b><small>sec</small></span></div>' .
+			'<span class="h2-btn h2-btn-red">' . ($multi ? 'Bekijk alle deals' : 'Pak de deal') . '</span>';
+		if ($multi) {
+			$deals_html .= '<div class="h2-dots" aria-hidden="true">';
+			foreach ($slides as $n => $d) $deals_html .= '<i' . ($n === 0 ? ' class="is-on"' : '') . '></i>';
+			$deals_html .= '</div>';
+		}
+		$deals_html .= '</div>';
+		if ($multi) {
+			$deals_html .= '<div class="h2-dealimgs">';
+			foreach ($slides as $n => $d) $deals_html .= '<img class="h2-dealimg' . ($n === 0 ? ' is-on' : '') . '" src="' . esc_url($d['img']) . '" alt="" loading="' . ($n === 0 ? 'eager' : 'lazy') . '">';
+			$deals_html .= '</div>';
+		} elseif (!empty($i['img'])) {
+			$deals_html .= '<img class="h2-dealimg is-on" src="' . esc_url($i['img']) . '" alt="" loading="lazy">';
+		}
+		$deals_html .= '</a>';
 	}
 	$wk = thh_h2_products(['category' => ['week-deals'], 'limit' => 4, 'orderby' => 'popularity']);
 	if (count($wk) < 4) $wk = thh_h2_products(['limit' => 4, 'orderby' => 'popularity', 'on_sale' => true]);
@@ -306,6 +331,10 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-dealprice{font-size:28px;font-weight:700;display:flex;align-items:center;gap:10px}.h2-dealprice s{color:rgba(255,255,255,.55);font-size:16px;font-weight:400}.h2-dealprice .h2-badge{position:static}
 .h2-timer{display:flex;gap:8px}.h2-timer span{background:rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;min-width:56px;text-align:center;display:flex;flex-direction:column}.h2-timer b{font-size:20px;font-weight:600}.h2-timer small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
 .h2-dealimg{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:37%;height:72%;object-fit:contain;filter:none;image-rendering:auto}
+.h2-deal-slider .h2-dealimg{opacity:0;transform:translateY(-50%) translateX(40px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}.h2-deal-slider .h2-dealimg.is-on{opacity:1;transform:translateY(-50%) translateX(0)}
+.h2-dealslides{position:relative;display:grid}.h2-dealslide{grid-area:1/1;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateX(-24px);transition:opacity .5s ease,transform .5s ease;pointer-events:none}.h2-dealslide.is-on{opacity:1;transform:none;pointer-events:auto}.h2-dealslide h3{font-size:22px;line-height:1.2}
+.h2-dots{display:flex;gap:7px;margin-top:4px}.h2-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:background .3s,width .3s}.h2-dots i.is-on{background:#fff;width:22px;border-radius:999px}
+@media(prefers-reduced-motion:reduce){.h2-deal-slider .h2-dealimg,.h2-dealslide{transition:none}}
 /* banner */
 .h2-bannersec{margin-top:40px}.h2-banner{display:block;border-radius:20px;overflow:hidden}.h2-banner img{display:block;width:100%;height:auto}.h2-banner picture{display:block}
 /* band */
@@ -369,6 +398,7 @@ add_shortcode('thh_home_v2', function ($a) {
 
 <script>
 (function(){var t=document.querySelector('[data-h2-timer]');if(!t)return;var b=t.querySelectorAll('b');function tick(){var n=new Date(),e=new Date(n);e.setHours(23,59,59,999);var s=Math.max(0,Math.floor((e-n)/1000));b[0].textContent=('0'+Math.floor(s/3600)).slice(-2);b[1].textContent=('0'+Math.floor(s%3600/60)).slice(-2);b[2].textContent=('0'+s%60).slice(-2)}tick();setInterval(tick,1000)})();
+(function(){var d=document.querySelector('[data-h2-slider]');if(!d)return;var sl=d.querySelectorAll('.h2-dealslide'),im=d.querySelectorAll('.h2-dealimg'),dt=d.querySelectorAll('.h2-dots i'),n=sl.length,i=0,p=false;if(n<2)return;function go(k){i=(k+n)%n;for(var j=0;j<n;j++){var on=j===i;sl[j].classList.toggle('is-on',on);if(im[j])im[j].classList.toggle('is-on',on);if(dt[j])dt[j].classList.toggle('is-on',on)}}setInterval(function(){if(!p&&!document.hidden)go(i+1)},5000);d.addEventListener('mouseenter',function(){p=true});d.addEventListener('mouseleave',function(){p=false});var x0=null;d.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;p=true},{passive:true});d.addEventListener('touchend',function(e){if(x0!==null){var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40){go(dx<0?i+1:i-1);e.preventDefault()}}x0=null;setTimeout(function(){p=false},3000)})})();
 </script>
 <?php
 	return ob_get_clean();
