@@ -44,20 +44,17 @@ add_filter('thh_h2_card_extra', function ($html, $p) {
 	return thh_b21_actief($p) ? $html . '<span class="thh-b21 thh-b21-loop">' . thh_b21_svg(64) . '</span>' : $html;
 }, 10, 2);
 
-/* Productpagina: op de foto */
-add_action('woocommerce_before_single_product_summary', function () {
-	global $product;
-	if (thh_b21_actief($product)) echo '<span class="thh-b21 thh-b21-single">' . thh_b21_svg(88) . '</span>';
-}, 25);
-
 add_action('wp_head', function () {
 	echo '<style>.thh-b21{position:absolute;z-index:5;line-height:0;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(20,32,74,.35))}.thh-b21-loop{top:8px;right:8px}.thh-b21-loop .thh-b21-svg{width:64px;height:64px}@media(max-width:640px){.thh-b21-loop .thh-b21-svg{width:52px;height:52px}}.thh-b21-single{top:14px;left:14px}.thh-b21-single .thh-b21-svg{width:88px;height:88px}.woocommerce-product-gallery,li.product,.h2-cimg,.products .product{position:relative}@media(max-width:640px){.thh-b21-single .thh-b21-svg{width:68px;height:68px}}</style>';
 });
 
-/* Productpagina: badge in de galerij zetten als het thema de hook elders plaatst */
+/* Productpagina (Elementor-template slaat de WooCommerce-hook over): badge via de voet in de galerij zetten */
 add_action('wp_footer', function () {
 	if (!function_exists('is_product') || !is_product()) return;
-	echo '<script>(function(){var b=document.querySelector(".thh-b21-single"),g=document.querySelector(".woocommerce-product-gallery");if(b&&g&&!g.contains(b)){g.style.position="relative";g.appendChild(b)}})();</script>';
+	$p = wc_get_product(get_the_ID());
+	if (!thh_b21_actief($p)) return;
+	$svg = wp_json_encode('<span class="thh-b21 thh-b21-single">' . thh_b21_svg(88) . '</span>');
+	echo '<script>(function(){function z(){if(document.querySelector(".thh-b21-single"))return true;var g=document.querySelector(".woocommerce-product-gallery")||document.querySelector(".elementor-widget-woocommerce-product-images");if(!g)return false;g.style.position="relative";g.insertAdjacentHTML("beforeend",' . $svg . ');return true}if(!z()){var n=0,t=setInterval(function(){if(z()||++n>20)clearInterval(t)},300)}})();</script>';
 });
 
 /* Vinkje in het product (tabblad Algemeen) */
