@@ -47,7 +47,7 @@ add_filter('thh_h2_card_extra', function ($html, $p) {
 }, 10, 2);
 
 add_action('wp_head', function () {
-	echo '<style>.thh-b21{position:absolute;z-index:5;line-height:0;pointer-events:none}.thh-b21-svg{display:block;border-radius:50%;overflow:hidden}.thh-b21-loop{top:8px;right:8px}.thh-b21-loop .thh-b21-svg{width:64px;height:64px}@media(max-width:640px){.thh-b21-loop .thh-b21-svg{width:52px;height:52px}}.thh-b21-single{top:14px;right:14px}.thh-b21-single .thh-b21-svg{width:96px;height:96px}.woocommerce-product-gallery,li.product,.h2-cimg,.products .product{position:relative}@media(max-width:640px){.thh-b21-single .thh-b21-svg{width:68px;height:68px}}.thh-xxlh-item.is-btn>a{background:#e63946;color:#fff!important;border-radius:999px;padding:6px 14px!important;font-weight:700;line-height:1.2}.thh-xxlh-item.is-btn>a:hover{background:#c62828}</style>';
+	echo '<style>.thh-b21{position:absolute;z-index:5;line-height:0;pointer-events:none}.thh-b21-svg{display:block;border-radius:50%;overflow:hidden}.thh-b21-loop{top:8px;right:8px}.thh-b21-loop .thh-b21-svg{width:64px;height:64px}@media(max-width:640px){.thh-b21-loop .thh-b21-svg{width:52px;height:52px}}.thh-b21-single{top:14px;right:14px}.thh-b21-single .thh-b21-svg{width:96px;height:96px}.woocommerce-product-gallery,li.product,.h2-cimg,.products .product{position:relative}@media(max-width:640px){.thh-b21-single .thh-b21-svg{width:68px;height:68px}}.thh-xxlh-item.is-btn>a{color:#e63946!important;font-weight:700}.thh-xxlh-item.is-btn>a:hover{color:#c62828!important}</style>';
 });
 
 /* Productpagina (Elementor-template slaat de WooCommerce-hook over): badge via de voet in de galerij zetten */
