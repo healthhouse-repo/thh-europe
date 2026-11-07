@@ -173,9 +173,11 @@ function thh_vf_inject() {
 </style>
 <script>
 (function(){
-var NONCE=<?php echo wp_json_encode($nonce); ?>,MAX=<?php echo $max; ?>;
+var NONCE=<?php echo wp_json_encode($nonce); ?>,MAX=<?php echo $max; ?>,SYNC=<?php echo in_array(thh_vf_store_now(), array_filter(array_map('intval', explode(',', (string) get_option('thh_vrr_sync_stores', '60110')))), true) ? 'true' : 'false'; ?>;
 function q(s,r){return (r||document).querySelector(s)}
+function fixTekst(){if(!SYNC)return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);var n;while((n=walker.nextNode())){if(n.nodeValue.indexOf('verandert niets aan de webshop')>-1){n.nodeValue=n.nodeValue.replace('en verandert niets aan de webshop','en wordt óók de voorraad van de webshop (geteld aantal = webshopaantal)');}}}
 function init(){
+  fixTekst();
   var scan=[].slice.call(document.querySelectorAll('button')).find(function(b){return /scan etiket/i.test(b.textContent)});
   if(!scan||q('.thh-vf-btn'))return false;
   var btn=document.createElement('button');btn.type='button';btn.className='thh-vf-btn';btn.textContent='📷 Foto tellen';
