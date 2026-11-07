@@ -142,10 +142,11 @@ add_action('template_redirect', function () {
 	$uri = $_SERVER['REQUEST_URI'] ?? '';
 	if (strpos($uri, '/voorraad') !== 0 || !thh_vf_can()) return;
 	if (!in_array(thh_vf_store_now(), thh_vf_stores(), true)) return;
-	ob_start(function ($html) {
+	$inject = thh_vf_inject(); // vooraf opbouwen: in een buffer-callback mag geen ob_start meer
+	ob_start(function ($html) use ($inject) {
 		$pos = strripos($html, '</body>');
-		if ($pos === false) return $html;
-		return substr($html, 0, $pos) . thh_vf_inject() . substr($html, $pos);
+		if ($pos === false) return $html . $inject;
+		return substr($html, 0, $pos) . $inject . substr($html, $pos);
 	});
 }, 1);
 function thh_vf_inject() {
