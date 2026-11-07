@@ -136,11 +136,21 @@ add_action('rest_api_init', function () {
 });
 
 /* ---------- knop en scherm in /voorraad ---------- */
-add_action('wp_footer', function () {
+/* De /voorraad-pagina wordt door snippet 242 in template_redirect uitgeschreven en eindigt met exit; er is geen
+ * wp_footer. Daarom vangen we de uitvoer op en zetten we het script vlak voor </body>. */
+add_action('template_redirect', function () {
 	$uri = $_SERVER['REQUEST_URI'] ?? '';
 	if (strpos($uri, '/voorraad') !== 0 || !thh_vf_can()) return;
 	if (!in_array(thh_vf_store_now(), thh_vf_stores(), true)) return;
+	ob_start(function ($html) {
+		$pos = strripos($html, '</body>');
+		if ($pos === false) return $html;
+		return substr($html, 0, $pos) . thh_vf_inject() . substr($html, $pos);
+	});
+}, 1);
+function thh_vf_inject() {
 	$nonce = wp_create_nonce('wp_rest'); $max = (int) thh_vf_opts()['max'];
+	ob_start();
 	?>
 <style>
 .thh-vf-btn{background:#14204a;color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:700;font-family:inherit;font-size:15px;cursor:pointer;height:58px;margin-left:8px;white-space:nowrap}
@@ -168,31 +178,36 @@ function init(){
   var scan=[].slice.call(document.querySelectorAll('button')).find(function(b){return /scan etiket/i.test(b.textContent)});
   if(!scan||q('.thh-vf-btn'))return false;
   var btn=document.createElement('button');btn.type='button';btn.className='thh-vf-btn';btn.textContent='📷 Foto tellen';
-  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.setAttribute('capture','environment');inp.style.display='none';
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;inp.setAttribute('capture','environment');inp.style.display='none';
   scan.parentNode.insertBefore(btn,scan.nextSibling);scan.parentNode.appendChild(inp);
   btn.addEventListener('click',function(){inp.value='';inp.click()});
-  inp.addEventListener('change',function(){if(inp.files&&inp.files[0])verwerk(inp.files[0],scan)});
+  inp.addEventListener('change',function(){if(inp.files&&inp.files.length)verwerk([].slice.call(inp.files),scan)});
   return true;
 }
 function verklein(file){return new Promise(function(res,rej){var img=new Image();var url=URL.createObjectURL(file);img.onload=function(){var s=Math.min(1,MAX/Math.max(img.width,img.height));var c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',0.85))};img.onerror=rej;img.src=url})}
 function box(scan){var w=q('.thh-vf-wrap');if(!w){w=document.createElement('div');w.className='thh-vf-wrap';var card=scan.closest('div');(card.parentNode||document.body).insertBefore(w,card.nextSibling)}return w}
-function verwerk(file,scan){
-  var w=box(scan);w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Foto verkleinen en herkennen… dit duurt 10 tot 20 seconden.</div>';
-  verklein(file).then(function(data){
-    return fetch('/wp-json/thh-foto/v1/tel',{method:'POST',headers:{'Content-Type':'application/json','X-WP-Nonce':NONCE},body:JSON.stringify({foto:data})}).then(function(r){return r.json()});
-  }).then(function(d){
-    if(!d||!d.regels){w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Mislukt: '+((d&&d.message)||'onbekende fout')+'</div>';return}
-    toon(w,d.regels);
-  }).catch(function(e){w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Mislukt: '+e.message+'</div>'});
+function verwerk(files,scan){
+  var w=box(scan);var alle=[];var i=0;
+  function stap(){
+    if(i>=files.length){toon(w,alle);return}
+    w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Foto '+(i+1)+' van '+files.length+' herkennen… 10 tot 20 seconden per foto.</div>';
+    verklein(files[i]).then(function(data){
+      return fetch('/wp-json/thh-foto/v1/tel',{method:'POST',headers:{'Content-Type':'application/json','X-WP-Nonce':NONCE},body:JSON.stringify({foto:data})}).then(function(r){return r.json()});
+    }).then(function(d){
+      if(!d||!d.regels){w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Mislukt bij foto '+(i+1)+': '+((d&&d.message)||'onbekende fout')+'</div>';return}
+      d.regels.forEach(function(r){r.foto=i+1;alle.push(r)});i++;stap();
+    }).catch(function(e){w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Mislukt: '+e.message+'</div>'});
+  }
+  stap();
 }
 function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function toon(w,regels){
   if(!regels.length){w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Geen producten herkend. Probeer dichterbij, recht van voren en met goed licht.</div>';return}
-  var h='<h3>Foto tellen · '+regels.length+' regels herkend</h3><div class="thh-vf-busy">Controleer product en aantal per regel. Rode regels zijn onzeker: zelf nakijken of scannen. Regels die je niet wilt bewaren, zet je op "overslaan".</div>';
+  var h='<h3>Foto tellen · '+regels.length+' regels herkend</h3><div class="thh-vf-busy">Controleer product en aantal per regel. Rode regels zijn onzeker: zelf nakijken of scannen. Regels die je niet wilt bewaren, zet je op "overslaan". Tip: een hele wand? Maak per plank of per meter een foto en kies ze in één keer; dubbele producten tel je dan bij elkaar op.</div>';
   regels.forEach(function(r,i){
     var opts='<option value="">— overslaan —</option>';r.kandidaten.forEach(function(k,j){opts+='<option value="'+k.pid+':'+k.vid+'"'+(j===0?' selected':'')+'>'+esc(k.naam)+'</option>'});
     var img=r.kandidaten[0]&&r.kandidaten[0].img?r.kandidaten[0].img:'';
-    h+='<div class="thh-vf-row '+r.zekerheid+'" data-i="'+i+'"><img src="'+esc(img)+'" alt=""><div><select>'+opts+'</select><div class="thh-vf-gezien">Gezien: '+esc([r.merk,r.product,r.variant].filter(Boolean).join(' · '))+'</div></div><input type="number" min="0" step="1" value="'+(r.aantal||0)+'"><div class="thh-vf-zkc"><div class="thh-vf-zk '+r.zekerheid+'">'+r.zekerheid+'</div></div></div>';
+    h+='<div class="thh-vf-row '+r.zekerheid+'" data-i="'+i+'"><img src="'+esc(img)+'" alt=""><div><select>'+opts+'</select><div class="thh-vf-gezien">'+(r.foto?'Foto '+r.foto+' · ':'')+'Gezien: '+esc([r.merk,r.product,r.variant].filter(Boolean).join(' · '))+'</div></div><input type="number" min="0" step="1" value="'+(r.aantal||0)+'"><div class="thh-vf-zkc"><div class="thh-vf-zk '+r.zekerheid+'">'+r.zekerheid+'</div></div></div>';
   });
   h+='<div class="thh-vf-acts"><button type="button" class="thh-vf-cancel">Annuleren</button><button type="button" class="thh-vf-save">Opslaan in register</button></div>';
   w.innerHTML=h;
@@ -202,7 +217,7 @@ function toon(w,regels){
 }
 function opslaan(w){
   var rows=[].slice.call(w.querySelectorAll('.thh-vf-row')),todo=[];
-  rows.forEach(function(row){var v=row.querySelector('select').value;var n=parseInt(row.querySelector('input').value,10);if(!v||isNaN(n))return;var p=v.split(':');todo.push({pid:+p[0],vid:+p[1],soort:'telling',aantal:n,notitie:'fototelling'})});
+  var som={};rows.forEach(function(row){var v=row.querySelector('select').value;var n=parseInt(row.querySelector('input').value,10);if(!v||isNaN(n))return;som[v]=(som[v]||0)+n});Object.keys(som).forEach(function(v){var p=v.split(':');todo.push({pid:+p[0],vid:+p[1],soort:'telling',aantal:som[v],notitie:'fototelling'})});
   if(!todo.length){alert('Niets geselecteerd.');return}
   var btn=q('.thh-vf-save',w);btn.disabled=true;btn.textContent='Opslaan… 0/'+todo.length;var ok=0,fout=0;
   (function next(i){if(i>=todo.length){w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">'+ok+' regels opgeslagen'+(fout?', '+fout+' mislukt':'')+'. Maak de volgende foto of zoek een product.</div>';return}
@@ -213,6 +228,7 @@ var n=0,t=setInterval(function(){if(init()||++n>40)clearInterval(t)},500);
 })();
 </script>
 	<?php
-});
+	return ob_get_clean();
+}
 
 } // function_exists
