@@ -53,10 +53,12 @@ add_action('admin_menu', function () {
 }, 100);
 
 /* ---------- AI-herkenning ---------- */
-function thh_vf_herken($jpeg_b64, $store_naam) {
+function thh_vf_herken($jpeg_b64, $store_naam, $context = 'schap') {
 	$o = thh_vf_opts();
 	if ($o['api_key'] === '') return new WP_Error('key', 'Geen API-sleutel ingesteld (WooCommerce › Foto tellen).');
-	$prompt = "Je ziet een foto van een winkelschap in een Nederlandse supplementen- en sportvoedingswinkel (" . $store_naam . "). "
+	$prompt = ($context === 'kassa'
+			? "Je ziet een foto van producten die een klant op de toonbank heeft gelegd in een Nederlandse supplementen- en sportvoedingswinkel (" . $store_naam . "). Elk stuk moet op de bon komen, dus tel exact. "
+			: "Je ziet een foto van een winkelschap in een Nederlandse supplementen- en sportvoedingswinkel (" . $store_naam . "). ")
 		. "Geef een lijst van alle verkoopproducten die zichtbaar zijn, gegroepeerd per product én variant (smaak/maat). Per regel: "
 		. "merk, productnaam, variant (smaak of inhoud, leeg als niet leesbaar), aantal zichtbare stuks (tel voorzichtig; potten achter elkaar tel je alleen als je ze echt ziet), "
 		. "en zekerheid 'hoog', 'middel' of 'laag' (laag als smaak/maat niet leesbaar is of het aantal onzeker is). "
@@ -127,7 +129,7 @@ add_action('rest_api_init', function () {
 		$b64 = preg_replace('#^data:image/\w+;base64,#', '', $b64);
 		if (strlen($b64) < 1000 || strlen($b64) > 8000000) return new WP_Error('foto', 'Geen bruikbare foto.', ['status' => 400]);
 		$naam = get_the_title($store) ?: 'winkel';
-		$regels = thh_vf_herken($b64, $naam);
+		$regels = thh_vf_herken($b64, $naam, $r->get_param('context') === 'kassa' ? 'kassa' : 'schap');
 		if (is_wp_error($regels)) return new WP_Error($regels->get_error_code(), $regels->get_error_message(), ['status' => 502]);
 		$out = [];
 		foreach ($regels as $x) { $x['kandidaten'] = thh_vf_kandidaten($x['merk'], $x['product'], $x['variant']); $out[] = $x; }
