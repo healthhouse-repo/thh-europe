@@ -141,7 +141,7 @@ function toon(w,regels,sid){
     }).catch(function(e){btn.disabled=false;btn.textContent='Zet in winkelwagen';alert('Mislukt: '+e.message)});
   });
 }
-var t=setInterval(function(){if(init())clearInterval(t)},1000);
+setInterval(init,1500); /* de kassa-app ververst het body-element na het laden: knop steeds opnieuw zetten als hij weg is */
 })();
 </script>
 	<?php
