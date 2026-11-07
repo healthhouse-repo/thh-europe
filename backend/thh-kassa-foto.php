@@ -64,7 +64,7 @@ add_action('template_redirect', function () {
 	ob_start();
 	?>
 <style>
-.thh-kf-btn{position:fixed;left:14px;bottom:118px;z-index:99998;background:#14204a;color:#fff;border:0;border-radius:999px;padding:10px 16px;font-weight:700;font-family:inherit;font-size:13px;cursor:pointer;box-shadow:0 4px 14px rgba(20,32,74,.3);letter-spacing:.04em}
+.thh-kf-btn{position:fixed;left:14px;bottom:142px;z-index:99998;background:#14204a;color:#fff;border:0;border-radius:999px;padding:10px 16px;font-weight:700;font-family:inherit;font-size:13px;cursor:pointer;box-shadow:0 4px 14px rgba(20,32,74,.3);letter-spacing:.04em}
 .thh-kf-ov{position:fixed;inset:0;z-index:99999;background:rgba(20,32,74,.55);display:flex;align-items:center;justify-content:center;padding:16px}
 .thh-kf-box{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:18px;font-family:Poppins,Inter,Arial,sans-serif;color:#1b1f2e}
 .thh-kf-box h3{margin:0 0 6px;color:#14204a;font-size:18px}
@@ -141,7 +141,7 @@ function toon(w,regels,sid){
     }).catch(function(e){btn.disabled=false;btn.textContent='Zet in winkelwagen';alert('Mislukt: '+e.message)});
   });
 }
-var n=0,t=setInterval(function(){if(init()||++n>60)clearInterval(t)},700);
+var t=setInterval(function(){if(init())clearInterval(t)},1000);
 })();
 </script>
 	<?php
