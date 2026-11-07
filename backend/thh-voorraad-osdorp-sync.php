@@ -5,8 +5,7 @@
  * Telt Osdorpplein (WCPOS-store 60110) in het voorraadregister (/voorraad, snippet 242) een
  * product of variatie met aantal > 0, dan zet deze snippet dat artikel in de webshop op
  * "op voorraad":
- *   - beheert het artikel voorraad per aantal en staat het lager dan geteld → aantal = geteld;
- *   - anders → stock_status instock;
+ *   - voorraadbeheer aan en webshopaantal = geteld aantal (exact);
  *   - de vlag "niet leverbaar" (Leverbaar-switch, snippet 206) gaat eraf, anders wordt het
  *     artikel direct weer op uitverkocht gezet.
  * Telling 0 verandert niets aan de webshop (er kan voorraad in een andere winkel liggen).
@@ -33,12 +32,10 @@ function thh_vrr_sync_webshop($pid, $vid, $aantal) {
 	foreach (array_unique([$id, $pid]) as $x) {
 		if (get_post_meta($x, '_thh_niet_leverbaar', true)) delete_post_meta($x, '_thh_niet_leverbaar');
 	}
-	if ($p->get_manage_stock()) {
-		if ((float) $p->get_stock_quantity() < $aantal) $p->set_stock_quantity($aantal);
-		if ($p->get_stock_quantity() > 0) $p->set_stock_status('instock');
-	} else {
-		$p->set_stock_status('instock');
-	}
+	// geteld aantal = exacte webshopvoorraad (voorraadbeheer aan, aantal overnemen)
+	if (!$p->get_manage_stock()) $p->set_manage_stock(true);
+	$p->set_stock_quantity($aantal);
+	$p->set_stock_status('instock');
 	$p->save();
 	if ($vid) {
 		$parent = wc_get_product($pid);
