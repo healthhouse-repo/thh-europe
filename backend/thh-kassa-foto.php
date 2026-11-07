@@ -23,12 +23,19 @@ function thh_kf_order($store, $items, $user_id) {
 		$pid = (int) ($it['pid'] ?? 0); $vid = (int) ($it['vid'] ?? 0); $qty = max(1, (int) ($it['aantal'] ?? 1));
 		$p = wc_get_product($vid ?: $pid);
 		if (!$p || !$p->is_purchasable()) continue;
-		$order->add_product($p, $qty);
+		$item_id = $order->add_product($p, $qty);
+		$item = $item_id ? $order->get_item($item_id) : null;
+		if ($item) { // zelfde regelvelden als de kassa zelf schrijft
+			$item->update_meta_data('_woocommerce_pos_data', ['price' => (string) wc_get_price_to_display($p), 'regular_price' => (string) wc_get_price_to_display($p, ['price' => $p->get_regular_price()]), 'tax_status' => $p->get_tax_status()]);
+			$item->update_meta_data('_woocommerce_pos_uuid', wp_generate_uuid4());
+			$item->save();
+		}
 		$n++;
 	}
 	if (!$n) { $order->delete(true); return new WP_Error('leeg', 'Geen geldige producten.'); }
 	$uuid = wp_generate_uuid4();
 	$order->update_meta_data('_woocommerce_pos_uuid', $uuid);
+	$order->update_meta_data('_woocommerce_pos_version', defined('WCPOS_VERSION') ? WCPOS_VERSION : '1.11.11');
 	$order->update_meta_data('_pos_store', (int) $store);
 	$order->update_meta_data('_pos_user', (int) $user_id);
 	$order->update_meta_data('_pos_user_created', (int) $user_id);
