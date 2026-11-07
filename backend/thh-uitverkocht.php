@@ -105,6 +105,8 @@ add_action('wp_footer', function () {
 	if (function_exists('is_product') && is_product()) {
 		$p = wc_get_product(get_queried_object_id());
 		if (!$p || $p->is_in_stock()) return;
+		// uitverkocht: de knop op de productpagina (bericht bij terugkomst) lichtgrijs in plaats van rood
+		echo '<style>.thh-wl__knop,.single_add_to_cart_button.disabled,.single_add_to_cart_button[disabled]{background:#e3e6ef!important;border-color:#e3e6ef!important;color:#14204a!important;box-shadow:none!important}.thh-wl__knop:hover{background:#d3d7e3!important}</style>';
 		$alts = thh_uv_alternatives($p, 4);
 		if (!$alts) return;
 		echo '<div id="thh-uv-alt" style="display:none"><div class="thh-uv-box"><h3>Uitverkocht. Deze zijn wel direct leverbaar:</h3><div class="thh-uv-grid">';
