@@ -3,8 +3,8 @@
  * THH — Badge "2+1 GRATIS"
  *
  * Ronde navy badge met witte ring, "2+1" (rode plus) en rode band "GRATIS", als inline SVG.
- * Aanzetten per product: vinkje "2+1 gratis badge" in het tabblad Algemeen van het product
- * (meta _thh_2plus1 = 1) of de producttag "2+1 gratis" (slug 2-plus-1).
+ * Aanzetten per product: categorie "2+1 Deals" (slug 2-1-deals), vinkje "2+1 gratis badge" in het tabblad
+ * Algemeen van het product (meta _thh_2plus1 = 1) of de producttag "2+1 gratis" (slug 2-plus-1).
  *
  * Verschijnt op: productkaarten in de shop/categorieën, de productkaarten van de homepage (#450,
  * via filter thh_h2_card_extra) en linksboven op de foto van de productpagina.
@@ -18,6 +18,7 @@ function thh_b21_actief($p) {
 	if (!$p) return false;
 	$id = $p->get_parent_id() ?: $p->get_id();
 	if (get_post_meta($id, '_thh_2plus1', true) === '1') return true;
+	if (has_term('2-1-deals', 'product_cat', $id)) return true;
 	return has_term('2-plus-1', 'product_tag', $id);
 }
 
@@ -46,7 +47,7 @@ add_filter('thh_h2_card_extra', function ($html, $p) {
 }, 10, 2);
 
 add_action('wp_head', function () {
-	echo '<style>.thh-b21{position:absolute;z-index:5;line-height:0;pointer-events:none}.thh-b21-svg{display:block;border-radius:50%;overflow:hidden}.thh-b21-loop{top:8px;right:8px}.thh-b21-loop .thh-b21-svg{width:64px;height:64px}@media(max-width:640px){.thh-b21-loop .thh-b21-svg{width:52px;height:52px}}.thh-b21-single{top:14px;right:14px}.thh-b21-single .thh-b21-svg{width:96px;height:96px}.woocommerce-product-gallery,li.product,.h2-cimg,.products .product{position:relative}@media(max-width:640px){.thh-b21-single .thh-b21-svg{width:68px;height:68px}}</style>';
+	echo '<style>.thh-b21{position:absolute;z-index:5;line-height:0;pointer-events:none}.thh-b21-svg{display:block;border-radius:50%;overflow:hidden}.thh-b21-loop{top:8px;right:8px}.thh-b21-loop .thh-b21-svg{width:64px;height:64px}@media(max-width:640px){.thh-b21-loop .thh-b21-svg{width:52px;height:52px}}.thh-b21-single{top:14px;right:14px}.thh-b21-single .thh-b21-svg{width:96px;height:96px}.woocommerce-product-gallery,li.product,.h2-cimg,.products .product{position:relative}@media(max-width:640px){.thh-b21-single .thh-b21-svg{width:68px;height:68px}}.thh-xxlh-item.is-btn>a{background:#e63946;color:#fff!important;border-radius:999px;padding:6px 14px!important;font-weight:700;line-height:1.2}.thh-xxlh-item.is-btn>a:hover{background:#c62828}</style>';
 });
 
 /* Productpagina (Elementor-template slaat de WooCommerce-hook over): badge via de voet in de galerij zetten */
@@ -116,7 +117,8 @@ function thh_b21_ids() {
 	global $wpdb;
 	$ids = array_map('intval', $wpdb->get_col("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_thh_2plus1' AND meta_value = '1'"));
 	$tag = get_posts(['post_type' => 'product', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'any', 'tax_query' => [['taxonomy' => 'product_tag', 'field' => 'slug', 'terms' => '2-plus-1']]]);
-	$ids = array_values(array_unique(array_merge($ids, array_map('intval', $tag))));
+	$cat = get_posts(['post_type' => 'product', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'any', 'tax_query' => [['taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => '2-1-deals']]]);
+	$ids = array_values(array_unique(array_merge($ids, array_map('intval', $tag), array_map('intval', $cat))));
 	set_transient('thh_b21_ids', $ids, HOUR_IN_SECONDS);
 	return $ids;
 }
@@ -126,7 +128,7 @@ add_filter('option_thh_bundel_excl', function ($excl) {
 });
 add_filter('default_option_thh_bundel_excl', function ($d) { return array_map('strval', thh_b21_ids()); });
 add_action('woocommerce_process_product_meta', function () { delete_transient('thh_b21_ids'); }, 5);
-add_action('set_object_terms', function ($object_id, $terms, $tt_ids, $taxonomy) { if ($taxonomy === 'product_tag') delete_transient('thh_b21_ids'); }, 10, 4);
+add_action('set_object_terms', function ($object_id, $terms, $tt_ids, $taxonomy) { if ($taxonomy === 'product_tag' || $taxonomy === 'product_cat') delete_transient('thh_b21_ids'); }, 10, 4);
 
 /* Vinkje in het product (tabblad Algemeen) */
 add_action('woocommerce_product_options_general_product_data', function () {
