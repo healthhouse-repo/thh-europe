@@ -31,7 +31,7 @@ function zet(){
   var bak=kol.parentElement;if(!bak)return;
   var na=kol;
   ITEMS.forEach(function(it){
-    if(bak.querySelector('[data-thh-km="'+it.id+'"]'))return;
+    var al=bak.querySelector('[data-thh-km="'+it.id+'"]');if(al){na=al.closest('.flex-col')||na;return}
     var d=document.createElement('div');d.className=kol.className;
     var w=document.createElement('div');w.className=ref.parentElement.className;
     var b=document.createElement('button');b.type='button';b.className=ref.className+' thh-km-item';b.title=it.title;b.setAttribute('aria-label',it.title);b.setAttribute('data-thh-km',it.id);
