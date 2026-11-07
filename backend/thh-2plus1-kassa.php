@@ -86,6 +86,11 @@ add_action('woocommerce_after_order_object_save', function ($order) {
 	$bezig = true;
 	try {
 		if (thh_b21k_pas_toe($order)) { $order->calculate_totals(); $order->save(); }
+		elseif ($order->get_id() && count($order->get_items('fee'))) {
+			// de kassa zet na het opslaan zelf nog totalen (zonder onze kortingsregel mee te tellen): controleren en zo nodig herrekenen
+			$vers = wc_get_order($order->get_id());
+			if ($vers) { $vers->calculate_totals(); if (abs((float) $vers->get_total() - (float) $order->get_total()) > 0.005) { $vers->save(); $order->set_total($vers->get_total()); $order->set_total_tax($vers->get_total_tax()); } }
+		}
 	} catch (Throwable $e) {}
 	$bezig = false;
 }, 20);
