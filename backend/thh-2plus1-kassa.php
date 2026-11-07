@@ -42,7 +42,8 @@ function thh_b21k_pas_toe($order) {
 	$g = thh_b21k_groepen($order);
 	$stand = $order->get_meta('_thh_b21_kassa'); $stand = is_array($stand) ? $stand : []; // pid => ['qty'=>, 'uit'=>bool]
 	$aanwezig = [];
-	foreach ($order->get_items('fee') as $fid => $fee) {
+	$fees = $order->get_items('fee'); // de objecten uit de order zelf gebruiken (get_item() laadt een losse kopie die bij save() weer overschreven wordt)
+	foreach ($fees as $fid => $fee) {
 		$pid = (int) $fee->get_meta('_thh_b21');
 		if ($pid) $aanwezig[$pid] = $fid;
 	}
@@ -59,7 +60,7 @@ function thh_b21k_pas_toe($order) {
 		}
 		$naam = '2+1 gratis: ' . $x['naam'] . ($x['gratis'] > 1 ? ' (' . $x['gratis'] . 'x)' : '');
 		if (isset($aanwezig[$pid])) {
-			$fee = $order->get_item($aanwezig[$pid]);
+			$fee = $fees[$aanwezig[$pid]];
 			if ($fee && (abs((float) $fee->get_total() + $x['korting']) > 0.005 || $fee->get_name() !== $naam)) {
 				$fee->set_name($naam); $fee->set_amount(-$x['korting']); $fee->set_total(-$x['korting']); $fee->set_tax_class($x['tax']); $fee->save(); $veranderd = true;
 			}
