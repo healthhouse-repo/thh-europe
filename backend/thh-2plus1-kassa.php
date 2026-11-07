@@ -38,7 +38,33 @@ function thh_b21k_groepen($order) {
 }
 
 /* Kortingsregels bijwerken; geeft true terug als er iets veranderd is */
+/* Actieprijs óf 2+1, niet allebei: bij 2 of meer stuks van een 2+1-product gaat de regel naar de normale prijs.
+ * Geeft true terug als er een regel aangepast is. */
+function thh_b21k_normale_prijs($order) {
+	$per = []; $items = [];
+	foreach ($order->get_items('line_item') as $iid => $item) {
+		$p = $item->get_product();
+		if (!$p || !function_exists('thh_b21_actief') || !thh_b21_actief($p)) continue;
+		$pid = $p->get_parent_id() ?: $p->get_id();
+		$per[$pid] = ($per[$pid] ?? 0) + (int) $item->get_quantity();
+		$items[$iid] = [$item, $p, $pid];
+	}
+	$veranderd = false;
+	foreach ($items as $iid => [$item, $p, $pid]) {
+		if ($per[$pid] < 2 || !$p->is_on_sale() || (float) $p->get_regular_price() <= 0) continue;
+		$qty = (int) $item->get_quantity();
+		$excl = (float) wc_get_price_excluding_tax($p, ['price' => $p->get_regular_price(), 'qty' => 1]);
+		$nieuw = round($excl * $qty, 6);
+		if (abs((float) $item->get_subtotal() - $nieuw) < 0.005 && abs((float) $item->get_total() - $nieuw) < 0.005) continue;
+		$item->set_subtotal($nieuw); $item->set_total($nieuw);
+		$item->update_meta_data('_thh_b21_normaal', '1');
+		$veranderd = true;
+	}
+	return $veranderd;
+}
+
 function thh_b21k_pas_toe($order) {
+	$veranderd = thh_b21k_normale_prijs($order);
 	$g = thh_b21k_groepen($order);
 	$stand = $order->get_meta('_thh_b21_kassa'); $stand = is_array($stand) ? $stand : []; // pid => ['qty'=>, 'uit'=>bool]
 	$aanwezig = [];
@@ -47,7 +73,6 @@ function thh_b21k_pas_toe($order) {
 		$pid = (int) $fee->get_meta('_thh_b21');
 		if ($pid) $aanwezig[$pid] = $fid;
 	}
-	$veranderd = false;
 	foreach ($g as $pid => $x) {
 		$vorig = $stand[$pid] ?? null;
 		$uit = $vorig && !empty($vorig['uit']) && (int) $vorig['qty'] === (int) $x['qty'];

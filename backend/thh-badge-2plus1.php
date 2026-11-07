@@ -56,9 +56,27 @@ add_action('wp_footer', function () {
 	$p = wc_get_product(get_the_ID());
 	if (!thh_b21_actief($p)) return;
 	$svg = wp_json_encode('<span class="thh-b21 thh-b21-single">' . thh_b21_svg(88) . '</span>');
-	$uitleg = wp_json_encode('<p class="thh-b21-uitleg" style="margin:8px 0 12px;font-weight:600;color:#14204a">2+1 gratis: bestel er 3, de derde verpakking krijg je helemaal gratis. Smaken en maten mag je combineren.</p>');
+	$uitleg = wp_json_encode('<p class="thh-b21-uitleg" style="margin:8px 0 12px;font-weight:600;color:#14204a">2+1 gratis: bestel er 3, de derde verpakking krijg je helemaal gratis. Smaken en maten mag je combineren. Actieprijs geldt bij 1 stuk; vanaf 2 stuks geldt de normale prijs en de 2+1.</p>');
 	echo '<script>(function(){function z(){if(document.querySelector(".thh-b21-single"))return true;var g=document.querySelector(".woocommerce-product-gallery")||document.querySelector(".elementor-widget-woocommerce-product-images");if(!g)return false;g.style.position="relative";g.insertAdjacentHTML("beforeend",' . $svg . ');var p=document.querySelector(".elementor-widget-woocommerce-product-price")||document.querySelector(".summary .price, p.price");if(p){var sec=p.closest(".elementor-inner-section");if(sec)p=sec;}if(p&&!document.querySelector(".thh-b21-uitleg"))p.insertAdjacentHTML("afterend",' . $uitleg . ');return true}if(!z()){var n=0,t=setInterval(function(){if(z()||++n>20)clearInterval(t)},300)}})();</script>';
 });
+
+/* Actieprijs óf 2+1, niet allebei: bij 2 of meer stuks van een 2+1-product in de winkelwagen geldt de normale prijs */
+add_action('woocommerce_before_calculate_totals', function ($cart) {
+	if (is_admin() && !defined('DOING_AJAX')) return;
+	$per = [];
+	foreach ($cart->get_cart() as $item) {
+		$p = $item['data'] ?? null;
+		if (!$p || !thh_b21_actief($p)) continue;
+		$pid = $p->get_parent_id() ?: $p->get_id();
+		$per[$pid] = ($per[$pid] ?? 0) + (int) $item['quantity'];
+	}
+	foreach ($cart->get_cart() as $item) {
+		$p = $item['data'] ?? null;
+		if (!$p || !thh_b21_actief($p)) continue;
+		$pid = $p->get_parent_id() ?: $p->get_id();
+		if (($per[$pid] ?? 0) >= 2 && $p->is_on_sale() && (float) $p->get_regular_price() > 0) $p->set_price($p->get_regular_price());
+	}
+}, 20);
 
 /* Winkelwagen: per 3 stuks van een 2+1-product is de goedkoopste gratis (smaken/maten tellen samen) */
 function thh_b21_groepen($cart) {
@@ -94,6 +112,7 @@ add_filter('woocommerce_cart_item_name', function ($name, $item, $key) {
 	if (empty($g[$pid])) return $name;
 	$q = $g[$pid]['qty']; $rest = $q % 3;
 	$txt = $g[$pid]['gratis'] ? $g[$pid]['gratis'] . ' gratis, al verrekend' : '';
+	if ($q >= 2 && $p->is_on_sale() && (float) $p->get_regular_price() > 0) $txt = ($txt ? $txt . ' · ' : '') . 'normale prijs (actieprijs geldt alleen bij 1 stuk)';
 	if ($rest === 2) $txt = ($txt ? $txt . ' · ' : '') . 'nog 1 erbij en die is gratis';
 	elseif ($rest === 1) $txt = ($txt ? $txt . ' · ' : '') . 'nog 2 erbij en de 3e is gratis';
 	return $name . ($txt ? '<br><small style="color:#14204a;font-weight:600">2+1 gratis: ' . esc_html($txt) . '</small>' : '');
