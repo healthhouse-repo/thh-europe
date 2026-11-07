@@ -24,10 +24,12 @@ var ITEMS=[
  {id:'voorraad',title:'Voorraad tellen',doel:'#thh-vrrpos-btn',svg:'<svg viewBox="0 0 512 512"><path d="M248.3 1.7c4.8-2.3 10.5-2.3 15.3 0l224 106.7c9.4 4.5 15.3 13.8 15.3 24.2V480c0 17.7-14.3 32-32 32H41.2c-17.7 0-32-14.3-32-32V132.6c0-10.4 5.9-19.7 15.3-24.2l224-106.7zM80 192v96h128v-96H80zm224 0v96h128v-96H304zM80 352v96h128v-96H80zm224 0v96h128v-96H304z"/></svg>'}
 ];
 function zet(){
-  var ref=document.querySelector('button[data-testid^="drawer-item-"]');
-  if(!ref)return;
+  /* onder het laatste menu-item van de bovenste groep (de onderste groep bevat instellingen en hulp) */
+  var alle=[].slice.call(document.querySelectorAll('button[data-testid^="drawer-item-"]')).filter(function(b){return b.getBoundingClientRect().top<window.innerHeight/2});
+  var ref=alle[alle.length-1];if(!ref)return;
   var kol=ref.closest('.flex-col');if(!kol)return;
   var bak=kol.parentElement;if(!bak)return;
+  var na=kol;
   ITEMS.forEach(function(it){
     if(bak.querySelector('[data-thh-km="'+it.id+'"]'))return;
     var d=document.createElement('div');d.className=kol.className;
@@ -35,7 +37,7 @@ function zet(){
     var b=document.createElement('button');b.type='button';b.className=ref.className+' thh-km-item';b.title=it.title;b.setAttribute('aria-label',it.title);b.setAttribute('data-thh-km',it.id);
     b.innerHTML='<div class="'+ref.firstElementChild.className+'">'+it.svg+'</div>';
     b.addEventListener('click',function(){var t=document.querySelector(it.doel);if(t){t.click()}else{alert(it.title+' is niet beschikbaar in deze winkel.')}});
-    w.appendChild(b);d.appendChild(w);bak.appendChild(d);
+    w.appendChild(b);d.appendChild(w);na.insertAdjacentElement('afterend',d);na=d;
   });
 }
 setInterval(zet,1500);zet();
