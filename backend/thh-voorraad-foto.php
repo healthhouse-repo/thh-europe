@@ -91,15 +91,18 @@ function thh_vf_herken($jpeg_b64, $store_naam, $context = 'schap') {
 
 /* ---------- koppelen aan webshopproducten ---------- */
 function thh_vf_kandidaten($merk, $product, $variant) {
-	$q = trim($merk . ' ' . $product);
+	$product = trim(preg_replace('/\s+/', ' ', preg_replace('/\([^)]*\)|[:,]/', ' ', $product))); // toelichting tussen haakjes weg
+	$merk = trim(preg_replace('/\b(nutrition|supplements?|labs?)\b/i', '', $merk));
+	$w = array_values(array_filter(explode(' ', $product), function ($x) { return strlen($x) > 1; }));
 	$cands = [];
 	$zoek = function ($s) {
+		$s = trim($s); if ($s === '') return [];
 		$ids = get_posts(['post_type' => 'product', 'post_status' => 'publish', 'posts_per_page' => 6, 's' => $s, 'fields' => 'ids']);
 		return array_map('intval', $ids);
 	};
-	$ids = $zoek($q);
-	if (!$ids && $product) $ids = $zoek($product);
-	if (!$ids && $merk) $ids = $zoek($merk);
+	$pogingen = [trim($merk . ' ' . $product), $product, trim($merk . ' ' . implode(' ', array_slice($w, 0, 2))), implode(' ', array_slice($w, 0, 2)), trim($merk . ' ' . ($w[0] ?? '')), $merk];
+	$ids = [];
+	foreach (array_unique(array_filter($pogingen)) as $s) { $ids = $zoek($s); if ($ids) break; }
 	$v = strtolower($variant);
 	foreach (array_slice($ids, 0, 4) as $pid) {
 		$p = wc_get_product($pid); if (!$p) continue;
