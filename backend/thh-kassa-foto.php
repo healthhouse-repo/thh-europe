@@ -132,9 +132,11 @@ function toon(w,regels,sid){
   if(!regels.length){w.innerHTML='<h3>Foto afrekenen</h3><div class="thh-kf-busy">Geen producten herkend. Leg de producten los van elkaar met het etiket naar de camera en probeer opnieuw.</div><div class="thh-kf-acts"><button type="button" class="thh-kf-cancel">Sluiten</button></div>';q('.thh-kf-cancel',w).addEventListener('click',sluit);return}
   var h='<h3>Controleer de bon · '+regels.length+' regels</h3><div class="thh-kf-busy">Kijk bij elke regel of product, smaak of maat en aantal kloppen. Rode regels zijn onzeker. Zet een regel op "overslaan" als het niet klopt en zoek dat product daarna gewoon op. Pas na "Zet in winkelwagen" komt het op de bon.</div>';
   regels.forEach(function(r,i){
-    var opts='<option value="">— overslaan —</option>';(r.kandidaten||[]).forEach(function(k,j){opts+='<option value="'+k.pid+':'+k.vid+'"'+(j===0?' selected':'')+'>'+esc(k.naam)+'</option>'});
-    var img=r.kandidaten&&r.kandidaten[0]&&r.kandidaten[0].img?r.kandidaten[0].img:'';
-    h+='<div class="thh-kf-row '+r.zekerheid+'" data-i="'+i+'"><img src="'+esc(img)+'" alt=""><div><select>'+opts+'</select><div class="thh-kf-gezien">'+(r.foto?'Foto '+r.foto+' · ':'')+'Gezien: '+esc([r.merk,r.product,r.variant].filter(Boolean).join(' · '))+'</div></div><input type="number" min="1" step="1" value="'+Math.max(1,r.aantal||1)+'"><div class="thh-kf-zkc"><div class="thh-kf-zk '+r.zekerheid+'">'+r.zekerheid+'</div></div></div>';
+    var k0=(r.kandidaten||[])[0];var zeker=k0&&(k0.match||0)>=0.5&&r.zekerheid!=='laag'&&r.product; /* alleen voorselecteren bij een echte treffer op de titel; anders overslaan en zelf kiezen */
+    var opts='<option value="">— overslaan —</option>';(r.kandidaten||[]).forEach(function(k,j){opts+='<option value="'+k.pid+':'+k.vid+'"'+(j===0&&zeker?' selected':'')+'>'+esc(k.naam)+'</option>'});
+    var img=zeker&&k0.img?k0.img:'';
+    if(!zeker)r.zekerheid='laag';
+    h+='<div class="thh-kf-row '+r.zekerheid+'" data-i="'+i+'"><img src="'+esc(img)+'" alt=""><div><select>'+opts+'</select><div class="thh-kf-gezien">'+(r.foto?'Foto '+r.foto+' · ':'')+'Gezien: '+esc([r.merk,r.product,r.variant,r.soort].filter(Boolean).join(' · '))+(zeker?'':' · <b>niet zeker gevonden: kies zelf of zoek het product op</b>')+'</div></div><input type="number" min="1" step="1" value="'+Math.max(1,r.aantal||1)+'"><div class="thh-kf-zkc"><div class="thh-kf-zk '+r.zekerheid+'">'+r.zekerheid+'</div></div></div>';
   });
   h+='<div class="thh-kf-acts"><button type="button" class="thh-kf-cancel">Annuleren</button><button type="button" class="thh-kf-go">Zet in winkelwagen</button></div>';
   w.innerHTML=h;

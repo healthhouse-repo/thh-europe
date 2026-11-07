@@ -61,8 +61,11 @@ function thh_vf_herken($jpeg_b64, $store_naam, $context = 'schap') {
 			: "Je ziet een foto van een winkelschap in een Nederlandse supplementen- en sportvoedingswinkel (" . $store_naam . "). ")
 		. "Geef een lijst van alle verkoopproducten die zichtbaar zijn, gegroepeerd per product én variant (smaak/maat). Per regel: "
 		. "merk, productnaam, variant (smaak of inhoud, leeg als niet leesbaar), aantal zichtbare stuks (tel voorzichtig; potten achter elkaar tel je alleen als je ze echt ziet), "
+		. "soort ('poeder', 'capsules', 'drank', 'reep', 'gel', 'anders') "
 		. "en zekerheid 'hoog', 'middel' of 'laag' (laag als smaak/maat niet leesbaar is of het aantal onzeker is). "
-		. "Antwoord uitsluitend met JSON: {\"regels\":[{\"merk\":\"\",\"product\":\"\",\"variant\":\"\",\"aantal\":0,\"zekerheid\":\"hoog\"}]}. Geen tekst eromheen.";
+		. "Belangrijk: schrijf merk en productnaam letterlijk over van het etiket. Verzin of raad geen productnaam; kun je de naam niet lezen, laat product dan leeg en zet zekerheid op 'laag'. "
+		. "Een blikje of flesje drank is nooit een pot poeder: zet dan soort 'drank'. "
+		. "Antwoord uitsluitend met JSON: {\"regels\":[{\"merk\":\"\",\"product\":\"\",\"variant\":\"\",\"soort\":\"poeder\",\"aantal\":0,\"zekerheid\":\"hoog\"}]}. Geen tekst eromheen.";
 	$body = [
 		'model' => $o['model'], 'max_tokens' => 4000,
 		'messages' => [['role' => 'user', 'content' => [
@@ -84,7 +87,7 @@ function thh_vf_herken($jpeg_b64, $store_naam, $context = 'schap') {
 	if (!is_array($d) || !isset($d['regels'])) return new WP_Error('parse', 'AI gaf geen leesbare lijst terug (' . ($j['stop_reason'] ?? '') . '): ' . mb_substr(wp_strip_all_tags($txt), 0, 200));
 	$out = [];
 	foreach ((array) $d['regels'] as $x) {
-		$out[] = ['merk' => sanitize_text_field($x['merk'] ?? ''), 'product' => sanitize_text_field($x['product'] ?? ''), 'variant' => sanitize_text_field($x['variant'] ?? ''), 'aantal' => max(0, (int) ($x['aantal'] ?? 0)), 'zekerheid' => in_array($x['zekerheid'] ?? '', ['hoog', 'middel', 'laag'], true) ? $x['zekerheid'] : 'laag'];
+		$out[] = ['merk' => sanitize_text_field($x['merk'] ?? ''), 'product' => sanitize_text_field($x['product'] ?? ''), 'variant' => sanitize_text_field($x['variant'] ?? ''), 'soort' => sanitize_text_field($x['soort'] ?? ''), 'aantal' => max(0, (int) ($x['aantal'] ?? 0)), 'zekerheid' => in_array($x['zekerheid'] ?? '', ['hoog', 'middel', 'laag'], true) ? $x['zekerheid'] : 'laag'];
 	}
 	return $out;
 }
@@ -104,8 +107,18 @@ function thh_vf_kandidaten($merk, $product, $variant) {
 	$ids = [];
 	foreach (array_unique(array_filter($pogingen)) as $s) { $ids = $zoek($s); if ($ids) break; }
 	$v = strtolower($variant);
+	/* Trefscore: welk deel van de gelezen woorden (merk + productnaam, zonder vulwoorden) staat echt in de producttitel? */
+	$stop = ['pre','workout','pre-workout','preworkout','protein','proteine','whey','isolate','powder','poeder','capsules','caps','tabs','supplement','nutrition','the','and','met','van','de','het','een','mg','g','kg','ml','gram'];
+	$tok = array_values(array_unique(array_filter(preg_split('/[^a-z0-9]+/', strtolower($merk . ' ' . $product)), function ($t) use ($stop) { return strlen($t) > 2 && !in_array($t, $stop, true); })));
+	$tref = function ($titel) use ($tok) {
+		if (!$tok) return 0;
+		$t = strtolower($titel); $n = 0;
+		foreach ($tok as $x) if (strpos($t, $x) !== false) $n++;
+		return round($n / count($tok), 2);
+	};
 	foreach (array_slice($ids, 0, 4) as $pid) {
 		$p = wc_get_product($pid); if (!$p) continue;
+		$m = $tref($p->get_name());
 		if ($p->is_type('variable')) {
 			$best = null; $bestscore = -1;
 			foreach ($p->get_children() as $vid) {
@@ -113,14 +126,14 @@ function thh_vf_kandidaten($merk, $product, $variant) {
 				$label = implode(' ', array_values($var->get_attributes()));
 				$score = 0;
 				if ($v !== '') foreach (preg_split('/[\s\/,-]+/', $v) as $tok) if (strlen($tok) > 1 && stripos($label, $tok) !== false) $score++;
-				$cands[] = ['pid' => $pid, 'vid' => $vid, 'naam' => $p->get_name() . ' – ' . $label, 'score' => $score, 'img' => wp_get_attachment_image_url($var->get_image_id() ?: $p->get_image_id(), 'thumbnail')];
+				$cands[] = ['pid' => $pid, 'vid' => $vid, 'naam' => $p->get_name() . ' – ' . $label, 'score' => $score, 'match' => $m, 'img' => wp_get_attachment_image_url($var->get_image_id() ?: $p->get_image_id(), 'thumbnail')];
 				if ($score > $bestscore) { $bestscore = $score; $best = $vid; }
 			}
 		} else {
-			$cands[] = ['pid' => $pid, 'vid' => 0, 'naam' => $p->get_name(), 'score' => 0, 'img' => wp_get_attachment_image_url($p->get_image_id(), 'thumbnail')];
+			$cands[] = ['pid' => $pid, 'vid' => 0, 'naam' => $p->get_name(), 'score' => 0, 'match' => $m, 'img' => wp_get_attachment_image_url($p->get_image_id(), 'thumbnail')];
 		}
 	}
-	usort($cands, function ($a, $b) { return $b['score'] <=> $a['score']; });
+	usort($cands, function ($a, $b) { return [$b['match'], $b['score']] <=> [$a['match'], $a['score']]; });
 	return array_slice($cands, 0, 8);
 }
 
@@ -215,9 +228,11 @@ function toon(w,regels){
   if(!regels.length){w.innerHTML='<h3>Foto tellen</h3><div class="thh-vf-busy">Geen producten herkend. Probeer dichterbij, recht van voren en met goed licht.</div>';return}
   var h='<h3>Foto tellen · '+regels.length+' regels herkend</h3><div class="thh-vf-busy">Controleer product en aantal per regel. Rode regels zijn onzeker: zelf nakijken of scannen. Regels die je niet wilt bewaren, zet je op "overslaan". Tip: een hele wand? Maak per plank of per meter een foto en kies ze in één keer; dubbele producten tel je dan bij elkaar op.</div>';
   regels.forEach(function(r,i){
-    var opts='<option value="">— overslaan —</option>';r.kandidaten.forEach(function(k,j){opts+='<option value="'+k.pid+':'+k.vid+'"'+(j===0?' selected':'')+'>'+esc(k.naam)+'</option>'});
-    var img=r.kandidaten[0]&&r.kandidaten[0].img?r.kandidaten[0].img:'';
-    h+='<div class="thh-vf-row '+r.zekerheid+'" data-i="'+i+'"><img src="'+esc(img)+'" alt=""><div><select>'+opts+'</select><div class="thh-vf-gezien">'+(r.foto?'Foto '+r.foto+' · ':'')+'Gezien: '+esc([r.merk,r.product,r.variant].filter(Boolean).join(' · '))+'</div></div><input type="number" min="0" step="1" value="'+(r.aantal||0)+'"><div class="thh-vf-zkc"><div class="thh-vf-zk '+r.zekerheid+'">'+r.zekerheid+'</div></div></div>';
+    var zeker=r.kandidaten[0]&&(r.kandidaten[0].match||0)>=0.5&&r.zekerheid!=='laag'&&r.product; /* alleen voorselecteren bij een echte treffer op de titel */
+    var opts='<option value="">— overslaan —</option>';r.kandidaten.forEach(function(k,j){opts+='<option value="'+k.pid+':'+k.vid+'"'+(j===0&&zeker?' selected':'')+'>'+esc(k.naam)+'</option>'});
+    var img=zeker&&r.kandidaten[0].img?r.kandidaten[0].img:'';
+    if(!zeker)r.zekerheid='laag';
+    h+='<div class="thh-vf-row '+r.zekerheid+'" data-i="'+i+'"><img src="'+esc(img)+'" alt=""><div><select>'+opts+'</select><div class="thh-vf-gezien">'+(r.foto?'Foto '+r.foto+' · ':'')+'Gezien: '+esc([r.merk,r.product,r.variant,r.soort].filter(Boolean).join(' · '))+(zeker?'':' · <b>niet zeker gevonden, kies zelf of scan</b>')+'</div></div><input type="number" min="0" step="1" value="'+(r.aantal||0)+'"><div class="thh-vf-zkc"><div class="thh-vf-zk '+r.zekerheid+'">'+r.zekerheid+'</div></div></div>';
   });
   h+='<div class="thh-vf-acts"><button type="button" class="thh-vf-cancel">Annuleren</button><button type="button" class="thh-vf-save">Opslaan in register</button></div>';
   w.innerHTML=h;
