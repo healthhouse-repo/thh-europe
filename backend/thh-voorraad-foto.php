@@ -148,7 +148,7 @@ add_action('template_redirect', function () {
 		if ($pos === false) return $html . $inject;
 		return substr($html, 0, $pos) . $inject . substr($html, $pos);
 	});
-}, 1);
+}, -100);
 function thh_vf_inject() {
 	$nonce = wp_create_nonce('wp_rest'); $max = (int) thh_vf_opts()['max'];
 	ob_start();
