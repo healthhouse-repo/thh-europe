@@ -113,4 +113,20 @@ add_filter('woocommerce_rest_prepare_shop_order_object', function ($response, $o
 	return $response;
 }, 20, 2);
 
+/* De kassa stuurt een bon pas naar de server bij "Opslaan naar server" of bij afrekenen. Om de kortingsregel
+ * meteen te laten zien, slaan we de bon automatisch op zodra de regels veranderen (2 s na de laatste wijziging). */
+add_action('woocommerce_pos_footer', function () {
+	?>
+<script>
+(function(){
+var laatst='',timer=null,bezig=false;
+function knop(){return [].slice.call(document.querySelectorAll('button,[role="button"]')).filter(function(b){return /Opslaan naar server/i.test(b.textContent||'')&&b.offsetParent})[0]}
+function sig(){var t=document.body.innerText||'';var a=t.indexOf('TOTAAL'),b=t.indexOf('Subtotaal');if(a<0||b<0||b<a)return '';return t.slice(a,b).replace(/\s+/g,' ').trim()}
+function tik(){var s=sig();if(s===laatst||!s)return;clearTimeout(timer);timer=setTimeout(function(){var s2=sig();if(s2===laatst||!s2||bezig)return;var k=knop();if(!k)return;bezig=true;laatst=s2;k.click();setTimeout(function(){bezig=false;laatst=sig()},2500)},2000)}
+new MutationObserver(tik).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+	<?php
+});
+
 } // function_exists
