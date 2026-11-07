@@ -71,7 +71,7 @@ add_action('template_redirect', function () {
 	ob_start();
 	?>
 <style>
-.thh-kf-btn{position:fixed;left:14px;bottom:142px;z-index:99998;background:#14204a;color:#fff;border:0;border-radius:999px;padding:10px 16px;font-weight:700;font-family:inherit;font-size:13px;cursor:pointer;box-shadow:0 4px 14px rgba(20,32,74,.3);letter-spacing:.04em}
+.thh-kf-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin:0 4px;flex:0 0 auto;background:#14204a;color:#fff;border:0;border-radius:10px;font-size:17px;line-height:1;cursor:pointer;vertical-align:middle}.thh-kf-btn.is-los{position:fixed;left:14px;bottom:142px;z-index:99998;width:auto;height:auto;border-radius:999px;padding:10px 16px;font-weight:700;font-family:inherit;font-size:13px;box-shadow:0 4px 14px rgba(20,32,74,.3);letter-spacing:.04em}
 .thh-kf-ov{position:fixed;inset:0;z-index:99999;background:rgba(20,32,74,.55);display:flex;align-items:center;justify-content:center;padding:16px}
 .thh-kf-box{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:18px;font-family:Poppins,Inter,Arial,sans-serif;color:#1b1f2e}
 .thh-kf-box h3{margin:0 0 6px;color:#14204a;font-size:18px}
@@ -97,9 +97,13 @@ function init(){
   if(q('.thh-kf-btn'))return true;
   var sid=storeId();if(!sid)return false;
   if(AAN.indexOf(sid)<0){return true}
-  var btn=document.createElement('button');btn.type='button';btn.className='thh-kf-btn';btn.textContent='📷 FOTO AFREKENEN';
+  var btn=document.createElement('button');btn.type='button';btn.className='thh-kf-btn';btn.title='Foto afrekenen';btn.setAttribute('aria-label','Foto afrekenen');
   var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;inp.setAttribute('capture','environment');inp.style.display='none';
-  document.body.appendChild(btn);document.body.appendChild(inp);
+  /* klein icoontje naast het zoekveld (bij het scan-icoon); lukt dat niet, dan een losse knop linksonder */
+  var zoek=[].slice.call(document.querySelectorAll('input')).filter(function(i){return /zoek|search/i.test(i.placeholder||'')&&i.offsetWidth>120})[0];
+  if(zoek){btn.textContent='📷';zoek.insertAdjacentElement('afterend',btn)}
+  else{btn.textContent='📷 FOTO AFREKENEN';btn.className+=' is-los';document.body.appendChild(btn)}
+  document.body.appendChild(inp);
   btn.addEventListener('click',function(){inp.value='';inp.click()});
   inp.addEventListener('change',function(){if(inp.files&&inp.files.length)verwerk([].slice.call(inp.files),sid)});
   return true;
