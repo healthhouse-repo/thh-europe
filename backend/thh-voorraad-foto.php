@@ -62,7 +62,7 @@ function thh_vf_herken($jpeg_b64, $store_naam) {
 		. "en zekerheid 'hoog', 'middel' of 'laag' (laag als smaak/maat niet leesbaar is of het aantal onzeker is). "
 		. "Antwoord uitsluitend met JSON: {\"regels\":[{\"merk\":\"\",\"product\":\"\",\"variant\":\"\",\"aantal\":0,\"zekerheid\":\"hoog\"}]}. Geen tekst eromheen.";
 	$body = [
-		'model' => $o['model'], 'max_tokens' => 2000,
+		'model' => $o['model'], 'max_tokens' => 4000,
 		'messages' => [['role' => 'user', 'content' => [
 			['type' => 'image', 'source' => ['type' => 'base64', 'media_type' => 'image/jpeg', 'data' => $jpeg_b64]],
 			['type' => 'text', 'text' => $prompt],
@@ -75,9 +75,11 @@ function thh_vf_herken($jpeg_b64, $store_naam) {
 	if ($code !== 200) return new WP_Error('api', 'AI-fout (' . $code . '): ' . ($j['error']['message'] ?? 'onbekend'));
 	$txt = '';
 	foreach ((array) ($j['content'] ?? []) as $c) if (($c['type'] ?? '') === 'text') $txt .= $c['text'];
+	update_option('thh_vrr_foto_last', ['tijd' => current_time('mysql'), 'stop' => $j['stop_reason'] ?? '', 'tekst' => mb_substr($txt, 0, 4000)], false);
+	$txt = preg_replace('/^```(?:json)?\s*|\s*```$/m', '', trim($txt));
 	if (preg_match('/\{.*\}/s', $txt, $m)) $txt = $m[0];
 	$d = json_decode($txt, true);
-	if (!is_array($d) || !isset($d['regels'])) return new WP_Error('parse', 'AI gaf geen leesbare lijst terug.');
+	if (!is_array($d) || !isset($d['regels'])) return new WP_Error('parse', 'AI gaf geen leesbare lijst terug (' . ($j['stop_reason'] ?? '') . '): ' . mb_substr(wp_strip_all_tags($txt), 0, 200));
 	$out = [];
 	foreach ((array) $d['regels'] as $x) {
 		$out[] = ['merk' => sanitize_text_field($x['merk'] ?? ''), 'product' => sanitize_text_field($x['product'] ?? ''), 'variant' => sanitize_text_field($x['variant'] ?? ''), 'aantal' => max(0, (int) ($x['aantal'] ?? 0)), 'zekerheid' => in_array($x['zekerheid'] ?? '', ['hoog', 'middel', 'laag'], true) ? $x['zekerheid'] : 'laag'];
