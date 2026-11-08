@@ -51,7 +51,7 @@ add_filter('dgwt/wcas/search_results/output', function ($out) {
 
 	// eigen producten die bij de zoekterm passen
 	$q = new WP_Query([
-		'post_type' => 'product', 'post_status' => 'publish', 'posts_per_page' => 3, 'fields' => 'ids', 'no_found_rows' => true,
+		'post_type' => 'product', 'post_status' => 'publish', 'posts_per_page' => 10, 'fields' => 'ids', 'no_found_rows' => true,
 		's' => $s, 'search_columns' => ['post_title'], 'meta_key' => 'total_sales', 'orderby' => 'meta_value_num', 'order' => 'DESC',
 		'tax_query' => [
 			'relation' => 'AND',
@@ -66,6 +66,7 @@ add_filter('dgwt/wcas/search_results/output', function ($out) {
 		foreach ($woorden as $w) if (mb_strpos($naam, $w) === false) return false;
 		return true;
 	}));
+	$eigen = array_slice($eigen, 0, 3);
 	foreach ($aanwezig as $pid) if ($pid && !in_array($pid, $eigen, true) && thh_ez_is_eigen($pid)) $eigen[] = $pid;
 	if (!$eigen) return $out;
 
