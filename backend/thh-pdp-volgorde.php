@@ -78,6 +78,21 @@ body.single-product .thh-clb-logo{border-color:#1b1f2e!important;color:#1b1f2e!i
 .thh-zk-afhalen a{color:#1b1f2e!important;text-decoration:none}
 .thh-zk-afhalen{cursor:pointer}
 
+/* ---------- lichtere, rustige tekst (zoals Zalando) ---------- */
+body.single-product .elementor-element-115e858,body.single-product .elementor-element-115e858 p,
+body.single-product .elementor-element-500d427 .elementor-tab-content,body.single-product .elementor-element-500d427 .elementor-tab-content p,
+body.single-product .elementor-element-500d427 .elementor-tab-content li,body.single-product .elementor-element-500d427 .elementor-tab-content td{font-size:15px!important;font-weight:300!important;line-height:1.75!important;color:#2b2f3a!important;letter-spacing:0!important}
+body.single-product .elementor-element-500d427 .elementor-tab-content strong,body.single-product .elementor-element-500d427 .elementor-tab-content b{font-weight:500!important;color:#1b1f2e!important}
+body.single-product .elementor-element-500d427 .elementor-tab-content h2,body.single-product .elementor-element-500d427 .elementor-tab-content h3,body.single-product .elementor-element-500d427 .elementor-tab-content h4{font-size:16px!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important;line-height:1.4!important;color:#1b1f2e!important;margin:22px 0 6px!important}
+body.single-product .elementor-element-500d427 .elementor-tab-content ul{padding-left:18px!important;margin:6px 0 12px!important}
+body.single-product .elementor-element-500d427 .elementor-tab-content li{margin:2px 0!important}
+body.single-product .elementor-element-500d427 .elementor-tab-content p{margin:0 0 12px!important}
+body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:17px!important;font-weight:600!important;text-transform:none!important}
+body.single-product .thh-b21-uitleg,body.single-product .thh-b21-uitleg *{font-weight:400!important}
+body.single-product .thh-clb-box p{font-weight:300!important;color:#2b2f3a!important}
+body.single-product .thh-clb-box strong{font-weight:600!important}
+.thh-zk-rij{font-weight:300}.thh-zk-rij b{font-weight:600!important}
+
 /* ---------- onderin ---------- */
 body.single-product .elementor-element-115e858{margin-top:10px}
 body.single-product .elementor-element-115e858 p{font-size:15px;line-height:1.6;color:#1b1f2e}
