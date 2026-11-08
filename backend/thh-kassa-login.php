@@ -28,47 +28,7 @@ function thh_kl_doel($ruw) {
 	return $doel;
 }
 
-// Niet ingelogd op /pos → naar de kassa-login
-add_action('init', function () {
-	if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) return;
-	$pad = thh_kl_pad();
-	if (!preg_match('#^/pos(/|$)#', $pad)) return;
-	if (is_user_logged_in()) return;
-	nocache_headers();
-	wp_safe_redirect(add_query_arg('redirect_to', rawurlencode($pad), home_url('/kassa-login/')));
-	exit;
-}, 1);
-
-// De inlogpagina zelf
-add_action('init', function () {
-	if (thh_kl_pad() !== '/kassa-login') return;
-	if (!defined('DONOTCACHEPAGE')) define('DONOTCACHEPAGE', true);
-	nocache_headers();
-
-	$doel = thh_kl_doel(isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : '');
-	if (is_user_logged_in()) { wp_safe_redirect($doel); exit; }
-
-	$fout = '';
-	$naam = '';
-	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$naam = isset($_POST['log']) ? sanitize_text_field(wp_unslash($_POST['log'])) : '';
-		if (!isset($_POST['thh_kl_nonce']) || !wp_verify_nonce($_POST['thh_kl_nonce'], 'thh_kassa_login')) {
-			$fout = 'De pagina was verlopen. Probeer het opnieuw.';
-		} else {
-			$user = wp_signon(array(
-				'user_login'    => $naam,
-				'user_password' => isset($_POST['pwd']) ? (string) wp_unslash($_POST['pwd']) : '',
-				'remember'      => !empty($_POST['rememberme']),
-			), is_ssl());
-			if (is_wp_error($user)) {
-				$fout = 'Gebruikersnaam of wachtwoord klopt niet.';
-			} else {
-				wp_safe_redirect($doel);
-				exit;
-			}
-		}
-	}
-
+function thh_kl_toon($fout, $naam, $doel) {
 	status_header(200);
 	header('Content-Type: text/html; charset=utf-8');
 	header('X-Robots-Tag: noindex, nofollow');
@@ -113,5 +73,54 @@ button:hover{background:#0d1533}
 </body>
 </html>
 	<?php
+}
+
+// Niet ingelogd op /pos → naar de kassa-login
+add_action('init', function () {
+	if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) return;
+	$pad = thh_kl_pad();
+	if (!preg_match('#^/pos(/|$)#', $pad)) return;
+	if (is_user_logged_in()) return;
+	nocache_headers();
+	wp_safe_redirect(add_query_arg('redirect_to', rawurlencode($pad), home_url('/kassa-login/')));
+	exit;
+}, 1);
+
+// De inlogpagina zelf
+add_action('init', function () {
+	if (thh_kl_pad() !== '/kassa-login') return;
+	if (!defined('DONOTCACHEPAGE')) define('DONOTCACHEPAGE', true);
+	nocache_headers();
+
+	$doel = thh_kl_doel(isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : '');
+	if (is_user_logged_in()) { wp_safe_redirect($doel); exit; }
+
+	$fout = '';
+	$naam = '';
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		$naam = isset($_POST['log']) ? sanitize_text_field(wp_unslash($_POST['log'])) : '';
+		if (!isset($_POST['thh_kl_nonce']) || !wp_verify_nonce($_POST['thh_kl_nonce'], 'thh_kassa_login')) {
+			$fout = 'De pagina was verlopen. Probeer het opnieuw.';
+		} else {
+			// Een andere plugin stuurt mislukte logins door naar /login/; hier blijft de medewerker op de kassa-login
+			add_action('wp_login_failed', function () use ($naam, $doel) {
+				thh_kl_toon('Gebruikersnaam of wachtwoord klopt niet.', $naam, $doel);
+				exit;
+			}, -1000);
+			$user = wp_signon(array(
+				'user_login'    => $naam,
+				'user_password' => isset($_POST['pwd']) ? (string) wp_unslash($_POST['pwd']) : '',
+				'remember'      => !empty($_POST['rememberme']),
+			), is_ssl());
+			if (is_wp_error($user)) {
+				$fout = 'Gebruikersnaam of wachtwoord klopt niet.';
+			} else {
+				wp_safe_redirect($doel);
+				exit;
+			}
+		}
+	}
+
+	thh_kl_toon($fout, $naam, $doel);
 	exit;
 }, 2);
