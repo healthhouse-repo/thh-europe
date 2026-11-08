@@ -1,42 +1,95 @@
 <?php
 /**
- * THH — Productpagina: volgorde zoals Zalando
+ * THH — Productpagina: volgorde en look & feel zoals Zalando
  *
- * Volgorde rechterkolom: merk → titel → prijs (incl. btw) → maat/smaak + in winkelwagen (+ club-blok) →
- * levering → afhalen in de winkel → keuzehulp → korte omschrijving → beschrijving (accordeon) → categorieën.
- * Alleen CSS op de bestaande Elementor-widgets (single product template), dus niets aan de inhoud veranderd.
- * Widget-ID's uit de template: b8900ef merk, 4b8cb73 titel, edb6a19 prijs, 6a35e17 winkelwagen, 7d8a0da levering,
- * 59159bc afhalen, 115e858 korte omschrijving, 500d427 accordeon, d5043d7 categorieën + merk.
+ * Rechterkolom: merk → titel → prijs (incl. btw) → actie-uitleg → maat/smaak → [aantal] In winkelwagen →
+ * keuzehulp → club-blok → infokaart (verkocht en verzonden door THH, gratis verzending, afhalen) →
+ * korte omschrijving → beschrijving (accordeon).
+ * Weg: categorie-tags en "Merk:"-regel (d5043d7) en de USP-balk (7d8a0da).
+ * Widget-ID's uit de single-product-template: b8900ef merk, 4b8cb73 titel, edb6a19 prijs, 6a35e17 winkelwagen,
+ * 7d8a0da USP's, 59159bc afhalen, 115e858 korte omschrijving, 500d427 accordeon, d5043d7 tags + merk.
  */
 if (!defined('ABSPATH')) return;
+
+// infokaart onder het club-blok
+add_action('woocommerce_after_add_to_cart_form', function () {
+	if (!function_exists('is_product') || !is_product()) return; ?>
+<div class="thh-zk-info">
+	<div class="thh-zk-rij">Verkocht en verzonden door <b>The Health House</b>.</div>
+	<div class="thh-zk-rij thh-zk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg><b>Gratis verzending vanaf € 60</b></div>
+	<div class="thh-zk-rij thh-zk-ico thh-zk-afhalen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9M3 9h18v11H3zM9 20v-6h6v6"/></svg><b>Ook op te halen in de winkel</b></div>
+</div>
+<?php }, 40);
 
 add_action('wp_head', function () {
 	if (!function_exists('is_product') || !is_product()) return; ?>
 <style>
+/* ---------- volgorde ---------- */
 body.single-product .elementor-widget-wrap:has(>.elementor-element-4b8cb73)>*{order:11}
 body.single-product .elementor-element-b8900ef{order:1!important}
 body.single-product .elementor-element-4b8cb73{order:2!important}
 body.single-product .elementor-element-edb6a19{order:3!important}
-body.single-product .thh-b21-uitleg{order:3!important;margin:4px 0 8px}
+body.single-product .thh-b21-uitleg{order:3!important}
 body.single-product .elementor-element-6a35e17{order:4!important}
-body.single-product .elementor-element-7d8a0da{order:5!important}
-body.single-product .elementor-element-59159bc{order:6!important}
-body.single-product .thh-kh-balk{order:7!important}
 body.single-product .elementor-element-115e858{order:8!important}
 body.single-product .elementor-element-500d427{order:9!important}
-body.single-product .elementor-element-d5043d7{order:10!important}
-/* merk als link boven de titel, titel iets rustiger */
-body.single-product .elementor-element-b8900ef a,body.single-product .elementor-element-b8900ef{font-size:16px!important;font-weight:700!important;color:#14204a!important;text-decoration:underline;text-underline-offset:3px}
-body.single-product .elementor-element-4b8cb73 .product_title{font-size:clamp(24px,2.4vw,32px)!important;line-height:1.2!important;margin:2px 0 0!important}
-/* prijs met 'inclusief btw' eronder */
-body.single-product .elementor-element-edb6a19{margin-top:4px}
-body.single-product .elementor-element-edb6a19 .price:after{content:"inclusief btw";display:block;font-size:13px;font-weight:400;color:#5a6072;margin-top:2px;letter-spacing:0}
-/* onderin: korte omschrijving en categorieën klein */
-body.single-product .elementor-element-115e858{margin-top:8px}
+body.single-product .elementor-element-d5043d7,body.single-product .elementor-element-7d8a0da,body.single-product .elementor-element-59159bc{display:none!important}
+
+/* ---------- typografie ---------- */
+body.single-product .elementor-element-b8900ef,body.single-product .elementor-element-b8900ef a{font-size:16px!important;font-weight:700!important;color:#1b1f2e!important;text-decoration:underline;text-underline-offset:3px}
+body.single-product .elementor-element-4b8cb73 .product_title{font-size:clamp(22px,2.2vw,28px)!important;line-height:1.25!important;margin:2px 0 0!important;font-weight:700!important;text-transform:none!important}
+body.single-product .elementor-element-edb6a19{margin-top:6px}
+body.single-product .elementor-element-edb6a19 .price{font-size:22px!important;font-weight:700!important;color:#1b1f2e!important}
+body.single-product .elementor-element-edb6a19 .price del{font-size:16px!important;font-weight:400!important;color:#6b7280!important}
+body.single-product .elementor-element-edb6a19 .price ins{color:#e2373f!important;text-decoration:none}
+body.single-product .elementor-element-edb6a19 .price:after{content:"inclusief btw";display:block;font-size:13px;font-weight:400;color:#6b7280;margin-top:2px}
+body.single-product .thh-b21-uitleg{margin:6px 0 10px;font-size:14.5px!important;line-height:1.5!important;font-weight:500!important;background:#fdecee;color:#9b1c22!important;border-radius:12px;padding:12px 14px}
+body.single-product .thh-b21-uitleg *{color:#9b1c22!important;font-size:14.5px!important}
+
+/* ---------- maat/smaak en aantal ---------- */
+body.single-product .elementor-element-6a35e17 .variations th,body.single-product .elementor-element-6a35e17 .variations .label,body.single-product .elementor-element-6a35e17 .variations label{font-size:14px!important;font-weight:500!important;color:#1b1f2e!important;text-transform:none!important}
+body.single-product .elementor-element-6a35e17 .variable-items-wrapper .variable-item:not(.radio-variable-item){border-radius:10px!important;box-shadow:0 0 0 1.5px #c9ccd6!important;min-height:48px;min-width:72px}
+body.single-product .elementor-element-6a35e17 .variable-items-wrapper .variable-item.selected:not(.radio-variable-item){box-shadow:0 0 0 2px #1b1f2e!important;background:#1b1f2e!important}
+body.single-product .elementor-element-6a35e17 .variations select{border:1.5px solid #1b1f2e!important;border-radius:10px!important;min-height:52px;font-size:16px!important;padding:0 14px!important;background-color:#fff}
+body.single-product .elementor-element-6a35e17 .reset_variations{font-size:13px;color:#6b7280!important}
+body.single-product .thh-bundel-optie{border-radius:12px!important}
+body.single-product .thh-bundel-optie.is-actief{border-color:#1b1f2e!important;box-shadow:0 0 0 1px #1b1f2e!important}
+
+/* ---------- knop In winkelwagen: breed, rond, donker ---------- */
+body.single-product .elementor-element-6a35e17 form.cart:not(.variations_form),body.single-product .elementor-element-6a35e17 .woocommerce-variation-add-to-cart{display:flex!important;flex-wrap:wrap;gap:10px;align-items:stretch;width:100%}
+body.single-product .elementor-element-6a35e17 form.cart>*:not(.quantity):not(.single_add_to_cart_button),body.single-product .elementor-element-6a35e17 .woocommerce-variation-add-to-cart>*:not(.quantity):not(.single_add_to_cart_button){flex:0 0 100%}
+body.single-product .elementor-element-6a35e17 .quantity{margin:0!important;flex:0 0 auto}
+body.single-product .elementor-element-6a35e17 .quantity .qty{height:56px!important;width:64px!important;border:1.5px solid #c9ccd6!important;border-radius:999px!important;font-size:16px!important;text-align:center}
+body.single-product .elementor-element-6a35e17 .single_add_to_cart_button{flex:1 1 auto!important;width:auto!important;min-height:56px!important;border-radius:999px!important;background:#14204a!important;color:#fff!important;font-size:17px!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;margin:0!important;border:0!important}
+body.single-product .elementor-element-6a35e17 .single_add_to_cart_button:hover{background:#0b1433!important}
+body.single-product .elementor-element-6a35e17 .single_add_to_cart_button.disabled{opacity:.45}
+
+/* ---------- keuzehulp, club en infokaart ---------- */
+body.single-product .thh-kh-balk{margin:16px 0 0!important;border-radius:16px!important;width:100%!important;max-width:none!important}
+body.single-product .thh-clb{margin:16px 0 0}
+body.single-product .thh-clb-box{border:2px solid #1b1f2e!important;border-radius:14px!important;padding:24px!important}
+body.single-product .thh-clb-logo{border-color:#1b1f2e!important;color:#1b1f2e!important}
+.thh-zk-info{margin:28px 0 8px;border:1.5px solid #1b1f2e;border-radius:14px;overflow:hidden;background:#fff}
+.thh-zk-rij{padding:18px 22px;font-size:15px;line-height:1.45;color:#1b1f2e;border-top:1.5px solid #1b1f2e}
+.thh-zk-rij:first-child{border-top:0}
+.thh-zk-rij b{font-weight:700}
+.thh-zk-ico{display:flex;align-items:center;gap:14px}
+.thh-zk-ico svg{width:26px;height:26px;flex:none}
+.thh-zk-afhalen a{color:#1b1f2e!important;text-decoration:none}
+.thh-zk-afhalen{cursor:pointer}
+
+/* ---------- onderin ---------- */
+body.single-product .elementor-element-115e858{margin-top:10px}
 body.single-product .elementor-element-115e858 p{font-size:15px;line-height:1.6;color:#1b1f2e}
-body.single-product .elementor-element-d5043d7{margin-top:10px;opacity:.85}
-body.single-product .elementor-element-d5043d7 a{font-size:12px!important;padding:4px 10px!important}
-/* afhalen in de winkel als regel bij de levering */
-body.single-product .elementor-element-59159bc{margin:-4px 0 6px}
+body.single-product .elementor-element-500d427 .elementor-tab-title{border-top:1.5px solid #1b1f2e!important;padding:18px 0!important}
 </style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+	var club=document.querySelector('.elementor-element-6a35e17 .thh-clb'),kh=document.querySelector('.thh-kh-balk');
+	if(kh){var doel=club||document.querySelector('.elementor-element-6a35e17 .thh-zk-info');if(doel)doel.parentNode.insertBefore(kh,doel);}
+	// afhalen: gebruik de bestaande popup-link
+	var a=document.querySelector('.elementor-element-59159bc a'),r=document.querySelector('.thh-zk-afhalen');
+	if(a&&r){r.addEventListener('click',function(){a.click();});}
+});
+</script>
 <?php }, 99);
