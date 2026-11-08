@@ -15,7 +15,6 @@ if (!defined('ABSPATH')) return;
 add_action('woocommerce_after_add_to_cart_form', function () {
 	if (!function_exists('is_product') || !is_product()) return; ?>
 <div class="thh-zk-info">
-	<div class="thh-zk-rij">Verkocht en verzonden door <b>The Health House</b>.</div>
 	<div class="thh-zk-rij thh-zk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg><b>Gratis verzending vanaf € 60</b></div>
 	<div class="thh-zk-rij thh-zk-ico thh-zk-afhalen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9M3 9h18v11H3zM9 20v-6h6v6"/></svg><b>Ook op te halen in de winkel</b></div>
 </div>
@@ -146,10 +145,9 @@ body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>.thh-zk-in
 body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>.thh-kh-balk{order:3}
 body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>.thh-clb{order:4}
 body.single-product .thh-zk-rij{padding-top:10px!important;padding-bottom:10px!important;font-size:13px!important}
-body.single-product .elementor-element-edb6a19 .elementor-container{flex-wrap:wrap!important}
-body.single-product .elementor-element-edb6a19 .elementor-column{width:100%!important}
-body.single-product .elementor-element-edb6a19 .elementor-widget-wrap{justify-content:flex-start!important}
-body.single-product .elementor-element-2266bb5{width:max-content!important;max-width:100%}
+body.single-product .elementor-element-edb6a19 .elementor-container{flex-wrap:nowrap!important;align-items:flex-start!important;gap:12px}
+body.single-product .elementor-element-edb6a19 .elementor-column{width:auto!important;flex:0 0 auto}
+body.single-product .elementor-element-edb6a19 .elementor-column+.elementor-column{flex:0 1 auto;min-width:0;padding-top:4px}
 body.single-product .elementor-element-115e858 li{font-size:14px!important;line-height:1.5!important;margin:0!important}
 body.single-product .elementor-element-115e858 ul{margin:0 0 4px!important;padding-left:18px!important}
 }
