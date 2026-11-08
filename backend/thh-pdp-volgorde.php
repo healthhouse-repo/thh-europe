@@ -125,6 +125,10 @@ body.single-product .thh-kh-balk a,body.single-product .thh-kh-balk button,body.
 body.single-product .onsale,body.single-product .elementor-widget-woocommerce-product-images .onsale{text-transform:none!important;letter-spacing:0!important}
 body.single-product .elementor-element-6a35e17 .variations label,body.single-product .elementor-element-6a35e17 .variations th{text-transform:none!important;letter-spacing:0!important}
 
+/* ---------- keuzehulp-knop: witte rand, rood bij hover, altijd witte tekst ---------- */
+body.single-product .thh-kh-balk .thh-kh-start{background:transparent!important;border:2px solid #fff!important;color:#fff!important;box-shadow:none!important;transition:background .2s,border-color .2s}
+body.single-product .thh-kh-balk .thh-kh-start:hover,body.single-product .thh-kh-balk .thh-kh-start:focus-visible{background:#e2373f!important;border-color:#e2373f!important;color:#fff!important}
+
 /* ---------- onderin ---------- */
 body.single-product .elementor-element-115e858{margin:10px 0 4px}
 body.single-product .elementor-element-115e858 p{font-size:15px;line-height:1.6;color:#1b1f2e}
