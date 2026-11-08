@@ -14,17 +14,17 @@ add_action('wp_head', function () {
 	if (!function_exists('is_product') || !is_product()) return; ?>
 <style>
 body.single-product .elementor-widget-wrap:has(>.elementor-element-4b8cb73)>*{order:11}
-body.single-product .elementor-element-b8900ef{order:1}
-body.single-product .elementor-element-4b8cb73{order:2}
-body.single-product .elementor-element-edb6a19{order:3}
-body.single-product .thh-b21-uitleg{order:3;margin:4px 0 8px}
-body.single-product .elementor-element-6a35e17{order:4}
-body.single-product .elementor-element-7d8a0da{order:5}
-body.single-product .elementor-element-59159bc{order:6}
-body.single-product .thh-kh-balk{order:7}
-body.single-product .elementor-element-115e858{order:8}
-body.single-product .elementor-element-500d427{order:9}
-body.single-product .elementor-element-d5043d7{order:10}
+body.single-product .elementor-element-b8900ef{order:1!important}
+body.single-product .elementor-element-4b8cb73{order:2!important}
+body.single-product .elementor-element-edb6a19{order:3!important}
+body.single-product .thh-b21-uitleg{order:3!important;margin:4px 0 8px}
+body.single-product .elementor-element-6a35e17{order:4!important}
+body.single-product .elementor-element-7d8a0da{order:5!important}
+body.single-product .elementor-element-59159bc{order:6!important}
+body.single-product .thh-kh-balk{order:7!important}
+body.single-product .elementor-element-115e858{order:8!important}
+body.single-product .elementor-element-500d427{order:9!important}
+body.single-product .elementor-element-d5043d7{order:10!important}
 /* merk als link boven de titel, titel iets rustiger */
 body.single-product .elementor-element-b8900ef a,body.single-product .elementor-element-b8900ef{font-size:16px!important;font-weight:700!important;color:#14204a!important;text-decoration:underline;text-underline-offset:3px}
 body.single-product .elementor-element-4b8cb73 .product_title{font-size:clamp(24px,2.4vw,32px)!important;line-height:1.2!important;margin:2px 0 0!important}
