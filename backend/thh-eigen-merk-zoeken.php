@@ -52,14 +52,20 @@ add_filter('dgwt/wcas/search_results/output', function ($out) {
 	// eigen producten die bij de zoekterm passen
 	$q = new WP_Query([
 		'post_type' => 'product', 'post_status' => 'publish', 'posts_per_page' => 3, 'fields' => 'ids', 'no_found_rows' => true,
-		's' => $s, 'meta_key' => 'total_sales', 'orderby' => 'meta_value_num', 'order' => 'DESC',
+		's' => $s, 'search_columns' => ['post_title'], 'meta_key' => 'total_sales', 'orderby' => 'meta_value_num', 'order' => 'DESC',
 		'tax_query' => [
 			'relation' => 'AND',
 			['relation' => 'OR', ['taxonomy' => 'product_brand', 'field' => 'term_id', 'terms' => [2176]], ['taxonomy' => 'brands', 'field' => 'term_id', 'terms' => [142]]],
 			['taxonomy' => 'product_visibility', 'field' => 'name', 'terms' => ['exclude-from-search'], 'operator' => 'NOT IN'],
 		],
 	]);
-	$eigen = $q->posts;
+	// alleen als alle zoekwoorden in de productnaam staan
+	$woorden = array_filter(preg_split('/[\s\-]+/u', mb_strtolower($s)), function ($w) { return mb_strlen($w) > 1; });
+	$eigen = array_values(array_filter($q->posts, function ($pid) use ($woorden) {
+		$naam = mb_strtolower(str_replace('-', ' ', get_the_title($pid)));
+		foreach ($woorden as $w) if (mb_strpos($naam, $w) === false) return false;
+		return true;
+	}));
 	foreach ($aanwezig as $pid) if ($pid && !in_array($pid, $eigen, true) && thh_ez_is_eigen($pid)) $eigen[] = $pid;
 	if (!$eigen) return $out;
 
