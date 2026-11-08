@@ -4,7 +4,7 @@
  *
  * Rechterkolom: merk → titel → prijs (incl. btw) → actie-uitleg → maat/smaak → [aantal] In winkelwagen →
  * keuzehulp → club-blok → infokaart (verkocht en verzonden door THH, gratis verzending, afhalen) →
- * korte omschrijving → beschrijving (accordeon).
+ * beschrijving (accordeon). Korte omschrijving staat direct onder de titel.
  * Weg: categorie-tags en "Merk:"-regel (d5043d7) en de USP-balk (7d8a0da).
  * Widget-ID's uit de single-product-template: b8900ef merk, 4b8cb73 titel, edb6a19 prijs, 6a35e17 winkelwagen,
  * 7d8a0da USP's, 59159bc afhalen, 115e858 korte omschrijving, 500d427 accordeon, d5043d7 tags + merk.
@@ -31,7 +31,7 @@ body.single-product .elementor-element-4b8cb73{order:2!important}
 body.single-product .elementor-element-edb6a19{order:3!important}
 body.single-product .thh-b21-uitleg{order:3!important}
 body.single-product .elementor-element-6a35e17{order:4!important}
-body.single-product .elementor-element-115e858{order:8!important}
+body.single-product .elementor-element-115e858{order:2!important}
 body.single-product .elementor-element-500d427{order:9!important}
 body.single-product .elementor-element-d5043d7,body.single-product .elementor-element-7d8a0da,body.single-product .elementor-element-59159bc{display:none!important}
 
@@ -126,7 +126,7 @@ body.single-product .onsale,body.single-product .elementor-widget-woocommerce-pr
 body.single-product .elementor-element-6a35e17 .variations label,body.single-product .elementor-element-6a35e17 .variations th{text-transform:none!important;letter-spacing:0!important}
 
 /* ---------- onderin ---------- */
-body.single-product .elementor-element-115e858{margin-top:10px}
+body.single-product .elementor-element-115e858{margin:10px 0 4px}
 body.single-product .elementor-element-115e858 p{font-size:15px;line-height:1.6;color:#1b1f2e}
 </style>
 <script>
