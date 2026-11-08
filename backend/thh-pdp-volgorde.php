@@ -109,7 +109,7 @@ body.single-product .thh-clb-box strong{font-weight:600!important}
 body.single-product .elementor-element-500d427 .elementor-accordion-item{border:0!important;border-top:1.5px solid #1b1f2e!important;margin:0!important}
 body.single-product .elementor-element-500d427 .elementor-accordion-item:last-child{border-bottom:1.5px solid #1b1f2e!important}
 body.single-product .elementor-element-500d427 .elementor-tab-title{position:relative;display:flex!important;align-items:center;justify-content:space-between;padding:26px 48px!important;border:1.5px solid transparent!important;border-radius:6px;margin:0!important;cursor:pointer;background:none!important}
-body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:18px!important;font-weight:400!important;text-transform:uppercase!important;letter-spacing:.01em!important;color:#1b1f2e!important;text-decoration:none!important}
+body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:18px!important;font-weight:500!important;text-transform:uppercase!important;letter-spacing:.01em!important;color:#1b1f2e!important;text-decoration:none!important}
 body.single-product .elementor-element-500d427 .elementor-tab-title:hover{background:#f1f3f6!important}
 body.single-product .elementor-element-500d427 .elementor-tab-title.elementor-active{background:#d9dde3!important;border-color:#1b1f2e!important}
 body.single-product .elementor-element-500d427 .elementor-accordion-icon{display:none!important}
