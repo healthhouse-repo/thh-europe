@@ -115,6 +115,13 @@ body.single-product .elementor-element-500d427 .elementor-tab-title.elementor-ac
 body.single-product .elementor-element-500d427 .elementor-tab-content{border:0!important;padding:24px 48px 32px!important}
 @media(max-width:767px){body.single-product .elementor-element-500d427 .elementor-tab-title{padding:20px 18px!important}body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:16px!important}body.single-product .elementor-element-500d427 .elementor-tab-content{padding:18px 18px 24px!important}}
 
+/* ---------- hoofdletters zoals Zalando: alleen de accordeon-koppen in kapitalen, de rest gewone zinnen ---------- */
+body.single-product .elementor-element-6a35e17 .thh-bundel-kop,body.single-product .elementor-element-6a35e17 .thh-bundel-kop *{text-transform:none!important;letter-spacing:0!important;font-size:15px!important;font-weight:600!important;color:#1b1f2e!important}
+body.single-product .thh-bundel-optie [class*=badge],body.single-product .thh-bundel-optie [class*=label],body.single-product .thh-bundel-optie em,body.single-product .thh-bundel-optie small:not(.thh-bundel-stuk){text-transform:none!important;letter-spacing:0!important}
+body.single-product .thh-kh-balk a,body.single-product .thh-kh-balk button,body.single-product .thh-kh-balk .elementor-button{text-transform:none!important;letter-spacing:0!important;font-size:15px!important}
+body.single-product .onsale,body.single-product .elementor-widget-woocommerce-product-images .onsale{text-transform:none!important;letter-spacing:0!important}
+body.single-product .elementor-element-6a35e17 .variations label,body.single-product .elementor-element-6a35e17 .variations th{text-transform:none!important;letter-spacing:0!important}
+
 /* ---------- onderin ---------- */
 body.single-product .elementor-element-115e858{margin-top:10px}
 body.single-product .elementor-element-115e858 p{font-size:15px;line-height:1.6;color:#1b1f2e}
