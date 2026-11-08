@@ -130,7 +130,10 @@ body.single-product .thh-kh-balk .thh-kh-start{background:transparent!important;
 body.single-product .thh-kh-balk .thh-kh-start:hover,body.single-product .thh-kh-balk .thh-kh-start:focus-visible{background:#e2373f!important;border-color:#e2373f!important;color:#fff!important}
 
 /* ---------- onderin ---------- */
-body.single-product .elementor-element-115e858{margin:10px 0 4px}
+body.single-product .elementor-element-4b8cb73{margin-bottom:8px!important}
+body.single-product .elementor-element-115e858{margin:0 0 10px!important}
+body.single-product .elementor-element-115e858 p:last-child{margin-bottom:0!important}
+body.single-product .elementor-element-edb6a19{margin-top:0!important}
 body.single-product .elementor-element-115e858 p{font-size:15px;line-height:1.6;color:#1b1f2e}
 </style>
 <script>
