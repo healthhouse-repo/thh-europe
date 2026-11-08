@@ -138,7 +138,7 @@ ul.products li.thh-em .thh-em-maten a{display:flex;flex-direction:row;align-item
 ul.products li.thh-em .thh-em-maten a:hover{background:rgba(255,255,255,.2);border-color:#fff}
 .thh-em-maten b{font-size:15px;font-weight:700;color:#fff}.thh-em-maten span,.thh-em-maten .amount{font-size:14px;font-weight:600;color:#fff!important}.thh-em-maten s,.thh-em-maten s .amount{font-size:12px;font-weight:400;color:rgba(255,255,255,.55)!important}
 .thh-em-img{background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden}
-.thh-em-img img{width:100%;height:100%;max-height:none;object-fit:contain;margin:0!important;transform:scale(1.3)}
+.thh-em-img img{width:100%;height:100%;max-height:none;object-fit:contain;margin:0!important;transform:scale(1.45)}
 @media(max-width:767px){ul.products li.product.thh-em{grid-column:1/-1}.thh-em-in{grid-template-columns:minmax(0,1fr) 40%;padding:18px;gap:12px}ul.products li.thh-em a.thh-em-titel{font-size:17px}.thh-em-prijs,.thh-em-prijs .amount,.thh-em-prijs ins{font-size:21px}.thh-em-txt p{display:none}ul.products li.thh-em a.thh-em-btn{min-height:40px;padding:0 16px;font-size:12px}
 .thh-em-in{grid-template-columns:minmax(0,1fr) 34%;padding:16px;align-items:center}.thh-em-img{aspect-ratio:1;padding:8px;border-radius:12px}.thh-em-img img{max-height:none}.thh-em-txt{gap:10px}.thh-em-pill{font-size:10px;padding:5px 10px}
 .thh-em-maten{gap:5px}ul.products li.thh-em .thh-em-maten a{padding:7px 10px;border-radius:9px}.thh-em-maten b{font-size:13px;white-space:nowrap}.thh-em-maten span,.thh-em-maten .amount{font-size:12.5px;white-space:nowrap}.thh-em-maten s,.thh-em-maten s .amount{font-size:11px}}
