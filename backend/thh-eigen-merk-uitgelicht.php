@@ -91,8 +91,8 @@ add_filter('woocommerce_product_loop_start', function ($html) {
 add_action('wp_head', function () {
 	if (!thh_em_huidig()) return; ?>
 <style>
-ul.products li.product.thh-em{grid-column:span 2;background:#14204a;border-radius:20px;padding:0!important;overflow:hidden;position:relative;border:0!important;box-shadow:none}
-.thh-em-in{display:grid;grid-template-columns:minmax(0,1fr) 42%;gap:16px;height:100%;padding:28px}
+ul.products li.product.thh-em,.elementor ul.products li.product.thh-em,.woocommerce ul.products li.product.thh-em{grid-column:span 2;background:#14204a!important;border-radius:20px;padding:0!important;overflow:hidden;position:relative;border:0!important;box-shadow:none}
+.thh-em-in{background:#14204a;border-radius:20px;display:grid;grid-template-columns:minmax(0,1fr) 42%;gap:16px;height:100%;padding:28px}
 .thh-em-txt{display:flex;flex-direction:column;gap:12px;justify-content:center;color:#fff;min-width:0}
 .thh-em-pill{display:inline-block;background:#e2373f;color:#fff;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px;border-radius:999px;width:max-content}
 ul.products li.thh-em a.thh-em-titel{color:#fff!important;font-size:22px;font-weight:700;line-height:1.2;text-decoration:none}
