@@ -55,6 +55,16 @@ body.single-product .elementor-element-6a35e17 .reset_variations{font-size:13px;
 body.single-product .thh-bundel-optie{border-radius:12px!important}
 body.single-product .thh-bundel-optie.is-actief{border-color:#1b1f2e!important;box-shadow:0 0 0 1px #1b1f2e!important}
 
+/* ---------- smaak/maat als dropdown over de volle breedte ---------- */
+body.single-product .elementor-element-6a35e17 table.variations,body.single-product .elementor-element-6a35e17 table.variations tbody,body.single-product .elementor-element-6a35e17 table.variations tr,body.single-product .elementor-element-6a35e17 table.variations th,body.single-product .elementor-element-6a35e17 table.variations td{display:block!important;width:100%!important;padding:0!important;border:0!important;background:none!important}
+body.single-product .elementor-element-6a35e17 table.variations tr{margin:0 0 14px!important}
+body.single-product .elementor-element-6a35e17 table.variations th.label{margin:0 0 6px!important}
+body.single-product .elementor-element-6a35e17 .variations .variable-items-wrapper,body.single-product .elementor-element-6a35e17 .reset_variations{display:none!important}
+body.single-product .elementor-element-6a35e17 .variations select,body.single-product .elementor-element-6a35e17 .variations select.woo-variation-raw-select{display:block!important;visibility:visible!important;position:static!important;opacity:1!important;width:100%!important;max-width:none!important;height:56px!important;border:1.5px solid #1b1f2e!important;border-radius:12px!important;padding:0 44px 0 16px!important;font-size:16px!important;font-weight:400!important;color:#1b1f2e!important;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b1f2e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center/22px!important;-webkit-appearance:none!important;appearance:none!important;cursor:pointer;box-shadow:none!important}
+body.single-product .elementor-element-6a35e17 .variations select:focus{outline:2px solid #14204a;outline-offset:2px}
+body.single-product .elementor-element-6a35e17 .thh-bundel{width:100%!important;max-width:none!important}
+body.single-product .elementor-element-6a35e17 .thh-bundel-optie{width:100%!important;max-width:none!important}
+
 /* ---------- knop In winkelwagen: breed, rond, donker ---------- */
 body.single-product .elementor-element-6a35e17 form.cart:not(.variations_form),body.single-product .elementor-element-6a35e17 .woocommerce-variation-add-to-cart{display:flex!important;flex-wrap:wrap;gap:10px;align-items:stretch;width:100%}
 body.single-product .elementor-element-6a35e17 form.cart>*:not(.quantity):not(.single_add_to_cart_button),body.single-product .elementor-element-6a35e17 .woocommerce-variation-add-to-cart>*:not(.quantity):not(.single_add_to_cart_button){flex:0 0 100%}
@@ -105,6 +115,14 @@ document.addEventListener('DOMContentLoaded',function(){
 		if(kh&&doel&&kh.nextElementSibling!==doel){doel.parentNode.insertBefore(kh,doel);}
 		if((kh&&doel)||n>40)clearInterval(t);
 	},150);
+	// dropdowns: 'Kies je smaak' i.p.v. 'Kies een optie'; stap-nummer voor 'Kies je voordeel'
+	var stappen=0;
+	[].forEach.call(document.querySelectorAll('.elementor-element-6a35e17 table.variations tr'),function(tr){
+		stappen++;var lab=tr.querySelector('th.label label'),sel=tr.querySelector('select');if(!lab||!sel||!sel.options.length)return;
+		var naam=(lab.textContent||'').replace(/^\s*\d+\s*/,'').trim().toLowerCase();if(naam)sel.options[0].text='Kies je '+naam;
+	});
+	var kop=document.querySelector('.elementor-element-6a35e17 .thh-bundel-kop');
+	if(kop&&stappen&&!kop.querySelector('.thh-stap')){var b=document.createElement('span');b.className='thh-stap';b.textContent=stappen+1;kop.insertBefore(b,kop.firstChild);}
 	// afhalen: gebruik de bestaande popup-link
 	var a=document.querySelector('.elementor-element-59159bc a'),r=document.querySelector('.thh-zk-afhalen');
 	if(a&&r){r.addEventListener('click',function(){a.click();});}
