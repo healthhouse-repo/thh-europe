@@ -135,10 +135,10 @@ add_action('wp_footer', function () {
 .thh-mv{max-width:1240px;margin:24px auto 8px;padding:0 20px;font-family:inherit}
 .thh-mv-rij{margin:0 0 40px}
 .thh-mv-kop{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px}
-.thh-mv-kop h2{margin:0;font-size:22px!important;font-weight:500!important;color:#1b1f2e!important;text-transform:uppercase!important;letter-spacing:.01em!important}
+.thh-mv-kop h2{margin:0;font-size:22px!important;font-weight:600!important;color:#1b1f2e!important;text-transform:uppercase!important;letter-spacing:.01em!important}
 .thh-mv-kop a{font-size:15px;font-weight:600;color:#1b1f2e!important;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .thh-mv-wrap{position:relative}
-.thh-mv-lijst{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 3*16px)/4);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
+.thh-mv-lijst{display:grid;grid-auto-flow:column;grid-auto-columns:232px;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
 .thh-mv-lijst::-webkit-scrollbar{display:none}
 .thh-mv{--nv:#14204a;--rd:#e2373f}
 .thh-mv .h2-card{position:relative;display:flex;flex-direction:column;gap:10px;background:none;border:0;padding:0;scroll-snap-align:start;min-width:0}
@@ -163,8 +163,7 @@ add_action('wp_footer', function () {
 .thh-mv-pijl{position:absolute;top:calc(50% - 60px);z-index:2;width:44px;height:44px;border-radius:50%;border:1.5px solid #1b1f2e!important;background:#fff!important;color:#1b1f2e!important;font-size:26px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0!important;box-shadow:0 2px 10px rgba(0,0,0,.08)}
 .thh-mv-l{left:-14px}.thh-mv-r{right:-14px}
 .thh-mv-pijl[disabled]{opacity:0;pointer-events:none}
-@media(max-width:1024px){.thh-mv-lijst{grid-auto-columns:calc((100% - 2*16px)/3)}}
-@media(max-width:640px){.thh-mv{padding:0 14px}.thh-mv-lijst{grid-auto-columns:42%;gap:12px}.thh-mv-pijl{display:none}.thh-mv-kop h2{font-size:19px!important}}
+@media(max-width:640px){.thh-mv{padding:0 14px}.thh-mv-lijst{grid-auto-columns:calc((100% - 12px)/2);gap:12px}.thh-mv-pijl{display:none}.thh-mv-kop h2{font-size:19px!important}}
 </style>
 <script>
 (function(){
