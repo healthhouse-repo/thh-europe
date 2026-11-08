@@ -156,9 +156,9 @@ document.addEventListener('DOMContentLoaded',function(){
 	if(form){
 		var heeftKeuze=!!form.querySelector('table.variations select, .thh-bundel'),aangeraakt=!heeftKeuze;
 		var check=function(){var btn=form.querySelector('.single_add_to_cart_button');var ok=aangeraakt&&btn&&!btn.classList.contains('disabled');form.classList.toggle('thh-klaar',!!ok);};
-		form.addEventListener('change',function(){aangeraakt=true;setTimeout(check,50);});
+		form.addEventListener('change',function(e){if(e.isTrusted){aangeraakt=true;}setTimeout(check,50);});
 		form.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.thh-bundel-optie')){aangeraakt=true;setTimeout(check,50);}});
-		if(window.jQuery){jQuery(form).on('change','select,input',function(){aangeraakt=true;setTimeout(check,60);});jQuery(form).on('found_variation reset_data show_variation hide_variation',function(){setTimeout(check,60);});}
+		if(window.jQuery){jQuery(form).on('change','select,input',function(e){if(e.originalEvent&&e.originalEvent.isTrusted){aangeraakt=true;}setTimeout(check,60);});jQuery(form).on('found_variation reset_data show_variation hide_variation',function(){setTimeout(check,60);});}
 		check();
 	}
 	// afhalen: gebruik de bestaande popup-link
