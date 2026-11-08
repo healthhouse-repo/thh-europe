@@ -117,6 +117,31 @@ body.single-product .elementor-element-500d427 .elementor-tab-title:after{conten
 body.single-product .elementor-element-500d427 .elementor-tab-title.elementor-active:after{transform:rotate(-135deg);margin-top:6px}
 body.single-product .elementor-element-500d427 .elementor-tab-content{border:0!important;padding:24px 48px 32px!important}
 @media(max-width:767px){body.single-product .elementor-element-500d427 .elementor-tab-title{padding:20px 18px!important}body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:16px!important}body.single-product .elementor-element-500d427 .elementor-tab-content{padding:18px 18px 24px!important}}
+/* mobiel: compact zoals Zalando — foto, naam, prijs, keuzes en knop direct onder elkaar */
+@media(max-width:767px){
+body.single-product .elementor-section:has(>.elementor-container>.elementor-element-7f41f9f){display:none!important}
+body.single-product .elementor-element-3cd7e65>.elementor-widget-wrap{padding:0!important}
+body.single-product .elementor-element-fb2c732>.elementor-widget-wrap{padding:4px 0 10px!important}
+body.single-product .thh-sticky-rij{padding:0 16px!important}
+body.single-product .woocommerce-product-gallery{margin:0 0 6px!important}
+body.single-product .woocommerce-product-gallery .woocommerce-product-gallery__image.thh-groot img{max-height:340px!important}
+body.single-product .woocommerce-product-gallery .woocommerce-product-gallery__wrapper{gap:6px!important}
+body.single-product .woocommerce-product-gallery .thh-duim{flex:0 0 52px!important;width:52px!important;height:52px!important;border-radius:8px!important}
+body.single-product .elementor-element-4b8cb73 .elementor-heading-title,body.single-product .elementor-element-4b8cb73 h1{font-size:19px!important;line-height:1.25!important}
+body.single-product .elementor-element-115e858{margin:0 0 6px!important}
+body.single-product .elementor-element-115e858,body.single-product .elementor-element-115e858 p{font-size:14px!important;line-height:1.6!important}
+body.single-product .elementor-element-edb6a19{margin:4px 0 6px!important}
+body.single-product .elementor-element-edb6a19 .elementor-container{padding:0!important}
+body.single-product .elementor-element-edb6a19 .elementor-widget-wrap{padding:0!important;align-items:center}
+body.single-product .elementor-element-edb6a19 .elementor-widget-wrap .elementor-widget{margin-bottom:4px!important}
+body.single-product .elementor-element-6a35e17 .elementor-add-to-cart{display:flex;flex-direction:column}
+body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>*{order:5}
+body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>form.cart{order:1}
+body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>.thh-zk-info{order:2;margin-top:12px!important}
+body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>.thh-kh-balk{order:3}
+body.single-product .elementor-element-6a35e17 .elementor-add-to-cart>.thh-clb{order:4}
+body.single-product .thh-zk-rij{padding-top:10px!important;padding-bottom:10px!important;font-size:13px!important}
+}
 
 /* ---------- hoofdletters zoals Zalando: alleen de accordeon-koppen in kapitalen, de rest gewone zinnen ---------- */
 body.single-product .elementor-element-6a35e17 .thh-bundel-kop,body.single-product .elementor-element-6a35e17 .thh-bundel-kop *{text-transform:none!important;letter-spacing:0!important;font-size:15px!important;font-weight:600!important;color:#1b1f2e!important}
