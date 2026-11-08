@@ -60,7 +60,15 @@ add_shortcode('thh_werkenbij_v2', function () {
 .pv-gf .gform_wrapper .gfield_label,.pv-gf .gform_wrapper legend{color:#fff!important;font-size:14px!important;font-weight:500!important}
 .pv-gf .gform_wrapper .gfield input,.pv-gf .gform_wrapper .gfield select,.pv-gf .gform_wrapper .gfield textarea,.pv-gf .gform_wrapper .ginput_container{max-width:none!important;width:100%!important}
 .pv-gf .gform_wrapper textarea{height:150px!important}
-.pv-gf .gform_button_select_files{background:#fff!important;color:#14204a!important;border:0!important;border-radius:12px!important;width:100%!important;min-height:52px;font-weight:600!important}
+.pv-gf #field_5_11>label{display:block!important;color:#fff!important;font-size:15px!important;font-weight:600!important;margin:6px 0 8px!important}
+.pv-gf #field_5_11 .gform_drop_area{display:flex!important;flex-direction:column;align-items:center;gap:10px;border:2px dashed rgba(255,255,255,.55)!important;border-radius:16px!important;background:rgba(255,255,255,.06)!important;padding:22px 18px!important;text-align:center}
+.pv-gf #field_5_11 .gform_drop_area:before{content:"";width:40px;height:40px;background:no-repeat center/28px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6M12 18v-6M9 15l3-3 3 3'/%3E%3C/svg%3E")}
+.pv-gf #field_5_11 .gform_drop_instructions{display:block!important;color:#fff!important;font-size:15px!important;margin:0!important}
+.pv-gf .gform_button_select_files{background:#fff!important;color:#14204a!important;border:0!important;border-radius:999px!important;min-height:44px;padding:0 24px!important;font-weight:600!important;font-size:15px!important;width:auto!important}
+.pv-gf .gform_button_select_files:after{content:none!important}
+.pv-gf #field_5_11 .gform_fileupload_rules{display:block!important;color:rgba(255,255,255,.75)!important;font-size:13px!important;margin-top:8px!important;text-align:center}
+.pv-gf #field_5_11 .ginput_preview{display:flex!important;align-items:center;gap:8px;background:#e7f6ee;color:#14532d!important;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px}
+.pv-gf #field_5_11 .ginput_preview *{color:#14532d!important}
 .pv-gf .gform_drop_instructions,.pv-gf .gform_fileupload_rules,.pv-gf .ginput_preview{color:rgba(255,255,255,.8)!important}
 .pv-gf .gform_footer input[type=submit],.pv-gf .gform_footer button{background:#e2373f!important;color:#fff!important;border:0!important;border-radius:999px!important;min-height:50px;padding:0 30px!important;font-weight:600!important;font-size:15px!important;width:100%}
 .pv-gf .gform_confirmation_message{background:#e7f6ee;color:#14532d;border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.5}
@@ -112,6 +120,7 @@ add_shortcode('thh_werkenbij_v2', function () {
 	</section>
 </div>
 <script>
+(function(){function t(){var f=document.getElementById('field_5_11');if(!f)return;var l=f.querySelector('label');if(l&&!l.dataset.thh){l.dataset.thh=1;var r=l.querySelector('.gfield_required');l.firstChild&&(l.querySelector('.gform-field-label__text')||l).childNodes.length;var tx=l.querySelector('.gform-field-label__text');if(tx)tx.textContent='Je cv ';if(r)r.textContent='*';}var d=f.querySelector('.gform_drop_instructions');if(d)d.textContent='Sleep je cv hierheen of';var b=f.querySelector('.gform_button_select_files');if(b)b.textContent='Kies een bestand';var u=f.querySelector('.gform_fileupload_rules');if(u)u.textContent='Pdf, Word of foto, maximaal 12 MB';}t();document.addEventListener('gform_post_render',t);if(window.jQuery)jQuery(document).on('gform_post_render',t);})();
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.pv-wb-sol');if(!a)return;var s=document.querySelector('#gform_5 select[name="input_10"]');if(s){s.value=a.getAttribute('data-functie');s.dispatchEvent(new Event('change',{bubbles:true}));}});
 </script>
 	<?php
