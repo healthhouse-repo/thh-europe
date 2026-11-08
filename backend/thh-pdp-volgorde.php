@@ -97,16 +97,27 @@ body.single-product .elementor-element-500d427 .elementor-tab-content h2,body.si
 body.single-product .elementor-element-500d427 .elementor-tab-content ul{padding-left:18px!important;margin:6px 0 12px!important}
 body.single-product .elementor-element-500d427 .elementor-tab-content li{margin:2px 0!important}
 body.single-product .elementor-element-500d427 .elementor-tab-content p{margin:0 0 12px!important}
-body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:17px!important;font-weight:600!important;text-transform:none!important}
 body.single-product .thh-b21-uitleg,body.single-product .thh-b21-uitleg *{font-weight:400!important}
 body.single-product .thh-clb-box p{font-weight:300!important;color:#2b2f3a!important}
 body.single-product .thh-clb-box strong{font-weight:600!important}
 .thh-zk-rij{font-weight:300}.thh-zk-rij b{font-weight:600!important}
 
+/* ---------- accordeon zoals Zalando ---------- */
+body.single-product .elementor-element-500d427 .elementor-accordion-item{border:0!important;border-top:1.5px solid #1b1f2e!important;margin:0!important}
+body.single-product .elementor-element-500d427 .elementor-accordion-item:last-child{border-bottom:1.5px solid #1b1f2e!important}
+body.single-product .elementor-element-500d427 .elementor-tab-title{position:relative;display:flex!important;align-items:center;justify-content:space-between;padding:26px 48px!important;border:1.5px solid transparent!important;border-radius:6px;margin:0!important;cursor:pointer;background:none!important}
+body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:18px!important;font-weight:400!important;text-transform:uppercase!important;letter-spacing:.01em!important;color:#1b1f2e!important;text-decoration:none!important}
+body.single-product .elementor-element-500d427 .elementor-tab-title:hover{background:#f1f3f6!important}
+body.single-product .elementor-element-500d427 .elementor-tab-title.elementor-active{background:#d9dde3!important;border-color:#1b1f2e!important}
+body.single-product .elementor-element-500d427 .elementor-accordion-icon{display:none!important}
+body.single-product .elementor-element-500d427 .elementor-tab-title:after{content:"";width:12px;height:12px;border-right:1.6px solid #1b1f2e;border-bottom:1.6px solid #1b1f2e;transform:rotate(45deg);margin-top:-6px;transition:transform .2s;flex:none;order:2}
+body.single-product .elementor-element-500d427 .elementor-tab-title.elementor-active:after{transform:rotate(-135deg);margin-top:6px}
+body.single-product .elementor-element-500d427 .elementor-tab-content{border:0!important;padding:24px 48px 32px!important}
+@media(max-width:767px){body.single-product .elementor-element-500d427 .elementor-tab-title{padding:20px 18px!important}body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:16px!important}body.single-product .elementor-element-500d427 .elementor-tab-content{padding:18px 18px 24px!important}}
+
 /* ---------- onderin ---------- */
 body.single-product .elementor-element-115e858{margin-top:10px}
 body.single-product .elementor-element-115e858 p{font-size:15px;line-height:1.6;color:#1b1f2e}
-body.single-product .elementor-element-500d427 .elementor-tab-title{border-top:1.5px solid #1b1f2e!important;padding:18px 0!important}
 </style>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
@@ -121,8 +132,11 @@ document.addEventListener('DOMContentLoaded',function(){
 		stappen++;var lab=tr.querySelector('th.label label'),sel=tr.querySelector('select');if(!lab||!sel||!sel.options.length)return;
 		var naam=(lab.textContent||'').replace(/^\s*\d+\s*/,'').trim().toLowerCase();if(naam)sel.options[0].text='Kies je '+naam;
 	});
-	var kop=document.querySelector('.elementor-element-6a35e17 .thh-bundel-kop');
-	if(kop&&stappen&&!kop.querySelector('.thh-stap')){var b=document.createElement('span');b.className='thh-stap';b.textContent=stappen+1;kop.insertBefore(b,kop.firstChild);}
+	var m=0,ts=setInterval(function(){m++;
+		var kop=document.querySelector('.elementor-element-6a35e17 .thh-bundel-kop');
+		if(kop&&stappen&&!kop.querySelector('.thh-stap')){var b=document.createElement('span');b.className='thh-stap';b.textContent=stappen+1;kop.insertBefore(b,kop.firstChild);}
+		if(kop||m>40)clearInterval(ts);
+	},150);
 	// afhalen: gebruik de bestaande popup-link
 	var a=document.querySelector('.elementor-element-59159bc a'),r=document.querySelector('.thh-zk-afhalen');
 	if(a&&r){r.addEventListener('click',function(){a.click();});}
