@@ -118,124 +118,124 @@ add_action('woocommerce_after_add_to_cart_form', function () {
 	$naam = $ingelogd ? trim($u->first_name . ' ' . $u->last_name) : '';
 	$tel = $ingelogd ? get_user_meta($u->ID, 'billing_phone', true) : '';
 	?>
-<div class="thh-cb" data-product="<?php echo esc_attr($product ? $product->get_name() : ''); ?>">
-	<?php if ($gekocht) : ?><p class="thh-cb-gekocht"><?php echo $gekocht; ?> · <a href="<?php echo esc_url(wc_get_account_endpoint_url('orders')); ?>">Bekijk je bestellingen</a></p><?php endif; ?>
-	<div class="thh-cb-box">
-		<span class="thh-cb-logo">+Club</span>
+<div class="thh-clb" data-product="<?php echo esc_attr($product ? $product->get_name() : ''); ?>">
+	<?php if ($gekocht) : ?><p class="thh-clb-gekocht"><?php echo $gekocht; ?> · <a href="<?php echo esc_url(wc_get_account_endpoint_url('orders')); ?>">Bekijk je bestellingen</a></p><?php endif; ?>
+	<div class="thh-clb-box">
+		<span class="thh-clb-logo">+Club</span>
 		<?php if ($ingelogd) : ?>
 			<strong>Maak gratis gebruik van de club<?php echo $u->first_name ? ', ' . esc_html($u->first_name) : ''; ?>!</strong>
 			<p>Spaar punten bij elke aankoop, in de webshop én in onze winkels, en laat je gratis persoonlijk adviseren door onze specialisten.</p>
-			<button type="button" class="thh-cb-link" data-thh-cb="intake">Boek gratis een intake in de winkel</button>
+			<button type="button" class="thh-clb-link" data-thh-clb="intake">Boek gratis een intake in de winkel</button>
 		<?php else : ?>
 			<strong>Spaar punten en krijg persoonlijk advies</strong>
 			<p>Word gratis lid van de club: je spaart punten op elke aankoop in de webshop en in onze winkels, en je boekt gratis een intake met een specialist.</p>
-			<button type="button" class="thh-cb-link" data-thh-cb="aanmelden">Word gratis lid</button>
-			<span class="thh-cb-al">Al lid? <button type="button" class="thh-cb-link thh-cb-klein" data-thh-cb="inloggen">Log in</button></span>
+			<button type="button" class="thh-clb-link" data-thh-clb="aanmelden">Word gratis lid</button>
+			<span class="thh-clb-al">Al lid? <button type="button" class="thh-clb-link thh-clb-klein" data-thh-clb="inloggen">Log in</button></span>
 		<?php endif; ?>
 	</div>
 </div>
-<div class="thh-cb-pop" id="thhCbPop" hidden>
-	<div class="thh-cb-dlg" role="dialog" aria-modal="true" aria-labelledby="thhCbTitel">
-		<button type="button" class="thh-cb-x" data-thh-cb="sluit" aria-label="Sluiten">×</button>
+<div class="thh-clb-pop" id="thhClbPop" hidden>
+	<div class="thh-clb-dlg" role="dialog" aria-modal="true" aria-labelledby="thhClbTitel">
+		<button type="button" class="thh-clb-x" data-thh-clb="sluit" aria-label="Sluiten">×</button>
 		<!-- aanmelden -->
-		<form class="thh-cb-stap" data-stap="aanmelden" novalidate>
-			<span class="thh-cb-logo">+Club</span>
-			<h3 id="thhCbTitel">Word gratis lid</h3>
-			<p class="thh-cb-sub">Spaar punten op elke aankoop en boek gratis een intake in de winkel.</p>
-			<div class="thh-cb-g2"><label>Voornaam *<input name="first_name" autocomplete="given-name" required></label><label>Achternaam *<input name="last_name" autocomplete="family-name" required></label></div>
+		<form class="thh-clb-stap" data-stap="aanmelden" novalidate>
+			<span class="thh-clb-logo">+Club</span>
+			<h3 id="thhClbTitel">Word gratis lid</h3>
+			<p class="thh-clb-sub">Spaar punten op elke aankoop en boek gratis een intake in de winkel.</p>
+			<div class="thh-clb-g2"><label>Voornaam *<input name="first_name" autocomplete="given-name" required></label><label>Achternaam *<input name="last_name" autocomplete="family-name" required></label></div>
 			<label>E-mail *<input type="email" name="email" autocomplete="email" required></label>
 			<label>Telefoonnummer<input type="tel" name="phone" autocomplete="tel"></label>
 			<label>Wachtwoord * <small>(minimaal 6 tekens)</small><input type="password" name="password" autocomplete="new-password" minlength="6" required></label>
 			<label>Je vaste winkel<select name="branch"><option value="">Kies een winkel (mag later)</option><?php foreach (thh_cb_winkels() as $w) echo '<option>' . esc_html($w) . '</option>'; ?></select></label>
-			<input type="text" name="website" class="thh-cb-hp" tabindex="-1" autocomplete="off">
-			<div class="thh-cb-msg"></div>
-			<button type="submit" class="thh-cb-btn">Meld me gratis aan</button>
-			<p class="thh-cb-klein-t">Al lid? <button type="button" class="thh-cb-link thh-cb-klein" data-thh-cb="inloggen">Log in</button></p>
+			<input type="text" name="website" class="thh-clb-hp" tabindex="-1" autocomplete="off">
+			<div class="thh-clb-msg"></div>
+			<button type="submit" class="thh-clb-btn">Meld me gratis aan</button>
+			<p class="thh-clb-klein-t">Al lid? <button type="button" class="thh-clb-link thh-clb-klein" data-thh-clb="inloggen">Log in</button></p>
 		</form>
 		<!-- inloggen -->
-		<form class="thh-cb-stap" data-stap="inloggen" novalidate hidden>
-			<span class="thh-cb-logo">+Club</span>
+		<form class="thh-clb-stap" data-stap="inloggen" novalidate hidden>
+			<span class="thh-clb-logo">+Club</span>
 			<h3>Inloggen</h3>
-			<p class="thh-cb-sub thh-cb-welkom" hidden>Welkom bij de club! Je account is klaar, log direct in.</p>
+			<p class="thh-clb-sub thh-clb-welkom" hidden>Welkom bij de club! Je account is klaar, log direct in.</p>
 			<label>E-mail<input type="email" name="email" autocomplete="username" required></label>
 			<label>Wachtwoord<input type="password" name="password" autocomplete="current-password" required></label>
-			<div class="thh-cb-msg"></div>
-			<button type="submit" class="thh-cb-btn">Inloggen</button>
-			<p class="thh-cb-klein-t"><a href="<?php echo esc_url(wp_lostpassword_url()); ?>">Wachtwoord vergeten?</a></p>
+			<div class="thh-clb-msg"></div>
+			<button type="submit" class="thh-clb-btn">Inloggen</button>
+			<p class="thh-clb-klein-t"><a href="<?php echo esc_url(wp_lostpassword_url()); ?>">Wachtwoord vergeten?</a></p>
 		</form>
 		<!-- intake -->
-		<form class="thh-cb-stap" data-stap="intake" novalidate hidden>
-			<span class="thh-cb-logo">+Club</span>
+		<form class="thh-clb-stap" data-stap="intake" novalidate hidden>
+			<span class="thh-clb-logo">+Club</span>
 			<h3>Boek gratis een intake</h3>
-			<p class="thh-cb-sub">Laat je gegevens achter. Een specialist neemt contact met je op om een moment in de winkel af te spreken.</p>
+			<p class="thh-clb-sub">Laat je gegevens achter. Een specialist neemt contact met je op om een moment in de winkel af te spreken.</p>
 			<label>Naam *<input name="naam" autocomplete="name" value="<?php echo esc_attr($naam); ?>" required></label>
-			<div class="thh-cb-g2"><label>E-mail<input type="email" name="email" autocomplete="email" value="<?php echo esc_attr($ingelogd ? $u->user_email : ''); ?>"></label><label>Telefoonnummer<input type="tel" name="telefoon" autocomplete="tel" value="<?php echo esc_attr($tel); ?>"></label></div>
+			<div class="thh-clb-g2"><label>E-mail<input type="email" name="email" autocomplete="email" value="<?php echo esc_attr($ingelogd ? $u->user_email : ''); ?>"></label><label>Telefoonnummer<input type="tel" name="telefoon" autocomplete="tel" value="<?php echo esc_attr($tel); ?>"></label></div>
 			<label>Welke winkel?<select name="winkel"><option value="">Maakt niet uit</option><?php foreach (thh_cb_winkels() as $w) echo '<option>' . esc_html($w) . '</option>'; ?></select></label>
 			<label>Wanneer kan je het beste?<input name="wanneer" placeholder="bijv. zaterdagochtend of na 17:00"></label>
 			<label>Waar wil je advies over?<textarea name="doel" rows="3" placeholder="bijv. spieropbouw, afvallen, beter herstel"></textarea></label>
-			<input type="text" name="website" class="thh-cb-hp" tabindex="-1" autocomplete="off">
-			<div class="thh-cb-msg"></div>
-			<button type="submit" class="thh-cb-btn">Intake aanvragen</button>
+			<input type="text" name="website" class="thh-clb-hp" tabindex="-1" autocomplete="off">
+			<div class="thh-clb-msg"></div>
+			<button type="submit" class="thh-clb-btn">Intake aanvragen</button>
 		</form>
-		<div class="thh-cb-stap thh-cb-klaar" data-stap="klaar" hidden>
-			<span class="thh-cb-logo">+Club</span>
+		<div class="thh-clb-stap thh-clb-klaar" data-stap="klaar" hidden>
+			<span class="thh-clb-logo">+Club</span>
 			<h3>Aanvraag ontvangen</h3>
-			<p class="thh-cb-sub">Bedankt! We nemen binnen 2 werkdagen contact met je op om je intake in te plannen.</p>
-			<button type="button" class="thh-cb-btn" data-thh-cb="sluit">Sluiten</button>
+			<p class="thh-clb-sub">Bedankt! We nemen binnen 2 werkdagen contact met je op om je intake in te plannen.</p>
+			<button type="button" class="thh-clb-btn" data-thh-clb="sluit">Sluiten</button>
 		</div>
 	</div>
 </div>
 <style>
-.thh-cb{margin:18px 0 6px;font-family:inherit}
-.thh-cb-gekocht{margin:0 0 12px;font-size:15px;color:#1b1f2e}.thh-cb-gekocht a{color:#14204a;text-decoration:underline}
-.thh-cb-box{border:2px solid #14204a;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;background:#fff}
-.thh-cb-logo{display:inline-block;border:2px solid #14204a;border-radius:999px;padding:3px 12px;font-weight:800;font-size:16px;color:#14204a;letter-spacing:-.01em}
-.thh-cb-box strong{font-size:17px;line-height:1.35;color:#14204a}
-.thh-cb-box p{margin:0;font-size:15px;line-height:1.55;color:#1b1f2e}
-.thh-cb button.thh-cb-link,.thh-cb-pop button.thh-cb-link{background:none!important;border:0!important;padding:0!important;margin:4px 0 0;font:inherit;font-weight:700;font-size:15px;color:#14204a!important;text-decoration:underline;text-underline-offset:4px;cursor:pointer;box-shadow:none!important;text-transform:none;letter-spacing:0;min-height:0}
-.thh-cb button.thh-cb-klein,.thh-cb-pop button.thh-cb-klein{font-size:14px;margin:0;font-weight:600}
-.thh-cb-al{font-size:14px;color:#5a6072}
-.thh-cb-pop{position:fixed;inset:0;z-index:99999;background:rgba(10,16,40,.55);display:flex;align-items:center;justify-content:center;padding:16px}
-.thh-cb-pop[hidden]{display:none}
-.thh-cb-dlg{background:#fff;border-radius:20px;width:100%;max-width:460px;max-height:92vh;overflow:auto;padding:28px 28px 24px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.35)}
-.thh-cb-x{position:absolute;right:12px;top:10px;background:none!important;border:0!important;font-size:28px;line-height:1;color:#5a6072!important;cursor:pointer;padding:6px!important}
-.thh-cb-stap{display:flex;flex-direction:column;gap:12px;margin:0}
-.thh-cb-stap[hidden]{display:none}
-.thh-cb-stap h3{margin:4px 0 0;font-size:22px;color:#14204a;text-transform:none;letter-spacing:0}
-.thh-cb-sub{margin:0;font-size:14.5px;line-height:1.5;color:#5a6072}
-.thh-cb-stap label{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:500;color:#1b1f2e}
-.thh-cb-stap label small{font-weight:400;color:#5a6072}
-.thh-cb-stap input,.thh-cb-stap select,.thh-cb-stap textarea{width:100%;font:inherit;font-size:15px;padding:11px 12px;border:1.5px solid #c9ccd6;border-radius:10px;background:#fff;color:#1b1f2e;box-shadow:none}
-.thh-cb-stap input:focus,.thh-cb-stap select:focus,.thh-cb-stap textarea:focus{outline:none;border-color:#14204a}
-.thh-cb-g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-.thh-cb-hp{position:absolute!important;left:-9999px!important;opacity:0}
-.thh-cb-btn{background:#14204a!important;color:#fff!important;border:0!important;border-radius:999px!important;min-height:48px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px;text-transform:none}
-.thh-cb-btn:hover{background:#0d1533!important}.thh-cb-btn[disabled]{opacity:.6}
-.thh-cb-msg:empty{display:none}.thh-cb-msg{background:#fdecee;color:#9b1c22;border-radius:10px;padding:10px 12px;font-size:14px}
-.thh-cb-klein-t{margin:0;font-size:14px;color:#5a6072;text-align:center}.thh-cb-klein-t a{color:#14204a}
-@media(max-width:480px){.thh-cb-g2{grid-template-columns:minmax(0,1fr)}.thh-cb-dlg{padding:22px 18px}}
+.thh-clb{margin:18px 0 6px;font-family:inherit}
+.thh-clb-gekocht{margin:0 0 12px;font-size:15px;color:#1b1f2e}.thh-clb-gekocht a{color:#14204a;text-decoration:underline}
+.thh-clb-box{border:2px solid #14204a;border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;background:#fff}
+.thh-clb-logo{align-self:flex-start;display:inline-block;border:2px solid #14204a;border-radius:999px;padding:3px 12px;font-weight:800;font-size:16px;color:#14204a;letter-spacing:-.01em}
+.thh-clb-box strong{font-size:17px;line-height:1.35;color:#14204a}
+.thh-clb-box p{margin:0;font-size:15px;line-height:1.55;color:#1b1f2e}
+.thh-clb button.thh-clb-link,.thh-clb-pop button.thh-clb-link{background:none!important;border:0!important;padding:0!important;margin:4px 0 0;font:inherit;font-weight:700;font-size:15px;color:#14204a!important;text-decoration:underline;text-underline-offset:4px;cursor:pointer;box-shadow:none!important;text-transform:none;letter-spacing:0;min-height:0}
+.thh-clb button.thh-clb-klein,.thh-clb-pop button.thh-clb-klein{font-size:14px;margin:0;font-weight:600}
+.thh-clb-al{font-size:14px;color:#5a6072}
+.thh-clb-pop{position:fixed;inset:0;z-index:99999;background:rgba(10,16,40,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.thh-clb-pop[hidden]{display:none}
+.thh-clb-dlg{background:#fff;border-radius:20px;width:100%;max-width:460px;max-height:92vh;overflow:auto;padding:28px 28px 24px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.thh-clb-x{position:absolute;right:12px;top:10px;background:none!important;border:0!important;font-size:28px;line-height:1;color:#5a6072!important;cursor:pointer;padding:6px!important}
+.thh-clb-stap{display:flex;flex-direction:column;gap:12px;margin:0}
+.thh-clb-stap[hidden]{display:none}
+.thh-clb-stap h3{margin:4px 0 0;font-size:22px;color:#14204a;text-transform:none;letter-spacing:0}
+.thh-clb-sub{margin:0;font-size:14.5px;line-height:1.5;color:#5a6072}
+.thh-clb-stap label{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:500;color:#1b1f2e}
+.thh-clb-stap label small{font-weight:400;color:#5a6072}
+.thh-clb-stap input,.thh-clb-stap select,.thh-clb-stap textarea{width:100%;font:inherit;font-size:15px;padding:11px 12px;border:1.5px solid #c9ccd6;border-radius:10px;background:#fff;color:#1b1f2e;box-shadow:none}
+.thh-clb-stap input:focus,.thh-clb-stap select:focus,.thh-clb-stap textarea:focus{outline:none;border-color:#14204a}
+.thh-clb-g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.thh-clb-hp{position:absolute!important;left:-9999px!important;opacity:0}
+.thh-clb-btn{background:#14204a!important;color:#fff!important;border:0!important;border-radius:999px!important;min-height:48px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px;text-transform:none}
+.thh-clb-btn:hover{background:#0d1533!important}.thh-clb-btn[disabled]{opacity:.6}
+.thh-clb-msg:empty{display:none}.thh-clb-msg{background:#fdecee;color:#9b1c22;border-radius:10px;padding:10px 12px;font-size:14px}
+.thh-clb-klein-t{margin:0;font-size:14px;color:#5a6072;text-align:center}.thh-clb-klein-t a{color:#14204a}
+@media(max-width:480px){.thh-clb-g2{grid-template-columns:minmax(0,1fr)}.thh-clb-dlg{padding:22px 18px}}
 </style>
 <script>
 (function(){
-	var pop=document.getElementById('thhCbPop');if(!pop||pop.dataset.ok)return;pop.dataset.ok=1;document.body.appendChild(pop);
+	var pop=document.getElementById('thhClbPop');if(!pop||pop.dataset.ok)return;pop.dataset.ok=1;document.body.appendChild(pop);
 	var api='<?php echo esc_js(rest_url('thh/v1/')); ?>';
-	function toon(stap){[].forEach.call(pop.querySelectorAll('.thh-cb-stap'),function(s){s.hidden=s.getAttribute('data-stap')!==stap;});pop.hidden=false;var f=pop.querySelector('[data-stap="'+stap+'"] input:not([type=hidden]):not(.thh-cb-hp)');if(f&&!f.value)setTimeout(function(){f.focus();},50);}
+	function toon(stap){[].forEach.call(pop.querySelectorAll('.thh-clb-stap'),function(s){s.hidden=s.getAttribute('data-stap')!==stap;});pop.hidden=false;var f=pop.querySelector('[data-stap="'+stap+'"] input:not([type=hidden]):not(.thh-clb-hp)');if(f&&!f.value)setTimeout(function(){f.focus();},50);}
 	function sluit(){pop.hidden=true;}
-	document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-thh-cb]');if(!b)return;e.preventDefault();var a=b.getAttribute('data-thh-cb');if(a==='sluit')sluit();else toon(a);});
+	document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-thh-clb]');if(!b)return;e.preventDefault();var a=b.getAttribute('data-thh-clb');if(a==='sluit')sluit();else toon(a);});
 	pop.addEventListener('click',function(e){if(e.target===pop)sluit();});
 	document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!pop.hidden)sluit();});
 	function data(f){var o={};[].forEach.call(f.elements,function(el){if(el.name)o[el.name]=el.value;});return o;}
 	function post(pad,body){return fetch(api+pad,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.message||'Er ging iets mis.');return j;});});}
-	function bezig(f,aan){var b=f.querySelector('.thh-cb-btn');if(b){b.disabled=aan;}f.querySelector('.thh-cb-msg').textContent='';}
+	function bezig(f,aan){var b=f.querySelector('.thh-clb-btn');if(b){b.disabled=aan;}f.querySelector('.thh-clb-msg').textContent='';}
 	var fa=pop.querySelector('[data-stap="aanmelden"]'),fi=pop.querySelector('[data-stap="inloggen"]'),fk=pop.querySelector('[data-stap="intake"]');
 	fa.addEventListener('submit',function(e){e.preventDefault();var d=data(fa);
-		if(!d.first_name||!d.last_name||!d.email||!d.password){fa.querySelector('.thh-cb-msg').textContent='Vul je naam, e-mail en een wachtwoord in.';return;}
-		if(d.password.length<6){fa.querySelector('.thh-cb-msg').textContent='Kies een wachtwoord van minimaal 6 tekens.';return;}
-		bezig(fa,true);post('club-aanmelden',d).then(function(){fi.email.value=d.email;fi.password.value=d.password;fi.querySelector('.thh-cb-welkom').hidden=false;toon('inloggen');fi.querySelector('.thh-cb-btn').focus();}).catch(function(err){fa.querySelector('.thh-cb-msg').textContent=err.message;}).then(function(){bezig(fa,false);});});
-	fi.addEventListener('submit',function(e){e.preventDefault();var d=data(fi);bezig(fi,true);post('club-inloggen',d).then(function(){location.reload();}).catch(function(err){fi.querySelector('.thh-cb-msg').textContent=err.message;bezig(fi,false);});});
-	fk.addEventListener('submit',function(e){e.preventDefault();var d=data(fk);var box=document.querySelector('.thh-cb');d.product=box?box.getAttribute('data-product'):'';
-		if(!d.naam||(!d.email&&!d.telefoon)){fk.querySelector('.thh-cb-msg').textContent='Vul je naam en een e-mailadres of telefoonnummer in.';return;}
-		bezig(fk,true);post('club-intake',d).then(function(){toon('klaar');}).catch(function(err){fk.querySelector('.thh-cb-msg').textContent=err.message;}).then(function(){bezig(fk,false);});});
+		if(!d.first_name||!d.last_name||!d.email||!d.password){fa.querySelector('.thh-clb-msg').textContent='Vul je naam, e-mail en een wachtwoord in.';return;}
+		if(d.password.length<6){fa.querySelector('.thh-clb-msg').textContent='Kies een wachtwoord van minimaal 6 tekens.';return;}
+		bezig(fa,true);post('club-aanmelden',d).then(function(){fi.email.value=d.email;fi.password.value=d.password;fi.querySelector('.thh-clb-welkom').hidden=false;toon('inloggen');fi.querySelector('.thh-clb-btn').focus();}).catch(function(err){fa.querySelector('.thh-clb-msg').textContent=err.message;}).then(function(){bezig(fa,false);});});
+	fi.addEventListener('submit',function(e){e.preventDefault();var d=data(fi);bezig(fi,true);post('club-inloggen',d).then(function(){location.reload();}).catch(function(err){fi.querySelector('.thh-clb-msg').textContent=err.message;bezig(fi,false);});});
+	fk.addEventListener('submit',function(e){e.preventDefault();var d=data(fk);var box=document.querySelector('.thh-clb');d.product=box?box.getAttribute('data-product'):'';
+		if(!d.naam||(!d.email&&!d.telefoon)){fk.querySelector('.thh-clb-msg').textContent='Vul je naam en een e-mailadres of telefoonnummer in.';return;}
+		bezig(fk,true);post('club-intake',d).then(function(){toon('klaar');}).catch(function(err){fk.querySelector('.thh-clb-msg').textContent=err.message;}).then(function(){bezig(fk,false);});});
 })();
 </script>
 	<?php
