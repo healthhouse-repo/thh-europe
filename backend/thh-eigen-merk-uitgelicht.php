@@ -9,7 +9,12 @@
  */
 if (!defined('ABSPATH')) return;
 
+/** Vaste keuze per categorie (term-ID => product-ID), gaat voor de bestverkoper. Creatine (31) => THH Creatine 250/500/1000 g. */
+function thh_em_vast() { return [31 => 41183]; }
+
 function thh_em_product_voor_cat($term_id) {
+	$vast = thh_em_vast();
+	if (isset($vast[(int) $term_id])) return (int) $vast[(int) $term_id];
 	$ck = 'thh_em_cat_' . (int) $term_id;
 	$pid = get_transient($ck);
 	if ($pid !== false) return (int) $pid;
@@ -71,6 +76,23 @@ add_filter('woocommerce_product_loop_start', function ($html) {
 	$knop = $p->is_type('simple') && $p->is_purchasable() && $p->is_in_stock()
 		? '<a href="' . esc_url($p->add_to_cart_url()) . '" data-quantity="1" data-product_id="' . $pid . '" data-product_sku="' . esc_attr($p->get_sku()) . '" class="thh-em-btn button add_to_cart_button ajax_add_to_cart" rel="nofollow">In winkelwagen</a>'
 		: '<a href="' . esc_url($p->get_permalink()) . '" class="thh-em-btn">Bekijk product</a>';
+	$maten = [];
+	if ($p->is_type('variable')) {
+		foreach ($p->get_children() as $vid) {
+			$v = wc_get_product($vid);
+			if (!$v || !$v->is_purchasable() || !$v->is_in_stock()) continue;
+			$attr = $v->get_attributes();
+			$waarde = $attr ? reset($attr) : '';
+			$sleutel = $attr ? key($attr) : '';
+			$maten[] = [
+				'naam'  => $waarde ?: $v->get_name(),
+				'prijs' => $v->is_on_sale() ? '<s>' . wc_price($v->get_regular_price()) . '</s> ' . wc_price($v->get_sale_price()) : wc_price($v->get_price()),
+				'url'   => $sleutel ? add_query_arg('attribute_' . sanitize_title($sleutel), $waarde, $p->get_permalink()) : $p->get_permalink(),
+			];
+		}
+		if (count($maten) < 2) $maten = [];
+	}
+	if ($maten) $knop = '<a href="' . esc_url($p->get_permalink()) . '" class="thh-em-btn">Kies je pot</a>';
 	ob_start(); ?>
 <li class="product thh-em">
 	<div class="thh-em-in">
@@ -78,7 +100,8 @@ add_filter('woocommerce_product_loop_start', function ($html) {
 			<span class="thh-em-pill">Ons eigen merk</span>
 			<a class="thh-em-titel" href="<?php echo esc_url($p->get_permalink()); ?>"><?php echo esc_html($p->get_name()); ?></a>
 			<?php if ($kort) : ?><p><?php echo esc_html($kort); ?></p><?php endif; ?>
-			<div class="thh-em-prijs"><?php echo $p->get_price_html(); ?></div>
+			<?php if ($maten) : ?><div class="thh-em-maten"><?php foreach ($maten as $m) : ?><a href="<?php echo esc_url($m['url']); ?>"><b><?php echo esc_html($m['naam']); ?></b><span><?php echo $m['prijs']; ?></span></a><?php endforeach; ?></div>
+			<?php else : ?><div class="thh-em-prijs"><?php echo $p->get_price_html(); ?></div><?php endif; ?>
 			<?php echo $knop; ?>
 		</div>
 		<a class="thh-em-img" href="<?php echo esc_url($p->get_permalink()); ?>"><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($p->get_name()); ?>" loading="eager"></a>
@@ -102,6 +125,10 @@ ul.products li.thh-em a.thh-em-titel{color:#fff!important;font-size:22px;font-we
 ul.products li.thh-em a.thh-em-btn{display:inline-flex;align-items:center;justify-content:center;background:#e2373f!important;color:#fff!important;border-radius:999px;min-height:46px;padding:0 26px;font-weight:600;font-size:14px;text-transform:uppercase;width:max-content;max-width:100%;margin:0;border:0}
 ul.products li.thh-em a.thh-em-btn:hover{background:#c92c33!important}
 ul.products li.thh-em a.added_to_cart{color:#fff!important;font-size:13px}
+.thh-em-maten{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ul.products li.thh-em .thh-em-maten a{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:10px;color:#fff!important;text-decoration:none;min-width:0}
+ul.products li.thh-em .thh-em-maten a:hover{background:rgba(255,255,255,.2);border-color:#fff}
+.thh-em-maten b{font-size:15px;font-weight:700;color:#fff}.thh-em-maten span,.thh-em-maten .amount{font-size:14px;font-weight:600;color:#fff!important}.thh-em-maten s,.thh-em-maten s .amount{font-size:12px;font-weight:400;color:rgba(255,255,255,.55)!important}
 .thh-em-img{background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:14px}
 .thh-em-img img{width:100%;height:100%;max-height:300px;object-fit:contain;margin:0!important}
 @media(max-width:767px){ul.products li.product.thh-em{grid-column:1/-1}.thh-em-in{grid-template-columns:minmax(0,1fr) 40%;padding:18px;gap:12px}ul.products li.thh-em a.thh-em-titel{font-size:17px}.thh-em-prijs,.thh-em-prijs .amount,.thh-em-prijs ins{font-size:21px}.thh-em-txt p{display:none}ul.products li.thh-em a.thh-em-btn{min-height:40px;padding:0 16px;font-size:12px}}
