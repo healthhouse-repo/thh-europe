@@ -85,8 +85,11 @@ body.single-product .elementor-element-500d427 .elementor-tab-title{border-top:1
 </style>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
-	var club=document.querySelector('.elementor-element-6a35e17 .thh-clb'),kh=document.querySelector('.thh-kh-balk');
-	if(kh){var doel=club||document.querySelector('.elementor-element-6a35e17 .thh-zk-info');if(doel)doel.parentNode.insertBefore(kh,doel);}
+	var n=0,t=setInterval(function(){n++;
+		var kh=document.querySelector('.thh-kh-balk'),doel=document.querySelector('.elementor-element-6a35e17 .thh-clb')||document.querySelector('.elementor-element-6a35e17 .thh-zk-info');
+		if(kh&&doel&&kh.nextElementSibling!==doel){doel.parentNode.insertBefore(kh,doel);}
+		if((kh&&doel)||n>40)clearInterval(t);
+	},150);
 	// afhalen: gebruik de bestaande popup-link
 	var a=document.querySelector('.elementor-element-59159bc a'),r=document.querySelector('.thh-zk-afhalen');
 	if(a&&r){r.addEventListener('click',function(){a.click();});}
