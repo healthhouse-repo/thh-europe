@@ -73,6 +73,10 @@ add_shortcode('thh_werkenbij_v2', function () {
 .pv-gf .gform_footer input[type=submit],.pv-gf .gform_footer button{background:#e2373f!important;color:#fff!important;border:0!important;border-radius:999px!important;min-height:50px;padding:0 30px!important;font-weight:600!important;font-size:15px!important;width:100%}
 .pv-gf .gform_confirmation_message{background:#e7f6ee;color:#14532d;border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.5}
 .pv-gf .gfield_validation_message,.pv-gf .gform_validation_errors{background:#fdecee!important;color:#9b1c22!important;border-radius:10px}
+.pv-gf .gform_validation_errors{padding:12px 14px!important;border:0!important}.pv-gf .gform_validation_errors h2,.pv-gf .gform_validation_errors .gform_submission_error{font-size:15px!important;line-height:1.4!important;text-transform:none!important;font-weight:600!important;color:#9b1c22!important;margin:0!important}
+.pv-gf #field_5_11.thh-heeft-cv .gform_drop_area{display:none!important}
+.pv-gf #field_5_11.thh-heeft-cv .gform_fileupload_rules,.pv-gf #field_5_11.thh-heeft-cv .gfield_validation_message{display:none!important}
+.pv-gf #field_5_11 .ginput_preview:before{content:"\2713  Cv toegevoegd:";font-weight:600}
 @media(max-width:900px){.pv-vac{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:640px){.pv-gf{padding:24px 20px;border-radius:18px}.pv-vk{padding:22px 20px}}
 </style>
@@ -120,7 +124,7 @@ add_shortcode('thh_werkenbij_v2', function () {
 	</section>
 </div>
 <script>
-(function(){function t(){var f=document.getElementById('field_5_11');if(!f)return;var l=f.querySelector('label');if(l&&!l.dataset.thh){l.dataset.thh=1;var r=l.querySelector('.gfield_required');l.firstChild&&(l.querySelector('.gform-field-label__text')||l).childNodes.length;var tx=l.querySelector('.gform-field-label__text');if(tx)tx.textContent='Je cv ';if(r)r.textContent='*';}var d=f.querySelector('.gform_drop_instructions');if(d)d.textContent='Sleep je cv hierheen of';var b=f.querySelector('.gform_button_select_files');if(b)b.textContent='Kies een bestand';var u=f.querySelector('.gform_fileupload_rules');if(u)u.textContent='Pdf, Word of foto, maximaal 12 MB';}t();document.addEventListener('gform_post_render',t);if(window.jQuery)jQuery(document).on('gform_post_render',t);})();
+(function(){function t(){var f=document.getElementById('field_5_11');if(!f)return;var l=f.querySelector('label');if(l&&!l.dataset.thh){l.dataset.thh=1;var r=l.querySelector('.gfield_required');l.firstChild&&(l.querySelector('.gform-field-label__text')||l).childNodes.length;var tx=l.querySelector('.gform-field-label__text');if(tx)tx.textContent='Je cv ';if(r)r.textContent='*';}var d=f.querySelector('.gform_drop_instructions');if(d)d.textContent='Sleep je cv hierheen of';var b=f.querySelector('.gform_button_select_files');if(b)b.textContent='Kies een bestand';var u=f.querySelector('.gform_fileupload_rules');if(u)u.textContent='Pdf, Word of foto, maximaal 12 MB';}t();setInterval(function(){var f=document.getElementById('field_5_11');if(!f)return;var heeft=!!f.querySelector('.ginput_preview');f.classList.toggle('thh-heeft-cv',heeft);[].forEach.call(f.querySelectorAll('[id^=gform_multifile_messages] li, .gfield_validation_message li'),function(li){if(/maximale aantal|maximum number/i.test(li.textContent))li.remove();});[].forEach.call(f.querySelectorAll('[id^=gform_multifile_messages]'),function(m){if(!m.textContent.trim())m.style.display='none';else m.style.display='';});},400);document.addEventListener('gform_post_render',t);if(window.jQuery)jQuery(document).on('gform_post_render',t);})();
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.pv-wb-sol');if(!a)return;var s=document.querySelector('#gform_5 select[name="input_10"]');if(s){s.value=a.getAttribute('data-functie');s.dispatchEvent(new Event('change',{bubbles:true}));}});
 </script>
 	<?php
