@@ -73,6 +73,9 @@ body.single-product .elementor-element-6a35e17 .quantity .qty{height:56px!import
 body.single-product .elementor-element-6a35e17 .single_add_to_cart_button{flex:1 1 auto!important;width:auto!important;min-height:56px!important;border-radius:999px!important;background:#14204a!important;color:#fff!important;font-size:17px!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;margin:0!important;border:0!important}
 body.single-product .elementor-element-6a35e17 .single_add_to_cart_button:hover{background:#0b1433!important}
 body.single-product .elementor-element-6a35e17 .single_add_to_cart_button.disabled{opacity:.45}
+body.single-product .elementor-element-6a35e17 form.cart.thh-klaar .single_add_to_cart_button:not(.disabled){background:#e2373f!important}
+body.single-product .elementor-element-6a35e17 form.cart.thh-klaar .single_add_to_cart_button:not(.disabled):hover{background:#c92c33!important}
+body.single-product .elementor-element-6a35e17 .single_add_to_cart_button{transition:background .25s}
 
 /* ---------- keuzehulp, club en infokaart ---------- */
 body.single-product .thh-kh-balk{margin:16px 0 0!important;border-radius:16px!important;width:100%!important;max-width:none!important}
@@ -144,6 +147,16 @@ document.addEventListener('DOMContentLoaded',function(){
 		if(kop&&stappen&&!kop.querySelector('.thh-stap')){var b=document.createElement('span');b.className='thh-stap';b.textContent=stappen+1;kop.insertBefore(b,kop.firstChild);}
 		if(kop||m>40)clearInterval(ts);
 	},150);
+	// knop wordt rood zodra smaak/maat en aantal gekozen zijn
+	var form=document.querySelector('.elementor-element-6a35e17 form.cart');
+	if(form){
+		var heeftKeuze=!!form.querySelector('table.variations select, .thh-bundel'),aangeraakt=!heeftKeuze;
+		var check=function(){var btn=form.querySelector('.single_add_to_cart_button');var ok=aangeraakt&&btn&&!btn.classList.contains('disabled');form.classList.toggle('thh-klaar',!!ok);};
+		form.addEventListener('change',function(){aangeraakt=true;setTimeout(check,50);});
+		form.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.thh-bundel-optie')){aangeraakt=true;setTimeout(check,50);}});
+		if(window.jQuery){jQuery(form).on('found_variation reset_data show_variation hide_variation',function(){setTimeout(check,50);});}
+		check();
+	}
 	// afhalen: gebruik de bestaande popup-link
 	var a=document.querySelector('.elementor-element-59159bc a'),r=document.querySelector('.thh-zk-afhalen');
 	if(a&&r){r.addEventListener('click',function(){a.click();});}
