@@ -13,9 +13,11 @@ if (!defined('ABSPATH')) return;
 add_action('wp_head', function () {
 	if (!function_exists('is_product') || !is_product()) return; ?>
 <style>
+body.single-product .elementor-widget-wrap:has(>.elementor-element-4b8cb73)>*{order:11}
 body.single-product .elementor-element-b8900ef{order:1}
 body.single-product .elementor-element-4b8cb73{order:2}
 body.single-product .elementor-element-edb6a19{order:3}
+body.single-product .thh-b21-uitleg{order:3;margin:4px 0 8px}
 body.single-product .elementor-element-6a35e17{order:4}
 body.single-product .elementor-element-7d8a0da{order:5}
 body.single-product .elementor-element-59159bc{order:6}
