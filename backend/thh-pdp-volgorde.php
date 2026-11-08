@@ -37,7 +37,7 @@ body.single-product .elementor-element-d5043d7,body.single-product .elementor-el
 
 /* ---------- typografie ---------- */
 body.single-product .elementor-element-b8900ef,body.single-product .elementor-element-b8900ef a{font-size:16px!important;font-weight:400!important;color:#1b1f2e!important;text-decoration:none!important}
-body.single-product .elementor-element-4b8cb73 .product_title{font-size:clamp(22px,2.2vw,28px)!important;line-height:1.25!important;margin:2px 0 0!important;font-weight:700!important;text-transform:none!important}
+body.single-product .elementor-element-4b8cb73 .product_title{font-size:clamp(22px,2.2vw,28px)!important;line-height:1.25!important;margin:2px 0 0!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.01em!important}
 body.single-product .elementor-element-edb6a19{margin-top:6px}
 body.single-product .elementor-element-edb6a19 .price{font-size:22px!important;font-weight:700!important;color:#1b1f2e!important}
 body.single-product .elementor-element-edb6a19 .price del{font-size:16px!important;font-weight:400!important;color:#6b7280!important}
