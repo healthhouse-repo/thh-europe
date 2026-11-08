@@ -1,6 +1,6 @@
 <?php
 /**
- * THH — Club-blok op de productpagina (zoals Zalando Plus) — TESTVERSIE
+ * THH — Club-blok op de productpagina (zoals Zalando Plus) — LIVE
  *
  * Zichtbaar voor beheerders, of voor iedereen die de pagina één keer opent met ?thh_clubtest=1
  * (dan blijft het 7 dagen zichtbaar in die browser; ?thh_clubtest=0 zet het weer uit).
@@ -21,9 +21,8 @@ add_action('init', function () {
 });
 
 function thh_cb_actief() {
-	if (isset($_GET['thh_clubtest'])) return $_GET['thh_clubtest'] === '1';
-	if (!empty($_COOKIE['thh_clubtest'])) return true;
-	return is_user_logged_in() && current_user_can('manage_woocommerce');
+	// live voor iedereen sinds 8 nov 2026; tijdelijk uitzetten kan met optie thh_club_uit = 1
+	return !get_option('thh_club_uit');
 }
 
 function thh_cb_winkels() {
