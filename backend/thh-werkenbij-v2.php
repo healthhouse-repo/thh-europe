@@ -58,7 +58,9 @@ add_shortcode('thh_werkenbij_v2', function () {
 .pv-gf .gform_wrapper input[type=text],.pv-gf .gform_wrapper input[type=email],.pv-gf .gform_wrapper input[type=tel],.pv-gf .gform_wrapper select,.pv-gf .gform_wrapper textarea{width:100%!important;background:#fff!important;border:1px solid transparent!important;border-radius:12px!important;padding:12px 14px!important;font-size:15px!important;color:#1b1f2e!important;font-family:inherit!important;box-shadow:none!important}
 .pv-gf .gform_wrapper textarea{min-height:120px}
 .pv-gf .gform_wrapper .gfield_label,.pv-gf .gform_wrapper legend{color:#fff!important;font-size:14px!important;font-weight:500!important}
-.pv-gf .gform_button_select_files{background:rgba(255,255,255,.12)!important;color:#fff!important;border:2px dashed rgba(255,255,255,.5)!important;border-radius:12px!important;width:100%!important;min-height:52px}
+.pv-gf .gform_wrapper .gfield input,.pv-gf .gform_wrapper .gfield select,.pv-gf .gform_wrapper .gfield textarea,.pv-gf .gform_wrapper .ginput_container{max-width:none!important;width:100%!important}
+.pv-gf .gform_wrapper textarea{height:150px!important}
+.pv-gf .gform_button_select_files{background:#fff!important;color:#14204a!important;border:0!important;border-radius:12px!important;width:100%!important;min-height:52px;font-weight:600!important}
 .pv-gf .gform_drop_instructions,.pv-gf .gform_fileupload_rules,.pv-gf .ginput_preview{color:rgba(255,255,255,.8)!important}
 .pv-gf .gform_footer input[type=submit],.pv-gf .gform_footer button{background:#e2373f!important;color:#fff!important;border:0!important;border-radius:999px!important;min-height:50px;padding:0 30px!important;font-weight:600!important;font-size:15px!important;width:100%}
 .pv-gf .gform_confirmation_message{background:#e7f6ee;color:#14532d;border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.5}
