@@ -135,7 +135,7 @@ add_action('wp_footer', function () {
 .thh-mv{max-width:1240px;margin:24px auto 8px;padding:0 20px;font-family:inherit}
 .thh-mv-rij{margin:0 0 40px}
 .thh-mv-kop{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px}
-.thh-mv-kop h2{margin:0;font-size:22px!important;font-weight:700!important;color:#1b1f2e!important;text-transform:none!important;letter-spacing:0!important}
+.thh-mv-kop h2{margin:0;font-size:22px!important;font-weight:500!important;color:#1b1f2e!important;text-transform:uppercase!important;letter-spacing:.01em!important}
 .thh-mv-kop a{font-size:15px;font-weight:600;color:#1b1f2e!important;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .thh-mv-wrap{position:relative}
 .thh-mv-lijst{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 3*16px)/4);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
