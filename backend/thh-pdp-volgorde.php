@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded',function(){
 		var check=function(){var btn=form.querySelector('.single_add_to_cart_button');var ok=aangeraakt&&btn&&!btn.classList.contains('disabled');form.classList.toggle('thh-klaar',!!ok);};
 		form.addEventListener('change',function(){aangeraakt=true;setTimeout(check,50);});
 		form.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.thh-bundel-optie')){aangeraakt=true;setTimeout(check,50);}});
-		if(window.jQuery){jQuery(form).on('found_variation reset_data show_variation hide_variation',function(){setTimeout(check,50);});}
+		if(window.jQuery){jQuery(form).on('change','select,input',function(){aangeraakt=true;setTimeout(check,60);});jQuery(form).on('found_variation reset_data show_variation hide_variation',function(){setTimeout(check,60);});}
 		check();
 	}
 	// afhalen: gebruik de bestaande popup-link
