@@ -100,7 +100,7 @@ add_filter('woocommerce_product_loop_start', function ($html) {
 		$maten = array_values($uniek);
 		if (count($maten) < 2) $maten = [];
 	}
-	if ($maten) $knop = '<a href="' . esc_url($p->get_permalink()) . '" class="thh-em-btn">' . (preg_match('/smaak|flavou?r|taste/u', $soort ?? '') ? 'Kies je smaak' : 'Kies je pot') . '</a>';
+	if ($maten) $knop = '<a href="' . esc_url($p->get_permalink()) . '" class="thh-em-btn">' . 'Nu bestellen' . '</a>';
 	ob_start(); ?>
 <li class="product thh-em">
 	<div class="thh-em-in">
