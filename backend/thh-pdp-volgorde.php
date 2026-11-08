@@ -148,6 +148,8 @@ body.single-product .thh-zk-rij{padding-top:10px!important;padding-bottom:10px!i
 body.single-product .elementor-element-edb6a19 .elementor-container{flex-wrap:nowrap!important;align-items:flex-start!important;gap:12px}
 body.single-product .elementor-element-edb6a19 .elementor-column{width:auto!important;flex:0 0 auto}
 body.single-product .elementor-element-edb6a19 .elementor-column+.elementor-column{flex:0 1 auto;min-width:0;padding-top:4px}
+body.single-product .elementor-element-2266bb5,body.single-product .elementor-element-2266bb5 *{font-size:11px!important;line-height:1.35!important}
+body.single-product .elementor-element-2266bb5{padding:5px 8px!important;border-radius:6px}
 body.single-product .elementor-element-115e858 li{font-size:14px!important;line-height:1.5!important;margin:0!important}
 body.single-product .elementor-element-115e858 ul{margin:0 0 4px!important;padding-left:18px!important}
 }
