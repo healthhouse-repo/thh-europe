@@ -90,6 +90,10 @@ add_filter('woocommerce_product_loop_start', function ($html) {
 				'url'   => $sleutel ? add_query_arg('attribute_' . sanitize_title($sleutel), $waarde, $p->get_permalink()) : $p->get_permalink(),
 			];
 		}
+		// dezelfde maat maar een andere smaak telt als één keuze
+		$uniek = [];
+		foreach ($maten as $m) { $k = mb_strtolower(trim(wp_strip_all_tags($m['naam']))); if (!isset($uniek[$k])) $uniek[$k] = $m; }
+		$maten = array_values($uniek);
 		if (count($maten) < 2) $maten = [];
 	}
 	if ($maten) $knop = '<a href="' . esc_url($p->get_permalink()) . '" class="thh-em-btn">Kies je pot</a>';
@@ -131,6 +135,24 @@ ul.products li.thh-em .thh-em-maten a:hover{background:rgba(255,255,255,.2);bord
 .thh-em-maten b{font-size:15px;font-weight:700;color:#fff}.thh-em-maten span,.thh-em-maten .amount{font-size:14px;font-weight:600;color:#fff!important}.thh-em-maten s,.thh-em-maten s .amount{font-size:12px;font-weight:400;color:rgba(255,255,255,.55)!important}
 .thh-em-img{background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:14px}
 .thh-em-img img{width:100%;height:100%;max-height:300px;object-fit:contain;margin:0!important}
-@media(max-width:767px){ul.products li.product.thh-em{grid-column:1/-1}.thh-em-in{grid-template-columns:minmax(0,1fr) 40%;padding:18px;gap:12px}ul.products li.thh-em a.thh-em-titel{font-size:17px}.thh-em-prijs,.thh-em-prijs .amount,.thh-em-prijs ins{font-size:21px}.thh-em-txt p{display:none}ul.products li.thh-em a.thh-em-btn{min-height:40px;padding:0 16px;font-size:12px}}
+@media(max-width:767px){ul.products li.product.thh-em{grid-column:1/-1}.thh-em-in{grid-template-columns:minmax(0,1fr) 40%;padding:18px;gap:12px}ul.products li.thh-em a.thh-em-titel{font-size:17px}.thh-em-prijs,.thh-em-prijs .amount,.thh-em-prijs ins{font-size:21px}.thh-em-txt p{display:none}ul.products li.thh-em a.thh-em-btn{min-height:40px;padding:0 16px;font-size:12px}
+.thh-em-in{grid-template-columns:minmax(0,1fr) 34%;padding:16px;align-items:center}.thh-em-img{aspect-ratio:1;padding:8px;border-radius:12px}.thh-em-img img{max-height:130px}.thh-em-txt{gap:10px}.thh-em-pill{font-size:10px;padding:5px 10px}
+.thh-em-maten{grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}ul.products li.thh-em .thh-em-maten a{padding:7px 9px;border-radius:10px}.thh-em-maten b{font-size:13px;white-space:nowrap}.thh-em-maten span,.thh-em-maten .amount{font-size:12.5px;white-space:nowrap}.thh-em-maten s,.thh-em-maten s .amount{font-size:11px}}
+</style>
+<?php });
+
+// Kop van categoriepagina's compacter: terug-knop en kruimelpad dichter op elkaar, op mobiel geen terug-knop
+add_action('wp_head', function () {
+	if (!function_exists('is_product_taxonomy') || !(is_product_taxonomy() || is_shop())) return; ?>
+<style>
+body.archive .elementor-section:has(>.elementor-container>.elementor-column>.elementor-widget-wrap>.btn-back){margin-top:12px!important}
+body.archive .elementor-widget-wrap:has(>.btn-back){padding:0!important;align-items:center}
+body.archive .elementor-widget-wrap>.btn-back{margin:0 16px 0 0!important}
+body.archive .product-breadcrumbs .woocommerce-breadcrumb{margin:0!important}
+@media(max-width:767px){
+body.archive .elementor-widget-wrap>.btn-back{display:none!important}
+body.archive .elementor-element-5eac838>.elementor-widget-wrap,body.archive .elementor-widget-wrap:has(>.elementor-element-6a2e940){padding-left:0!important}
+body.archive .elementor-element-5eac838 h1{font-size:24px!important}
+}
 </style>
 <?php });
