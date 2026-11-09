@@ -116,6 +116,8 @@ body.single-product .elementor-element-500d427 .elementor-tab-title:after{conten
 body.single-product .elementor-element-500d427 .elementor-tab-title.elementor-active:after{transform:rotate(-135deg);margin-top:6px}
 body.single-product .elementor-element-500d427 .elementor-tab-content{border:0!important;padding:24px 48px 32px!important}
 @media(max-width:767px){body.single-product .elementor-element-500d427 .elementor-tab-title{padding:20px 18px!important}body.single-product .elementor-element-500d427 .elementor-tab-title,body.single-product .elementor-element-500d427 .elementor-tab-title a{font-size:16px!important}body.single-product .elementor-element-500d427 .elementor-tab-content{padding:18px 18px 24px!important}}
+/* kopje 'How to use' weg (bijna overal leeg) */
+body.single-product .elementor-element-500d427 .elementor-accordion-item:has(>.elementor-tab-title[data-tab="2"]){display:none!important}
 /* terug-knop en kruimelpad compact, zodat het product eerder in beeld is */
 body.single-product .elementor-section:has(>.elementor-container>.elementor-element-7f41f9f){margin-top:12px!important}
 body.single-product .elementor-element-7f41f9f>.elementor-widget-wrap{padding:0!important;align-items:center}
