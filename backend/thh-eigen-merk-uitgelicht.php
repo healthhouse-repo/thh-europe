@@ -132,7 +132,7 @@ ul.products li.thh-em a.thh-em-titel{color:#fff!important;font-size:22px;font-we
 .thh-em-prijs del,.thh-em-prijs del .amount{color:rgba(255,255,255,.55)!important;font-size:16px;font-weight:400}
 ul.products li.thh-em a.thh-em-btn{display:inline-flex;align-items:center;justify-content:center;background:#e2373f!important;color:#fff!important;border-radius:999px;min-height:46px;padding:0 26px;font-weight:600;font-size:14px;text-transform:uppercase;width:max-content;max-width:100%;margin:0;border:0}
 ul.products li.thh-em a.thh-em-btn:hover{background:#c92c33!important}
-ul.products li.thh-em a.thh-em-btn::after,ul.products li.thh-em a.thh-em-btn::before{content:none!important;display:none!important}
+body ul.products li.product.thh-em a.button.add_to_cart_button.ajax_add_to_cart.thh-em-btn::after,body ul.products li.product.thh-em a.button.thh-em-btn::after{content:none!important;display:none!important}
 ul.products li.thh-em a.added_to_cart{color:#fff!important;font-size:13px}
 .thh-em-maten{display:flex;flex-direction:column;gap:6px}
 ul.products li.thh-em .thh-em-maten a{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.35);border-radius:10px;padding:9px 14px;color:#fff!important;text-decoration:none;min-width:0}
