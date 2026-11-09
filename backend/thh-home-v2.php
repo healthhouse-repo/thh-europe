@@ -172,6 +172,18 @@ add_shortcode('thh_home_v2', function ($a) {
 			$deals_html .= '<img class="h2-dealimg is-on' . (!empty($i['lowres']) ? ' h2-dealimg-box' : '') . '" src="' . esc_url($i['img']) . '" alt="" loading="lazy">';
 		}
 		$deals_html .= '</a>';
+	} else {
+		// geen dagdeal vandaag: uitgelicht blok met de 2+1 deals
+		$b21 = get_term_by('slug', '2-1-deals', 'product_cat');
+		$b21_img = wp_get_attachment_image_url(93032, 'large') ?: '';
+		$b21_n = $b21 ? (int) $b21->count : 0;
+		$deals_html .= '<a class="h2-deal h2-deal-b21" href="' . esc_url($b21 ? get_term_link($b21) : home_url('/product-category/2-1-deals/')) . '">' .
+			'<div class="h2-dealtxt"><span class="h2-pill">2+1 gratis</span>' .
+			'<h3>Bestel er 3, de derde krijg je gratis</h3>' .
+			'<p>' . ($b21_n ? esc_html($b21_n) . ' producten doen mee. ' : '') . 'Smaken en maten mag je combineren, ook met de nieuwe Insane Edge V2.</p>' .
+			'<span class="h2-btn h2-btn-red">Bekijk de 2+1 deals</span></div>' .
+			($b21_img ? '<img class="h2-dealimg is-on h2-dealimg-box" src="' . esc_url($b21_img) . '" alt="" loading="lazy">' : '') .
+			'</a>';
 	}
 	$wk = thh_h2_products(['category' => ['week-deals'], 'limit' => 4, 'orderby' => 'popularity']);
 	if (count($wk) < 4) $wk = thh_h2_products(['limit' => 4, 'orderby' => 'popularity', 'on_sale' => true]);
