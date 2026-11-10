@@ -813,7 +813,7 @@
   .unavail-block{margin-top:24px;padding:18px;border:1px dashed #BFBFBF;border-radius:8px;} .unavail-block ul{margin:10px 0 14px 18px;font-size:14px;}
   .paid-ok{font-size:18px;font-weight:700;color:var(--heading-color);max-width:700px;}
   .forgot-box{margin-top:30px;}
-  .brand-intro.hidden,.brand-body.hidden{display:none}.brand-intro{margin:6px 0 18px;max-width:860px}.brand-intro h2{font-size:22px;margin:0 0 6px;text-transform:uppercase}.brand-body{margin:40px 0 10px;max-width:860px;border-top:1px solid #E9E9EB;padding-top:10px}.brand-body h2{font-size:18px;margin:26px 0 6px;text-transform:uppercase}.brand-body ul{padding-left:20px}.brand-body details{border-bottom:1px solid #E9E9EB;padding:10px 0}.brand-body summary{cursor:pointer;font-weight:700}
+  .brand-intro.hidden,.brand-body.hidden{display:none}.brand-intro{margin:6px 0 18px;max-width:860px}.brand-intro .bi-logo{display:block;max-height:56px;max-width:220px;object-fit:contain;margin:0 0 12px}.brand-intro h2{font-size:22px;margin:0 0 6px;text-transform:uppercase}.brand-body{margin:40px 0 10px;max-width:860px;border-top:1px solid #E9E9EB;padding-top:10px}.brand-body h2{font-size:18px;margin:26px 0 6px;text-transform:uppercase}.brand-body ul{padding-left:20px}.brand-body details{border-bottom:1px solid #E9E9EB;padding:10px 0}.brand-body summary{cursor:pointer;font-weight:700}
   .staging-bar{position:fixed;left:0;right:0;bottom:0;background:#C79A00;color:#111;text-align:center;font-size:12px;font-weight:800;letter-spacing:.06em;padding:6px 10px;text-transform:uppercase;z-index:3000;}
   @media(max-width:900px){.co-layout,.acct-grid{grid-template-columns:1fr;}.co-side{position:static;}}
 .inv-summary{margin:0 0 12px;font-size:14px;color:var(--heading-color,#1F1F28)}
@@ -1852,9 +1852,10 @@
       MERKTEKST_P.then(renderBrandText); return;
     }
     var m = MERKTEKST[b];
+    if(!m){ var bk = String(b).replace(/\s*[®™©]\s*/g, " ").trim().toLowerCase(); for(var k in MERKTEKST){ if(k.replace(/\s*[®™©]\s*/g, " ").trim().toLowerCase() === bk){ m = MERKTEKST[k]; break; } } }
     if(!m){ bi.classList.add("hidden"); bb.classList.add("hidden"); return; }
     var nl = currentLang === "nl", tx = nl ? m.nl : m.en, url = (nl ? "/merken/" : "/brands/") + m.slug + "/";
-    bi.innerHTML = '<h2>' + esc(b) + (nl ? " groothandel" : " wholesale") + '</h2><p>' + esc(tx.intro) + '</p>';
+    bi.innerHTML = (m.logo ? '<img class="bi-logo" src="' + esc(m.logo) + '" alt="' + esc(b) + ' logo" />' : '') + '<h2>' + esc(b) + (nl ? " groothandel" : " wholesale") + '</h2><p>' + esc(tx.intro) + '</p>';
     bb.innerHTML = tx.body + '<p class="small"><a href="' + url + '">' + (nl ? "Alles over " : "All about ") + esc(b) + (nl ? " zakelijk inkopen" : " wholesale") + ' &rarr;</a></p>';
     bi.classList.remove("hidden"); bb.classList.remove("hidden");
   }

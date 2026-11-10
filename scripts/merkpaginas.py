@@ -38,6 +38,46 @@ def logo_slug(n):
     return LOGO_ALIAS.get(k) or slugify(n)
 
 
+# Logo's: eerst de logo's van de merkenpagina van thehealthhouse.nl (WordPress-media), dan de repo thh-xxl-images.
+WP = "https://thehealthhouse.nl/wp-content/uploads/2026/11/logo-"
+WP_LOGO = {
+    "now foods": "now-foods.webp", "xxl nutrition": "xxl-nutrition.webp", "applied nutrition": "applied-nutrition.webp",
+    "qnt": "qnt.svg", "ultimate nutrition": "ultimate-nutrition.png", "quamtrax": "quamtrax.webp",
+    "5% nutrition rich piana": "5-nutrition.webp", "5% nutrition": "5-nutrition.webp", "adidas": "adidas.webp",
+    "algomed": "algomed.webp", "allmax": "allmax.png", "allmax nutrition": "allmax.png",
+    "arthur andrew medical": "arthur-andrew-medical.webp", "barebells": "barebells.webp", "cellucor": "cellucor.png",
+    "dorian yates": "dorian-yates.webp", "four sigmatic": "four-sigmatic.webp", "green pasture": "green-pasture.webp",
+    "grenade": "grenade-zwart.png", "laviesage": "laviesage.webp", "maxi nutrition": "maxi-nutrition.webp",
+    "monster energy": "monster-energy.webp", "mutant": "mutant.webp", "myoblox": "myoblox.webp", "nocco": "nocco.png",
+    "nordic naturals": "nordic-naturals.webp", "nutrend": "nutrend-zwart-v3.png", "nutrex": "nutrex.svg",
+    "optimum nutrition": "optimum-nutrition-zwart.png", "pb2 foods": "pb2-bell-plantation.webp",
+    "pb2 (bell plantation)": "pb2-bell-plantation.webp", "per4m": "per4m.webp", "pescience": "pescience.webp",
+    "plantforce": "plantforce.webp", "prosupps": "prosupps.svg", "protein world": "protein-world.webp",
+    "real roots": "real-roots.webp", "red bull": "red-bull.webp", "rule one": "rule-one.webp", "scitec": "scitec.webp",
+    "silverback protein": "silverback-protein.webp", "stacker2 europe": "stacker2.png", "sunwarrior": "sunwarrior.webp",
+    "the health house": "the-health-house-zwart.png", "trace minerals": "trace-minerals.webp",
+    "trained by jp": "trained-by-jp.webp", "usn": "usn-zwart-v2.png", "vp laboratory": "vp-labs.webp",
+    "vp labs": "vp-labs.webp", "weider": "weider.webp", "wobenzym": "wobenzym.webp",
+}
+XXL_EXTRA = {"alkavitae": "alka", "enfusion nutrition": "enfusion", "himalaya": None}
+XXL_FILES = None
+
+
+def logo_url(n):
+    """URL van het merklogo, of None als er (nog) geen logo is."""
+    global XXL_FILES
+    k = clean_brand(n).lower()
+    if k in WP_LOGO:
+        return WP + WP_LOGO[k]
+    if XXL_FILES is None:
+        p = os.environ.get("XXL_LOGOS", "")
+        XXL_FILES = set(os.listdir(p)) if p and os.path.isdir(p) else set()
+    for slug in (XXL_EXTRA.get(k), LOGO_ALIAS.get(k), slugify(k)):
+        if slug and slug + ".png" in XXL_FILES:
+            return LOGO_BASE + slug + ".png"
+    return None
+
+
 def clean_brand(n):
     """Merknaam voor in lopende tekst: zonder (R), (TM)."""
     return re.sub(r"\s*[®™©]\s*", " ", n).strip()
@@ -116,7 +156,7 @@ def brand_data(name, prods):
         if len(examples) >= 6: break
         if p["slug"] not in seen and p.get("img"):
             examples.append(p); seen.add(p["slug"])
-    return {"name": name, "clean": clean_brand(name), "slug": slugify(name), "n": len(prods), "cats": cats,
+    return {"name": name, "clean": clean_brand(name), "logo": logo_url(name), "slug": slugify(name), "n": len(prods), "cats": cats,
             "units": [u for u, _ in units.most_common(4)], "flavors": flavors, "examples": examples[:6],
             "prods": prods}
 
@@ -269,7 +309,7 @@ h2{font-family:PilatExt,Arial;font-weight:900;color:var(--ink);font-size:20px;ma
 .btns{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 6px}.btn{display:inline-block;background:#1A1A1A;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:4px;font-size:14px}.btn.sec{background:#fff;color:#1A1A1A;border:1.5px solid #1A1A1A}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:14px;margin:18px 0}
 .card{border:1px solid var(--line);border-radius:10px;padding:12px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:8px;background:#fff}
-.card img{width:100%;height:140px;object-fit:contain}.card span{font-size:13px;font-weight:700;line-height:1.3}.card small{font-size:12px;opacity:.65}
+.card img{width:100%;height:140px;object-fit:contain}.card img.lgi{height:70px}.lgt{font-family:PilatExt,Arial;font-weight:900;color:var(--ink);font-size:15px;text-align:center;line-height:1.2;display:flex;align-items:center;justify-content:center;min-height:70px}.card span{font-size:13px;font-weight:700;line-height:1.3}.card small{font-size:12px;opacity:.65}
 ul{padding-left:20px}li{margin:3px 0}
 .faq details{border-bottom:1px solid var(--line);padding:12px 0}.faq summary{cursor:pointer;font-weight:700;color:var(--ink)}
 .usp{background:var(--soft);border-radius:10px;padding:14px 18px;font-size:14px;margin:24px 0}
@@ -309,7 +349,7 @@ def page(b, lang, t, alt_url, url):
 <nav><a href="/#catalogus">{'Catalogus' if nl else 'Catalogue'}</a><a href="{'/merken/' if nl else '/brands/'}">{'Merken' if nl else 'Brands'}</a><a href="/#word-klant">{'Word klant' if nl else 'Become a customer'}</a><a href="/#inloggen">{'Inloggen' if nl else 'Log in'}</a></nav></div></header>
 <main class="wrap">
 <div class="crumb"><a href="/">THH Europe</a> / <a href="{'/merken/' if nl else '/brands/'}">{'Merken' if nl else 'Brands'}</a> / {E(nm)}</div>
-<div class="hero"><div class="lg"><img src="{LOGO_BASE}{logo_slug(b['name'])}.png" alt="{E(nm)} logo" onerror="this.parentNode.textContent='{E(nm).replace(chr(39), '')}'"></div>
+<div class="hero"><div class="lg">{('<img src="' + E(b['logo']) + '" alt="' + E(nm) + ' logo">') if b.get('logo') else ('<span class="lgt">' + E(nm) + '</span>')}</div>
 <div><h1>{E(t['h1'])}</h1><p>{E(t['intro'])}</p>
 <div class="btns"><a class="btn" href="{cat_link}">{('Bekijk alle ' + str(b['n']) + ' producten') if nl else ('View all ' + str(b['n']) + ' products')}</a><a class="btn sec" href="/#word-klant">{'Word zakelijk klant' if nl else 'Become a business customer'}</a></div></div></div>
 <div class="grid">{cards}</div>
@@ -325,7 +365,7 @@ def page(b, lang, t, alt_url, url):
 def index_page(brands, lang):
     nl = lang == "nl"
     base = "/merken/" if nl else "/brands/"
-    items = "".join(f'<a class="card" href="{base}{b["slug"]}/"><img src="{LOGO_BASE}{logo_slug(b["name"])}.png" alt="{E(b["clean"])}" loading="lazy" onerror="this.style.display=\'none\'"><span>{E(b["clean"])}</span><small>{b["n"]} {"producten" if nl else "products"}</small></a>' for b in brands)
+    items = "".join(f'<a class="card" href="{base}{b["slug"]}/">{('<img class="lgi" src="' + E(b['logo']) + '" alt="' + E(b['clean']) + ' logo" loading="lazy">') if b.get('logo') else ('<b class="lgt">' + E(b['clean']) + '</b>')}<span>{E(b["clean"])}</span><small>{b["n"]} {"producten" if nl else "products"}</small></a>' for b in brands)
     title = "Merken groothandel sportvoeding | THH Europe" if nl else "Sports nutrition brands wholesale | THH Europe"
     h1 = "Onze merken" if nl else "Our brands"
     intro = (f"THH Europe levert {len(brands)} merken in sportvoeding en supplementen aan winkels, sportscholen en webshops in de Benelux. Kies een merk voor het assortiment en de voorwaarden."
@@ -346,8 +386,17 @@ def main():
     by = collections.defaultdict(list)
     for p in prods:
         b = (p.get("brand") or "").strip()
-        if b and b.lower() not in UITGESLOTEN:
+        if b and clean_brand(b).lower() not in UITGESLOTEN:
             by[b].append(p)
+    # zelfde merk met en zonder (R)/(TM) samenvoegen onder de naam met de meeste producten
+    groep = collections.defaultdict(list)
+    for b in by:
+        groep[clean_brand(b).lower()].append(b)
+    for namen in groep.values():
+        if len(namen) > 1:
+            namen.sort(key=lambda x: -len(by[x]))
+            for extra in namen[1:]:
+                by[namen[0]].extend(by.pop(extra))
     brands = sorted((brand_data(n, ps) for n, ps in by.items()), key=lambda b: b["clean"].lower())
     seen = {}
     for b in brands:  # dubbele slugs voorkomen
@@ -365,6 +414,7 @@ def main():
                 f.write(page(b, lang, t[lang], alt, url))
             urls.append(url)
         teksten[b["name"]] = {"slug": b["slug"],
+                              "logo": b.get("logo"),
                               "nl": {"intro": t["nl"]["intro"], "body": body_html(t["nl"])},
                               "en": {"intro": t["en"]["intro"], "body": body_html(t["en"])}}
     for lang, d in (("nl", "merken"), ("en", "brands")):
