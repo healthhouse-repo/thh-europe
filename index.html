@@ -1854,9 +1854,20 @@
     var m = MERKTEKST[b];
     if(!m){ var bk = String(b).replace(/\s*[®™©]\s*/g, " ").trim().toLowerCase(); for(var k in MERKTEKST){ if(k.replace(/\s*[®™©]\s*/g, " ").trim().toLowerCase() === bk){ m = MERKTEKST[k]; break; } } }
     if(!m){ bi.classList.add("hidden"); bb.classList.add("hidden"); return; }
-    var nl = currentLang === "nl", tx = nl ? m.nl : m.en, url = (nl ? "/merken/" : "/brands/") + m.slug + "/";
-    bi.innerHTML = (m.logo ? '<img class="bi-logo" src="' + esc(m.logo) + '" alt="' + esc(b) + ' logo" />' : '') + '<h2>' + esc(b) + (nl ? " groothandel" : " wholesale") + '</h2><p>' + esc(tx.intro) + '</p>';
-    bb.innerHTML = tx.body + '<p class="small"><a href="' + url + '">' + (nl ? "Alles over " : "All about ") + esc(b) + (nl ? " zakelijk inkopen" : " wholesale") + ' &rarr;</a></p>';
+    var L = ["nl","en","fr","de","bs"].indexOf(currentLang) >= 0 ? currentLang : "en";
+    var DIR = {nl:"merken", en:"brands", fr:"fr/marques", de:"de/marken", bs:"bs/brendovi"};
+    var SUF = {nl:" groothandel", en:" wholesale", fr:" grossiste", de:" Großhandel", bs:" veleprodaja"};
+    var MORE = {nl:"Alles over {b} zakelijk inkopen", en:"All about {b} wholesale", fr:"Tout sur {b} en gros", de:"Alles über {b} im Großhandel", bs:"Sve o {b} veleprodaji"};
+    var key = L + "/" + m.slug;
+    if(!m.tx) m.tx = {};
+    if(!m.tx[L]){
+      if(m.tx[L] === null){ bi.classList.add("hidden"); bb.classList.add("hidden"); return; }
+      if(m.tx[L] === undefined){ m.tx[L] = false; fetch("merken/t/" + key + ".json").then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }).then(function(d){ m.tx[L] = d || null; if(state.filterBrand === b) renderBrandText(); }); }
+      return;
+    }
+    var tx = m.tx[L], url = "/" + DIR[L] + "/" + m.slug + "/";
+    bi.innerHTML = (m.logo ? '<img class="bi-logo" src="' + esc(m.logo) + '" alt="' + esc(b) + ' logo" />' : '') + '<h2>' + esc(b) + SUF[L] + '</h2><p>' + esc(tx.intro) + '</p>';
+    bb.innerHTML = tx.body + '<p class="small"><a href="' + url + '">' + esc(MORE[L].replace("{b}", b)) + ' &rarr;</a></p>';
     bi.classList.remove("hidden"); bb.classList.remove("hidden");
   }
   function renderCatalog(){
