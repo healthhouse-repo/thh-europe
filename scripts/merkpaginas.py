@@ -463,23 +463,23 @@ LANGS = ["nl", "en", "fr", "de", "bs"]
 LDIR = {"nl": "merken", "en": "brands", "fr": "fr/marques", "de": "de/marken", "bs": "bs/brendovi"}
 LNAME = {"nl": "Nederlands", "en": "English", "fr": "Français", "de": "Deutsch", "bs": "Bosanski"}
 UI = {
-    "nl": dict(cat="Catalogus", brands="Merken", join="Word klant", login="Inloggen", all="Bekijk alle {n} producten",
+    "nl": dict(prod1="product", cat="Catalogus", brands="Merken", join="Word klant", login="Inloggen", all="Bekijk alle {n} producten",
                biz="Word zakelijk klant", usp="Groothandelsprijzen vanaf 1 stuk · Staffelkorting · Gratis levering vanaf € 1.000 · Vaste accountmanager",
                foot="B2B groothandel in sportvoeding", prods="producten", idx_t="Merken groothandel sportvoeding | THH Europe", idx_h="Onze merken",
                idx_i="THH Europe levert {n} merken in sportvoeding en supplementen aan winkels, sportscholen en webshops in de Benelux. Kies een merk voor het assortiment en de voorwaarden."),
-    "en": dict(cat="Catalogue", brands="Brands", join="Become a customer", login="Log in", all="View all {n} products",
+    "en": dict(prod1="product", cat="Catalogue", brands="Brands", join="Become a customer", login="Log in", all="View all {n} products",
                biz="Become a business customer", usp="Wholesale prices from 1 unit · Volume discount · Free delivery from € 1,000 · Dedicated account manager",
                foot="B2B sports nutrition wholesale", prods="products", idx_t="Sports nutrition brands wholesale | THH Europe", idx_h="Our brands",
                idx_i="THH Europe supplies {n} sports nutrition and supplement brands to shops, gyms and webshops across the Benelux. Choose a brand to see its range and terms."),
-    "fr": dict(cat="Catalogue", brands="Marques", join="Devenir client", login="Connexion", all="Voir les {n} produits",
+    "fr": dict(prod1="produit", cat="Catalogue", brands="Marques", join="Devenir client", login="Connexion", all="Voir les {n} produits",
                biz="Devenir client professionnel", usp="Prix de gros dès 1 pièce · Remise sur quantité · Livraison gratuite dès 1 000 € · Gestionnaire de compte dédié",
                foot="Grossiste B2B en nutrition sportive", prods="produits", idx_t="Marques de nutrition sportive en gros | THH Europe", idx_h="Nos marques",
                idx_i="THH Europe fournit {n} marques de nutrition sportive et de compléments aux magasins, salles de sport et boutiques en ligne du Benelux. Choisissez une marque pour voir sa gamme et les conditions."),
-    "de": dict(cat="Katalog", brands="Marken", join="Kunde werden", login="Anmelden", all="Alle {n} Produkte ansehen",
+    "de": dict(prod1="Produkt", cat="Katalog", brands="Marken", join="Kunde werden", login="Anmelden", all="Alle {n} Produkte ansehen",
                biz="Geschäftskunde werden", usp="Großhandelspreise ab 1 Stück · Mengenrabatt · Kostenlose Lieferung ab 1.000 € · Fester Ansprechpartner",
                foot="B2B-Großhandel für Sporternährung", prods="Produkte", idx_t="Marken Sporternährung Großhandel | THH Europe", idx_h="Unsere Marken",
                idx_i="THH Europe liefert {n} Marken für Sporternährung und Nahrungsergänzung an Geschäfte, Fitnessstudios und Onlineshops im Benelux-Raum. Wählen Sie eine Marke für Sortiment und Konditionen."),
-    "bs": dict(cat="Katalog", brands="Brendovi", join="Postanite kupac", login="Prijava", all="Pogledajte svih {n} proizvoda",
+    "bs": dict(prod1="proizvod", cat="Katalog", brands="Brendovi", join="Postanite kupac", login="Prijava", all="Pogledajte svih {n} proizvoda",
                biz="Postanite poslovni kupac", usp="Veleprodajne cijene od 1 komada · Količinski popust · Besplatna dostava od 1.000 € · Stalni menadžer računa",
                foot="B2B veleprodaja sportske ishrane", prods="proizvoda", idx_t="Brendovi sportske ishrane na veliko | THH Europe", idx_h="Naši brendovi",
                idx_i="THH Europe isporučuje {n} brendova sportske ishrane i suplemenata prodavnicama, teretanama i web shopovima. Odaberite brend da vidite asortiman i uslove."),
@@ -546,7 +546,7 @@ def index_page(brands, lang):
     U = UI[lang]
     base = f"/{LDIR[lang]}/"
     url_of = lambda l: f"{SITE}/{LDIR[l]}/"
-    items = "".join(f'<a class="card" href="{base}{b["slug"]}/">{('<img class="lgi" src="' + E(b['logo']) + '" alt="' + E(b['clean']) + ' logo" loading="lazy">') if b.get('logo') else ('<b class="lgt">' + E(b['clean']) + '</b>')}<span>{E(b["clean"])}</span><small>{b["n"]} {U["prods"]}</small></a>' for b in brands)
+    items = "".join(f'<a class="card" href="{base}{b["slug"]}/">{('<img class="lgi" src="' + E(b['logo']) + '" alt="' + E(b['clean']) + ' logo" loading="lazy">') if b.get('logo') else ('<b class="lgt">' + E(b['clean']) + '</b>')}<span>{E(b["clean"])}</span><small>{b["n"]} {U["prod1"] if b["n"] == 1 else U["prods"]}</small></a>' for b in brands)
     intro = U["idx_i"].format(n=len(brands))
     return f"""<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{U['idx_t']}</title><meta name="description" content="{E(intro)}"><link rel="canonical" href="{SITE}{base}">
