@@ -340,7 +340,7 @@ add_shortcode('thh_home_v2', function ($a) {
 .h2-dealgrid .h2-grid3{align-items:stretch}.h2-only-mob{display:none!important}.h2-dealgrid .h2-card{height:100%}.h2-dealgrid .h2-cimg{aspect-ratio:auto;flex:1;min-height:380px}.h2-dealgrid .h2-cbody{flex:0 0 auto;min-height:62px}
 .h2-price del{font-size:12px;color:#a5a2a2;font-weight:500}.h2-price del .h2-eur{font-size:12px}
 /* deals */
-.h2-dealgrid{display:grid;grid-template-columns:1fr 1.6fr;gap:16px;align-items:stretch}
+.h2-dealgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}.h2-dealgrid .h2-grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.h2-dealgrid .h2-grid3>*:nth-child(n+3){display:none!important}
 .h2 .h2-deal,.h2 .h2-deal strong,.h2 .h2-deal h3{color:#fff}.h2-deal{background:var(--nv);color:#fff;border-radius:20px;padding:28px;display:grid;grid-template-columns:1fr 42%;gap:16px;position:relative;overflow:hidden;min-height:360px}
 .h2-dealtxt{display:flex;flex-direction:column;gap:12px;justify-content:center;z-index:1}.h2-pill{display:inline-block;background:var(--rd);color:#fff;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px;border-radius:999px;width:max-content}
 .h2-deal h3{color:#fff;font-size:24px;font-weight:700}.h2-deal p{margin:0;font-size:13px;color:rgba(255,255,255,.75)}
