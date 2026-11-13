@@ -64,7 +64,7 @@ WP_SLUG = {
     "cnp": "cnp.png", "cnp-professional": "cnp.png", "ghost": "ghost.png", "himalaya": "himalaya.svg",
     "more": "more.svg", "more-nutrition": "more.svg", "state": "state.png", "state-drinks": "state.png",
     "nutry-nuts": "nutry-nuts.png", "country-life": "country-life.webp", "dy-nutrition": "dorian-yates.webp",
-    "prime": "prime.webp", "hayabusa": "hayabusa.webp", "venum": "venum.webp", "safe-jaws": "safe-jaws.png", "ufc": "ufc.webp",
+    "prime": "prime.webp", "huel": "huel.svg", "nuchu": "nuchu.png", "hayabusa": "hayabusa.webp", "venum": "venum.webp", "safe-jaws": "safe-jaws.png", "ufc": "ufc.webp",
 }
 XXL_EXTRA = {"alkavitae": "alka", "enfusion nutrition": "enfusion"}
 # Bestanden in thh-xxl-images die geen echt logo zijn (letter-placeholder, leeg, kapot of te klein icoon).
