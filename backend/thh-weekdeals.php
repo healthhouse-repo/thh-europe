@@ -40,12 +40,12 @@ add_shortcode('thh_weekdeals', function () {
 	$kaarten = []; // [pid, titel, prijs, van, tag, status]
 	if ($blok) {
 		$modus = 'week';
-		foreach (thh_dd_week() as $it) $kaarten[] = [$it, 'Weekdeal', 'actief'];
+		foreach (thh_dd_week() as $it) $kaarten[] = [$it, 'Weekenddeal', 'actief'];
 		$start = new DateTime($blok[0] . ' 00:00', $tz); $eind = new DateTime($blok[1] . ' 23:59:59', $tz);
-		$label = 'Weekdeals · ' . ($blok[0] === $blok[1] ? $fmt($blok[0], 'l j F') : $fmt($blok[0], 'D j') . ' t/m ' . $fmt($blok[1], 'D j F'));
+		$label = 'Weekenddeals · ' . ($blok[0] === $blok[1] ? $fmt($blok[0], 'l j F') : $fmt($blok[0], 'D j') . ' t/m ' . $fmt($blok[1], 'D j F'));
 		$titel = 'Alle dagdeals<br><span>nog één keer</span>';
 		$sub = 'Alleen ' . ($blok[0] === $blok[1] ? 'deze dag' : 'dit weekend') . ', zolang de voorraad strekt';
-		$h2 = 'De weekdeals';
+		$h2 = 'De weekenddeals';
 		$intro = 'Een dagdeal gemist deze week? ' . ($blok[0] === $blok[1] ? 'Vandaag' : 'Dit weekend') . ' krijg je ze allemaal nog één keer, online en in al onze winkels.';
 	} else {
 		$modus = 'dag';
@@ -78,7 +78,7 @@ add_shortcode('thh_weekdeals', function () {
 		$link = add_query_arg(['utm_source' => 'site', 'utm_medium' => 'weekdealpagina', 'utm_campaign' => $modus === 'week' ? 'weekdeals' : 'dagdeals-week'], get_permalink($pid));
 		$html .= '<a class="wd-card wd-st-' . esc_attr($st) . '" href="' . esc_url($link) . '"><div class="wd-img"><img src="' . esc_url(thh_wd_img($pid)) . '" alt="' . esc_attr($naam) . '" loading="lazy">'
 			. ($off ? '<span class="wd-off">-' . $off . '%</span>' : '')
-			. '<span class="wd-pr"><small>' . ($modus === 'week' ? 'Weekdeal' : 'Dagdeal') . '</small><b>' . esc_html($eur($prijs)) . '</b></span></div>'
+			. '<span class="wd-pr"><small>' . ($modus === 'week' ? 'Weekenddeal' : 'Dagdeal') . '</small><b>' . esc_html($eur($prijs)) . '</b></span></div>'
 			. '<div class="wd-tag">' . esc_html($tag) . '</div><h3>' . esc_html($naam) . '</h3>'
 			. ($merk ? '<p class="wd-s">' . esc_html($merk) . '</p>' : '')
 			. '<p class="wd-p">' . ($off ? '<s>' . esc_html($eur($van)) . '</s>' : '') . '<strong>' . esc_html($eur($prijs)) . '</strong></p>'
@@ -96,7 +96,7 @@ add_shortcode('thh_weekdeals', function () {
 </div><div class="wd-art"><img src="https://thh-outlet.vercel.app/outlet/assets/weekdeals/hero-weekdeals.png?v=6" alt="Deals van The Health House"><?php if ($min !== null) : ?><div class="wd-badge"><span>vanaf</span><strong><?php echo esc_html(str_replace(',00', '', $eur($min))); ?></strong></div><?php endif; ?></div></div></section>
 <section class="wd-body" id="wd-deals"><h2 class="wd-h2"><?php echo esc_html($h2); ?></h2><p class="wd-intro"><?php echo esc_html($intro); ?></p><div class="wd-grid"><?php echo $html; ?></div></section></div>
 <style>.wd-card.wd-st-voorbij{opacity:.55}.wd-card.wd-st-voorbij .wd-pr{background:#8a93ab}.wd-card.wd-st-vandaag{box-shadow:0 0 0 3px #D4364A}</style>
-<script>(function(){var s=<?php echo $start ? (int) $start->getTimestamp() * 1000 : 0; ?>,e=<?php echo (int) $eind->getTimestamp() * 1000 + 1000; ?>,mod=<?php echo wp_json_encode($modus); ?>;var l=document.getElementById('wdcdl'),b=document.getElementById('wdcd');if(!l||!b)return;function p(n){return(n<10?'0':'')+n}function t(){var n=Date.now(),x,lab;if(s&&n<s){x=s-n;lab='De weekdeals starten over'}else if(n<e){x=e-n;lab=mod==='week'?'De weekdeals stoppen over':'De dagdeal van vandaag stopt over'}else{l.textContent=mod==='week'?'De weekdeals zijn voorbij':'';b.style.display='none';return}l.textContent=lab;var d=Math.floor(x/864e5),h=Math.floor(x%864e5/36e5),m=Math.floor(x%36e5/6e4),sc=Math.floor(x%6e4/1e3);var a=[[h,'uur'],[m,'min'],[sc,'sec']];if(d>0)a.unshift([d,'dagen']);b.innerHTML=a.map(function(v){return'<div class="wd-cdb"><b>'+p(v[0])+'</b><small>'+v[1]+'</small></div>'}).join('')}t();setInterval(t,1000)})();</script>
+<script>(function(){var s=<?php echo $start ? (int) $start->getTimestamp() * 1000 : 0; ?>,e=<?php echo (int) $eind->getTimestamp() * 1000 + 1000; ?>,mod=<?php echo wp_json_encode($modus); ?>;var l=document.getElementById('wdcdl'),b=document.getElementById('wdcd');if(!l||!b)return;function p(n){return(n<10?'0':'')+n}function t(){var n=Date.now(),x,lab;if(s&&n<s){x=s-n;lab='De weekenddeals starten over'}else if(n<e){x=e-n;lab=mod==='week'?'De weekenddeals stoppen over':'De dagdeal van vandaag stopt over'}else{l.textContent=mod==='week'?'De weekenddeals zijn voorbij':'';b.style.display='none';return}l.textContent=lab;var d=Math.floor(x/864e5),h=Math.floor(x%864e5/36e5),m=Math.floor(x%36e5/6e4),sc=Math.floor(x%6e4/1e3);var a=[[h,'uur'],[m,'min'],[sc,'sec']];if(d>0)a.unshift([d,'dagen']);b.innerHTML=a.map(function(v){return'<div class="wd-cdb"><b>'+p(v[0])+'</b><small>'+v[1]+'</small></div>'}).join('')}t();setInterval(t,1000)})();</script>
 <?php
 	return ob_get_clean();
 });

@@ -175,14 +175,14 @@ function thh_ddp_pagina() {
 	$d = thh_ddp_data();
 	if ( ! $d ) { return ''; }
 	$h = thh_ddp_css() . '<div class="dd">';
-	$cd = '<div class="dd-cd" data-dd-eind="' . esc_attr( $d['eind'] ) . '"><div class="dd-cdl" data-dd-lab>' . ( $d['week'] ? 'De weekdeals stoppen over' : 'Deze dagdeal stopt over' ) . '</div><div data-dd-blocks style="display:flex;gap:10px"></div></div>';
+	$cd = '<div class="dd-cd" data-dd-eind="' . esc_attr( $d['eind'] ) . '"><div class="dd-cdl" data-dd-lab>' . ( $d['week'] ? 'De weekenddeals stoppen over' : 'Deze dagdeal stopt over' ) . '</div><div data-dd-blocks style="display:flex;gap:10px"></div></div>';
 
 	if ( ! $d['deals'] ) {
 		$h .= '<section class="dd-hero"><div class="dd-hi"><div><span class="dd-lab">Dagdeal · ' . esc_html( thh_ddp_dagnaam( $d['datum'] ) ) . '</span><h1>Elke dag<br><span>een nieuwe deal</span></h1><p class="dd-sub">Vandaag even geen dagdeal. Kijk morgen weer.</p><a class="dd-cta" href="/winkel/">Naar de webshop</a></div></div></section>';
 	} elseif ( $d['week'] ) {
-		$h .= '<section class="dd-hero"><div class="dd-hi"><div><span class="dd-lab">Weekdeals · ' . esc_html( thh_ddp_dagnaam( $d['datum'] ) ) . '</span><h1>Alle dagdeals<br><span>nog één keer</span></h1><p class="dd-sub">Alleen dit weekend, zolang de voorraad strekt</p>' . $cd . '<a class="dd-cta" href="#dd-deals">Bekijk alle deals</a></div></div></section>';
-		$h .= '<section class="dd-body" id="dd-deals"><h2 class="dd-h2">De weekdeals</h2><p class="dd-intro">Een dagdeal gemist deze week? Dit weekend krijg je ze allemaal nog één keer, online en in al onze winkels.</p><div class="dd-grid">';
-		foreach ( $d['deals'] as $i ) { $h .= thh_ddp_card( $i, 'Weekdeal' ); }
+		$h .= '<section class="dd-hero"><div class="dd-hi"><div><span class="dd-lab">Weekenddeals · ' . esc_html( thh_ddp_dagnaam( $d['datum'] ) ) . '</span><h1>Alle dagdeals<br><span>nog één keer</span></h1><p class="dd-sub">Alleen dit weekend, zolang de voorraad strekt</p>' . $cd . '<a class="dd-cta" href="#dd-deals">Bekijk alle deals</a></div></div></section>';
+		$h .= '<section class="dd-body" id="dd-deals"><h2 class="dd-h2">De weekenddeals</h2><p class="dd-intro">Een dagdeal gemist deze week? Dit weekend krijg je ze allemaal nog één keer, online en in al onze winkels.</p><div class="dd-grid">';
+		foreach ( $d['deals'] as $i ) { $h .= thh_ddp_card( $i, 'Weekenddeal' ); }
 		$h .= '</div></section>';
 	} else {
 		$i = $d['deals'][0];
@@ -202,7 +202,7 @@ function thh_ddp_pagina() {
 		}
 		$h .= '</div>';
 	}
-	$h .= '<div class="dd-how"><div><b>Elke dag een nieuwe deal</b><p>Om middernacht wisselt de deal. Wat vandaag scherp geprijsd is, is morgen weer normaal.</p></div><div><b>Online én in de winkel</b><p>De dagdeal geldt in de webshop en in al onze winkels, zolang de voorraad strekt.</p></div><div><b>In het weekend: weekdeals</b><p>Een dagdeal gemist? In het weekend komen ze allemaal nog één keer terug.</p></div></div>';
+	$h .= '<div class="dd-how"><div><b>Elke dag een nieuwe deal</b><p>Om middernacht wisselt de deal. Wat vandaag scherp geprijsd is, is morgen weer normaal.</p></div><div><b>Online én in de winkel</b><p>De dagdeal geldt in de webshop en in al onze winkels, zolang de voorraad strekt.</p></div><div><b>In het weekend: weekenddeals</b><p>Een dagdeal gemist? In het weekend komen ze allemaal nog één keer terug.</p></div></div>';
 	$h .= '<p class="dd-note">Dagdeals gelden zolang de voorraad strekt en zijn niet te combineren met andere kortingen.</p></section></div>' . thh_ddp_timer_js();
 	return $h;
 }
@@ -213,7 +213,7 @@ function thh_ddp_blok() {
 	$d = thh_ddp_data();
 	if ( ! $d || ! $d['deals'] ) { return ''; }
 	$i = $d['deals'][0];
-	$lab = $d['week'] ? 'Weekdeals' : 'Dagdeal van vandaag';
+	$lab = $d['week'] ? 'Weekenddeals' : 'Dagdeal van vandaag';
 	$titel = $d['week'] ? 'Alle dagdeals nog één keer' : $i['titel'];
 	$url = $d['week'] ? home_url( '/weekdeals/' ) : home_url( '/dagdeal/' );
 	$h  = '<div class="ddh"><a href="' . esc_url( $url ) . '"><div class="ddh-img">' . ( $i['img'] ? '<img src="' . esc_url( $i['img'] ) . '" alt="' . esc_attr( $titel ) . '">' : '' ) . '</div>';
