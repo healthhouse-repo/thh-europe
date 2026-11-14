@@ -141,7 +141,7 @@ add_shortcode('thh_home_v2', function ($a) {
 		$multi = count($slides) > 1;
 		$prijs = function ($d) { return '<div class="h2-dealprice">' . (!empty($d['van']) ? '<s>' . esc_html(str_replace('.', ',', number_format((float) $d['van'], 2, '.', ''))) . '</s> ' : '') . '<strong>' . esc_html(str_replace('.', ',', number_format((float) ($d['voor'] ?? 0), 2, '.', ''))) . '</strong>' . (!empty($d['off']) ? '<span class="h2-badge">-' . esc_html($d['off']) . '%</span>' : '') . '</div>'; };
 		$deals_html .= '<a class="h2-deal' . ($multi ? ' h2-deal-slider' : '') . '" href="' . esc_url($week ? home_url('/weekdeals/') : home_url('/dagdeal/')) . '"' . ($multi ? ' data-h2-slider' : '') . '>' .
-			'<div class="h2-dealtxt"><span class="h2-pill">' . ($week ? 'Weekdeals' : 'Dagdeal van vandaag') . '</span>';
+			'<div class="h2-dealtxt"><span class="h2-pill">' . ($week ? 'Weekenddeals' : 'Dagdeal van vandaag') . '</span>';
 		if ($multi) {
 			$deals_html .= '<div class="h2-dealslides">';
 			foreach ($slides as $n => $d) {
@@ -149,7 +149,7 @@ add_shortcode('thh_home_v2', function ($a) {
 			}
 			$deals_html .= '</div>';
 		} else {
-			$deals_html .= '<h3>' . esc_html($week ? 'Alle dagdeals van deze week' : $i['titel']) . '</h3>' .
+			$deals_html .= '<h3>' . esc_html($week ? 'Alle deals van dit weekend' : $i['titel']) . '</h3>' .
 				(!empty($i['sub']) && !$week ? '<p>' . esc_html($i['sub']) . '</p>' : '') . $prijs($i);
 		}
 		if ($multi) {
@@ -250,7 +250,7 @@ add_shortcode('thh_home_v2', function ($a) {
 
 	<?php if ($deals_html || $wk_html) : ?>
 	<section class="h2-sec">
-		<div class="h2-sechead"><h2>Deals van vandaag</h2><span class="h2-headlinks"><a href="<?php echo $u('/deals/'); ?>">Alle deals →</a><a class="h2-weekbtn" href="<?php echo $u('/weekdeals/'); ?>">Bekijk weekdeals →</a></span></div>
+		<div class="h2-sechead"><h2>Deals van vandaag</h2><span class="h2-headlinks"><a href="<?php echo $u('/deals/'); ?>">Alle deals →</a><a class="h2-weekbtn" href="<?php echo $u('/weekdeals/'); ?>">Bekijk weekenddeals →</a></span></div>
 		<div class="h2-dealgrid"><?php echo $deals_html; ?><div class="h2-grid h2-grid3"><?php echo $wk_html; ?></div></div>
 	</section>
 	<?php endif; ?>
