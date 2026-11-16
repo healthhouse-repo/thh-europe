@@ -7,8 +7,8 @@
  *
  * 1. Bij invoeren van de code (kassa of webshop) controleert hij in Supabase of de code nog
  *    actief is. Al gebruikt of verlopen = duidelijke melding, de korting gaat er niet af.
- * 2. Aan de kassa (WCPOS) vervalt de eis dat het e-mailadres van de klant klopt: de code is 1x
- *    bruikbaar en in Supabase aan één klant gekoppeld. In de webshop blijft de e-mailcontrole.
+ * 2. De e-mailcontrole van WooCommerce blijft staan zolang de oude inwisselkoppeling van het
+ *    klantportaal codes zonder inlog teruggeeft (zie voorstel loyalty in de kassa).
  * 3. Zodra de order betaald is, boekt hij de code af in Supabase met ordernummer, winkel en
  *    medewerker (thh_use_voucher). Annulering, mislukte betaling of volledige terugbetaling zet
  *    de code weer op actief (thh_release_voucher).
@@ -88,12 +88,6 @@ add_filter( 'woocommerce_coupon_is_valid', function ( $valid, $coupon ) {
 	if ( 'expired' === $status ) { throw new Exception( 'Deze loyaltycode is verlopen.' ); }
 	if ( 'active' !== $status ) { throw new Exception( 'Deze loyaltycode is niet geldig.' ); }
 	return $valid;
-}, 20, 2 );
-
-/* 2. Aan de kassa geen e-mailcontrole op loyaltycodes. */
-add_filter( 'woocommerce_coupon_get_email_restrictions', function ( $emails, $coupon ) {
-	if ( empty( $emails ) || ! is_a( $coupon, 'WC_Coupon' ) || ! thh_lc_is_code( $coupon->get_code() ) ) { return $emails; }
-	return thh_lc_is_pos_request() ? array() : $emails;
 }, 20, 2 );
 
 /* 3. Afboeken na betaling, terugzetten bij annulering of terugbetaling. */
