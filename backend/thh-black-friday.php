@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 if ( ! function_exists( 'thh_bf_settings' ) ) {
 	function thh_bf_settings() {
 		return array(
-			'mode'  => get_option( 'thh_bf_mode', 'preview' ),
+			'mode'  => get_option( 'thh_bf_mode', 'off' ),
 			'start' => get_option( 'thh_bf_start', '2026-11-17 00:00' ),
 			'end'   => get_option( 'thh_bf_end', '2026-12-01 00:00' ),
 			'title' => get_option( 'thh_bf_title', 'BLACK NOVEMBER' ),
@@ -74,7 +74,7 @@ if ( ! function_exists( 'thh_bf_bar_active' ) ) {
 		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
 		if ( preg_match( '#/(pos|wcpos|voorraad|kassa)(/|\?|$)#i', $uri ) ) { return false; }
 		$s = thh_bf_settings();
-		if ( '1' !== (string) $s['bar'] || 'off' === $s['mode'] ) { return false; }
+		if ( '1' !== (string) $s['bar'] ) { return false; }
 		$now = time();
 		return $now >= thh_bf_ts( $s['start'] ) && $now < thh_bf_ts( $s['end'] );
 	}
