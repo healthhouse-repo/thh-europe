@@ -99,7 +99,7 @@ add_action( 'wp_head', function () {
 	<style id="thh-bf-css">
 	body.thh-bf{--bf-black:#050505;--bf-ink:#111114;--bf-gold:#f5c542;--bf-gold2:#ffdf7e;--bf-red:#e3262f;--bf-line:#2a2a30}
 	/* Balk */
-	.thh-bf-bar{background:var(--bf-black);border-bottom:2px solid var(--bf-gold);position:relative;z-index:60;overflow:hidden}
+	.thh-bf-bar{width:100%;flex:0 0 100%;box-sizing:border-box;background:var(--bf-black);border-bottom:2px solid var(--bf-gold);position:relative;z-index:60;overflow:hidden}
 	.thh-bf-bar:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(245,197,66,.18) 45%,transparent 60%);background-size:250% 100%;animation:thhBfShine 4.5s linear infinite;pointer-events:none}
 	@keyframes thhBfShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
 	.thh-bf-bar-in{position:relative;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;max-width:1320px;margin:0 auto;padding:9px 16px;color:#fff!important;text-decoration:none!important;font-size:14px}
@@ -125,7 +125,7 @@ add_action( 'wp_head', function () {
 	/* Homepage */
 	body.thh-bf .h2-hero,body.thh-bf .h2-band{background:radial-gradient(1200px 500px at 85% 30%,rgba(245,197,66,.20),transparent 60%),radial-gradient(900px 400px at 10% 100%,rgba(227,38,47,.22),transparent 60%),var(--bf-black)!important;border-radius:inherit}
 	body.thh-bf .h2-hero{position:relative;overflow:hidden}
-	body.thh-bf .h2-herotxt:before{content:"BLACK FRIDAY";display:inline-block;margin:0 0 14px;padding:5px 12px;border-radius:999px;background:var(--bf-gold);color:#000;font-weight:900;letter-spacing:.14em;font-size:13px}
+	body.thh-bf .h2-herotxt:before{content:"BLACK FRIDAY";display:inline-block;align-self:flex-start;width:max-content;margin:0 0 14px;padding:5px 12px;border-radius:999px;background:var(--bf-gold);color:#000;font-weight:900;letter-spacing:.14em;font-size:13px}
 	body.thh-bf .h2-herotxt h1 em{color:var(--bf-gold)!important;-webkit-text-stroke:0!important}
 	body.thh-bf .h2-ctas a:first-child{background:var(--bf-gold)!important;color:#000!important;border-color:var(--bf-gold)!important}
 	body.thh-bf .h2-usps{background:var(--bf-ink)!important}
