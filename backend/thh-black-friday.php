@@ -66,7 +66,7 @@ if ( ! function_exists( 'thh_bf_active' ) ) {
 }
 
 add_filter( 'body_class', function ( $classes ) {
-	if ( thh_bf_active() ) { $classes[] = 'thh-bf'; }
+	if ( thh_bf_active() ) { $classes[] = 'thh-bfx'; }
 	return $classes;
 } );
 
@@ -76,17 +76,17 @@ add_action( 'wp_body_open', function () {
 	$s   = thh_bf_settings();
 	$end = thh_bf_ts( $s['end'] );
 	?>
-	<div class="thh-bf-bar" role="region" aria-label="Black Friday">
-		<a class="thh-bf-bar-in" href="<?php echo esc_url( $s['link'] ); ?>">
-			<span class="thh-bf-word"><?php echo esc_html( $s['title'] ); ?></span>
-			<span class="thh-bf-txt"><?php echo esc_html( $s['text'] ); ?></span>
-			<span class="thh-bf-clock" data-end="<?php echo (int) $end * 1000; ?>" aria-live="off">
-				<span class="thh-bf-u"><b data-u="d">0</b><i>dagen</i></span>
-				<span class="thh-bf-u"><b data-u="h">00</b><i>uur</i></span>
-				<span class="thh-bf-u"><b data-u="m">00</b><i>min</i></span>
-				<span class="thh-bf-u"><b data-u="s">00</b><i>sec</i></span>
+	<div class="thh-bfx-bar" role="region" aria-label="Black Friday">
+		<a class="thh-bfx-bar-in" href="<?php echo esc_url( $s['link'] ); ?>">
+			<span class="thh-bfx-word"><?php echo esc_html( $s['title'] ); ?></span>
+			<span class="thh-bfx-txt"><?php echo esc_html( $s['text'] ); ?></span>
+			<span class="thh-bfx-clock" data-end="<?php echo (int) $end * 1000; ?>" aria-live="off">
+				<span class="thh-bfx-u"><b data-u="d">0</b><i>dagen</i></span>
+				<span class="thh-bfx-u"><b data-u="h">00</b><i>uur</i></span>
+				<span class="thh-bfx-u"><b data-u="m">00</b><i>min</i></span>
+				<span class="thh-bfx-u"><b data-u="s">00</b><i>sec</i></span>
 			</span>
-			<span class="thh-bf-cta"><?php echo esc_html( $s['cta'] ); ?> &rarr;</span>
+			<span class="thh-bfx-cta"><?php echo esc_html( $s['cta'] ); ?> &rarr;</span>
 		</a>
 	</div>
 	<?php
@@ -96,56 +96,56 @@ add_action( 'wp_body_open', function () {
 add_action( 'wp_head', function () {
 	if ( ! thh_bf_active() ) { return; }
 	?>
-	<style id="thh-bf-css">
-	body.thh-bf{--bf-black:#050505;--bf-ink:#111114;--bf-gold:#f5c542;--bf-gold2:#ffdf7e;--bf-red:#e3262f;--bf-line:#2a2a30}
+	<style id="thh-bfx-css">
+	body.thh-bfx{--bf-black:#050505;--bf-ink:#111114;--bf-gold:#f5c542;--bf-gold2:#ffdf7e;--bf-red:#e3262f;--bf-line:#2a2a30}
 	/* Balk */
-	.thh-bf-bar{width:100%;flex:0 0 100%;box-sizing:border-box;background:var(--bf-black);border-bottom:2px solid var(--bf-gold);position:relative;z-index:60;overflow:hidden}
-	.thh-bf-bar:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(245,197,66,.18) 45%,transparent 60%);background-size:250% 100%;animation:thhBfShine 4.5s linear infinite;pointer-events:none}
+	.thh-bfx-bar{width:100%;flex:0 0 100%;box-sizing:border-box;background:var(--bf-black);border-bottom:2px solid var(--bf-gold);position:relative;z-index:60;overflow:hidden}
+	.thh-bfx-bar:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(245,197,66,.18) 45%,transparent 60%);background-size:250% 100%;animation:thhBfShine 4.5s linear infinite;pointer-events:none}
 	@keyframes thhBfShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
-	.thh-bf-bar-in{position:relative;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;max-width:1320px;margin:0 auto;padding:9px 16px;color:#fff!important;text-decoration:none!important;font-size:14px}
-	.thh-bf-word{font-weight:900;letter-spacing:.14em;font-size:17px;background:linear-gradient(90deg,var(--bf-gold),var(--bf-gold2),var(--bf-gold));-webkit-background-clip:text;background-clip:text;color:transparent}
-	.thh-bf-txt{color:#e9e9ee}
-	.thh-bf-clock{display:inline-flex;gap:6px}
-	.thh-bf-u{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;padding:3px 6px;border:1px solid var(--bf-line);border-radius:6px;background:#141418;line-height:1.05}
-	.thh-bf-u b{font-size:15px;color:var(--bf-gold);font-variant-numeric:tabular-nums}
-	.thh-bf-u i{font-style:normal;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#9a9aa6}
-	.thh-bf-cta{background:var(--bf-red);color:#fff;font-weight:800;border-radius:999px;padding:6px 14px;font-size:13px;white-space:nowrap}
-	.thh-bf-bar-in:hover .thh-bf-cta{background:#c81e27}
-	@media(max-width:760px){.thh-bf-txt{display:none}.thh-bf-bar-in{gap:10px;padding:7px 10px}.thh-bf-word{font-size:14px}.thh-bf-u{min-width:32px;padding:2px 4px}.thh-bf-u b{font-size:13px}.thh-bf-cta{padding:5px 10px;font-size:12px}}
-	@media(prefers-reduced-motion:reduce){.thh-bf-bar:before{animation:none}}
+	.thh-bfx-bar-in{position:relative;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;max-width:1320px;margin:0 auto;padding:9px 16px;color:#fff!important;text-decoration:none!important;font-size:14px}
+	.thh-bfx-word{font-weight:900;letter-spacing:.14em;font-size:17px;background:linear-gradient(90deg,var(--bf-gold),var(--bf-gold2),var(--bf-gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+	.thh-bfx-txt{color:#e9e9ee}
+	.thh-bfx-clock{display:inline-flex;gap:6px}
+	.thh-bfx-u{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;padding:3px 6px;border:1px solid var(--bf-line);border-radius:6px;background:#141418;line-height:1.05}
+	.thh-bfx-u b{font-size:15px;color:var(--bf-gold);font-variant-numeric:tabular-nums}
+	.thh-bfx-u i{font-style:normal;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#9a9aa6}
+	.thh-bfx-cta{background:var(--bf-red);color:#fff;font-weight:800;border-radius:999px;padding:6px 14px;font-size:13px;white-space:nowrap}
+	.thh-bfx-bar-in:hover .thh-bfx-cta{background:#c81e27}
+	@media(max-width:760px){.thh-bfx-txt{display:none}.thh-bfx-bar-in{gap:10px;padding:7px 10px}.thh-bfx-word{font-size:14px}.thh-bfx-u{min-width:32px;padding:2px 4px}.thh-bfx-u b{font-size:13px}.thh-bfx-cta{padding:5px 10px;font-size:12px}}
+	@media(prefers-reduced-motion:reduce){.thh-bfx-bar:before{animation:none}}
 	/* Header en menu */
-	body.thh-bf .thh-xxlh-usp{background:var(--bf-ink)!important;border-bottom:1px solid var(--bf-line)}
-	body.thh-bf .thh-xxlh-usp,body.thh-bf .thh-xxlh-usp *{color:#d7d7de!important}
-	body.thh-bf .thh-xxlh-usp svg,body.thh-bf .thh-xxlh-usp svg path{fill:var(--bf-gold)!important}
-	body.thh-bf .thh-xxlh-wrap,body.thh-bf .thh-xxlh-drawer{background:var(--bf-black)!important}
-	body.thh-bf .thh-xxlh-cat{background:var(--bf-ink)!important;border-bottom:2px solid var(--bf-gold)}
-	body.thh-bf .thh-xxlh-cat > * a,body.thh-bf .thh-xxlh-cat a{color:#f1f1f4!important}
-	body.thh-bf .thh-xxlh-cat a:hover{color:var(--bf-gold)!important}
-	body.thh-bf .thh-xxlh-cat a[href*="week-deals"],body.thh-bf .thh-xxlh-cat a[href*="2-1-deals"]{color:var(--bf-gold)!important;font-weight:800}
+	body.thh-bfx .thh-xxlh-usp{background:var(--bf-ink)!important;border-bottom:1px solid var(--bf-line)}
+	body.thh-bfx .thh-xxlh-usp,body.thh-bfx .thh-xxlh-usp *{color:#d7d7de!important}
+	body.thh-bfx .thh-xxlh-usp svg,body.thh-bfx .thh-xxlh-usp svg path{fill:var(--bf-gold)!important}
+	body.thh-bfx .thh-xxlh-wrap,body.thh-bfx .thh-xxlh-drawer{background:var(--bf-black)!important}
+	body.thh-bfx .thh-xxlh-cat{background:var(--bf-ink)!important;border-bottom:2px solid var(--bf-gold)}
+	body.thh-bfx .thh-xxlh-cat > * a,body.thh-bfx .thh-xxlh-cat a{color:#f1f1f4!important}
+	body.thh-bfx .thh-xxlh-cat a:hover{color:var(--bf-gold)!important}
+	body.thh-bfx .thh-xxlh-cat a[href*="week-deals"],body.thh-bfx .thh-xxlh-cat a[href*="2-1-deals"]{color:var(--bf-gold)!important;font-weight:800}
 	/* Homepage */
-	body.thh-bf .h2-hero,body.thh-bf .h2-band{background:radial-gradient(1200px 500px at 85% 30%,rgba(245,197,66,.20),transparent 60%),radial-gradient(900px 400px at 10% 100%,rgba(227,38,47,.22),transparent 60%),var(--bf-black)!important;border-radius:inherit}
-	body.thh-bf .h2-hero{position:relative;overflow:hidden}
-	body.thh-bf .h2-herotxt:before{content:"BLACK FRIDAY";display:inline-block;align-self:flex-start;width:max-content;margin:0 0 14px;padding:5px 12px;border-radius:999px;background:var(--bf-gold);color:#000;font-weight:900;letter-spacing:.14em;font-size:13px}
-	body.thh-bf .h2-herotxt h1 em{color:var(--bf-gold)!important;-webkit-text-stroke:0!important}
-	body.thh-bf .h2-ctas a:first-child{background:var(--bf-gold)!important;color:#000!important;border-color:var(--bf-gold)!important}
-	body.thh-bf .h2-usps{background:var(--bf-ink)!important}
-	body.thh-bf .h2-usps,body.thh-bf .h2-usps *{color:#ececf1!important}
+	body.thh-bfx .h2-hero,body.thh-bfx .h2-band{background:radial-gradient(1200px 500px at 85% 30%,rgba(245,197,66,.20),transparent 60%),radial-gradient(900px 400px at 10% 100%,rgba(227,38,47,.22),transparent 60%),var(--bf-black)!important;border-radius:inherit}
+	body.thh-bfx .h2-hero{position:relative;overflow:hidden}
+	body.thh-bfx .h2-herotxt:before{content:"BLACK FRIDAY";display:inline-block;align-self:flex-start;width:max-content;margin:0 0 14px;padding:5px 12px;border-radius:999px;background:var(--bf-gold);color:#000;font-weight:900;letter-spacing:.14em;font-size:13px}
+	body.thh-bfx .h2-herotxt h1 em{color:var(--bf-gold)!important;-webkit-text-stroke:0!important}
+	body.thh-bfx .h2-ctas a:first-child{background:var(--bf-gold)!important;color:#000!important;border-color:var(--bf-gold)!important}
+	body.thh-bfx .h2-usps{background:var(--bf-ink)!important}
+	body.thh-bfx .h2-usps,body.thh-bfx .h2-usps *{color:#ececf1!important}
 	/* Prijzen en labels (webshop) */
-	body.thh-bf .price ins,body.thh-bf .price ins .amount,body.thh-bf .wc-block-components-product-price__value.is-discounted{color:var(--bf-red)!important;text-decoration:none!important;font-weight:800}
-	body.thh-bf .price del,body.thh-bf .price del .amount{color:#8c8c96!important}
-	body.thh-bf span.onsale,body.thh-bf .wc-block-components-product-sale-badge{background:var(--bf-black)!important;color:var(--bf-gold)!important;border:1px solid var(--bf-gold)!important;font-size:0!important;border-radius:6px!important;min-width:0!important;min-height:0!important;padding:5px 8px!important;line-height:1!important}
-	body.thh-bf span.onsale:after,body.thh-bf .wc-block-components-product-sale-badge:after{content:"BLACK FRIDAY";font-size:11px;font-weight:900;letter-spacing:.08em}
-	body.thh-bf .single_add_to_cart_button,body.thh-bf .checkout-button,body.thh-bf #place_order{background:var(--bf-black)!important;color:#fff!important;border:2px solid var(--bf-gold)!important}
-	body.thh-bf .single_add_to_cart_button:hover,body.thh-bf .checkout-button:hover,body.thh-bf #place_order:hover{background:var(--bf-gold)!important;color:#000!important}
+	body.thh-bfx .price ins,body.thh-bfx .price ins .amount,body.thh-bfx .wc-block-components-product-price__value.is-discounted{color:var(--bf-red)!important;text-decoration:none!important;font-weight:800}
+	body.thh-bfx .price del,body.thh-bfx .price del .amount{color:#8c8c96!important}
+	body.thh-bfx span.onsale,body.thh-bfx .wc-block-components-product-sale-badge{background:var(--bf-black)!important;color:var(--bf-gold)!important;border:1px solid var(--bf-gold)!important;font-size:0!important;border-radius:6px!important;min-width:0!important;min-height:0!important;padding:5px 8px!important;line-height:1!important}
+	body.thh-bfx span.onsale:after,body.thh-bfx .wc-block-components-product-sale-badge:after{content:"BLACK FRIDAY";font-size:11px;font-weight:900;letter-spacing:.08em}
+	body.thh-bfx .single_add_to_cart_button,body.thh-bfx .checkout-button,body.thh-bfx #place_order{background:var(--bf-black)!important;color:#fff!important;border:2px solid var(--bf-gold)!important}
+	body.thh-bfx .single_add_to_cart_button:hover,body.thh-bfx .checkout-button:hover,body.thh-bfx #place_order:hover{background:var(--bf-gold)!important;color:#000!important}
 	/* Footer */
-	body.thh-bf footer.thf2-site{background:var(--bf-black)!important;border-top:3px solid var(--bf-gold)}
+	body.thh-bfx footer.thf2-site{background:var(--bf-black)!important;border-top:3px solid var(--bf-gold)}
 	</style>
 	<script>
 	(function(){function pad(n){return(n<10?'0':'')+n}
-	function tick(){var c=document.querySelectorAll('.thh-bf-clock');for(var i=0;i<c.length;i++){var end=+c[i].getAttribute('data-end'),left=Math.max(0,end-Date.now()),s=Math.floor(left/1000);
+	function tick(){var c=document.querySelectorAll('.thh-bfx-clock');for(var i=0;i<c.length;i++){var end=+c[i].getAttribute('data-end'),left=Math.max(0,end-Date.now()),s=Math.floor(left/1000);
 	var v={d:Math.floor(s/86400),h:pad(Math.floor(s%86400/3600)),m:pad(Math.floor(s%3600/60)),s:pad(s%60)};
 	for(var k in v){var b=c[i].querySelector('[data-u="'+k+'"]');if(b)b.textContent=v[k];}}}
-	document.addEventListener('DOMContentLoaded',function(){tick();setInterval(tick,1000);});})();
+	function go(){tick();setInterval(tick,1000);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',go);}else{go();}})();
 	</script>
 	<?php
 }, 99 );
