@@ -141,9 +141,9 @@ add_action( 'wp_head', function () {
 	body.thh-bfx footer.thf2-site{background:var(--bf-black)!important;border-top:3px solid var(--bf-gold)}
 	body.thh-bfx footer.elementor-location-footer{border-top:3px solid var(--bf-gold)}
 	/* Blauw wordt zwart (aangevuld door het script hieronder) */
-	body.thh-bfx .thh-bfx-black{background-color:var(--bf-black)!important}
-	body.thh-bfx .thh-bfx-blackgrad{background-image:linear-gradient(135deg,#17171b 0%,#050505 100%)!important}
-	body.thh-bfx .thh-bfx-ink{color:#0b0b0d!important}
+	html body.thh-bfx .thh-bfx-black.thh-bfx-black{background-color:var(--bf-black)!important}
+	html body.thh-bfx .thh-bfx-blackgrad.thh-bfx-blackgrad{background-image:linear-gradient(135deg,#17171b 0%,#050505 100%)!important}
+	html body.thh-bfx .thh-bfx-ink.thh-bfx-ink,html body.thh-bfx .thh-bfx-ink.thh-bfx-ink *{color:#0b0b0d!important}
 	/* Animaties */
 	@keyframes thhBfxShake{0%,100%{transform:translate(0,0) rotate(0)}10%{transform:translate(-9px,3px) rotate(-.6deg)}20%{transform:translate(8px,-4px) rotate(.6deg)}30%{transform:translate(-7px,2px) rotate(-.4deg)}40%{transform:translate(6px,-2px) rotate(.4deg)}50%{transform:translate(-4px,2px)}60%{transform:translate(3px,-1px)}70%{transform:translate(-2px,1px)}80%{transform:translate(1px,0)}}
 	@keyframes thhBfxPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(245,197,66,.55)}50%{transform:scale(1.05);box-shadow:0 0 0 12px rgba(245,197,66,0)}}
