@@ -116,7 +116,6 @@ add_action( 'wp_head', function () {
 	body.thh-bfx,.thh-bfx-bar{--bf-black:#050505;--bf-ink:#111114;--bf-gold:#f5c542;--bf-gold2:#ffdf7e;--bf-red:#e3262f;--bf-line:#2a2a30}
 	/* Balk */
 	.thh-bfx-bar{width:100%;flex:0 0 100%;box-sizing:border-box;background:var(--bf-black);border-bottom:2px solid var(--bf-red);position:relative;z-index:60;overflow:hidden}
-	.thh-bfx-bar:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(245,197,66,.18) 45%,transparent 60%);background-size:250% 100%;animation:thhBfShine 4.5s linear infinite;pointer-events:none}
 	@keyframes thhBfShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
 	.thh-bfx-bar-in{position:relative;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;max-width:1320px;margin:0 auto;padding:9px 16px;color:#fff!important;text-decoration:none!important;font-size:14px}
 	.thh-bfx-word{font-weight:900;letter-spacing:.14em;font-size:17px;color:var(--bf-red)}
@@ -127,6 +126,7 @@ add_action( 'wp_head', function () {
 	.thh-bfx-u i{font-style:normal;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#9a9aa6}
 	.thh-bfx-cta{background:var(--bf-red);color:#fff;font-weight:800;border-radius:999px;padding:6px 14px;font-size:13px;white-space:nowrap}
 	.thh-bfx-bar-in:hover .thh-bfx-cta{background:#c81e27}
+	@media(max-width:1060px){.thh-bfx-txt{display:none}}
 	@media(max-width:760px){.thh-bfx-txt{display:none}.thh-bfx-bar-in{gap:10px;padding:7px 10px}.thh-bfx-word{font-size:14px}.thh-bfx-u{min-width:32px;padding:2px 4px}.thh-bfx-u b{font-size:13px}.thh-bfx-cta{padding:5px 10px;font-size:12px}}
 	@media(prefers-reduced-motion:reduce){.thh-bfx-bar:before{animation:none}}
 	</style>
