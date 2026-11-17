@@ -25,7 +25,8 @@ if ( ! function_exists( 'thh_bf_settings' ) ) {
 			'mode'  => get_option( 'thh_bf_mode', 'preview' ),
 			'start' => get_option( 'thh_bf_start', '2026-11-17 00:00' ),
 			'end'   => get_option( 'thh_bf_end', '2026-12-01 00:00' ),
-			'title' => get_option( 'thh_bf_title', 'BLACK FRIDAY' ),
+			'title' => get_option( 'thh_bf_title', 'BLACK NOVEMBER' ),
+			'bar'   => get_option( 'thh_bf_bar_live', '1' ),
 			'text'  => get_option( 'thh_bf_text', 'De scherpste deals van het jaar, online en in al onze winkels' ),
 			'cta'   => get_option( 'thh_bf_cta', 'Bekijk alle deals' ),
 			'link'  => get_option( 'thh_bf_link', '/product-category/week-deals/' ),
@@ -65,6 +66,20 @@ if ( ! function_exists( 'thh_bf_active' ) ) {
 	}
 }
 
+if ( ! function_exists( 'thh_bf_bar_active' ) ) {
+	/** Alleen de zwarte balk bovenaan: los live te zetten (optie thh_bf_bar_live), ook als de rest nog proef is. */
+	function thh_bf_bar_active() {
+		if ( thh_bf_active() ) { return true; }
+		if ( is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) { return false; }
+		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
+		if ( preg_match( '#/(pos|wcpos|voorraad|kassa)(/|\?|$)#i', $uri ) ) { return false; }
+		$s = thh_bf_settings();
+		if ( '1' !== (string) $s['bar'] || 'off' === $s['mode'] ) { return false; }
+		$now = time();
+		return $now >= thh_bf_ts( $s['start'] ) && $now < thh_bf_ts( $s['end'] );
+	}
+}
+
 add_filter( 'body_class', function ( $classes ) {
 	if ( thh_bf_active() ) { $classes[] = 'thh-bfx'; }
 	return $classes;
@@ -72,7 +87,7 @@ add_filter( 'body_class', function ( $classes ) {
 
 /* Balk bovenaan met afteller. */
 add_action( 'wp_body_open', function () {
-	if ( ! thh_bf_active() ) { return; }
+	if ( ! thh_bf_bar_active() ) { return; }
 	$s   = thh_bf_settings();
 	$end = thh_bf_ts( $s['end'] );
 	?>
@@ -94,25 +109,29 @@ add_action( 'wp_body_open', function () {
 
 /* Opmaak + afteller. */
 add_action( 'wp_head', function () {
-	if ( ! thh_bf_active() ) { return; }
+	if ( ! thh_bf_bar_active() ) { return; }
+	$full = thh_bf_active();
 	?>
 	<style id="thh-bfx-css">
-	body.thh-bfx{--bf-black:#050505;--bf-ink:#111114;--bf-gold:#f5c542;--bf-gold2:#ffdf7e;--bf-red:#e3262f;--bf-line:#2a2a30}
+	body.thh-bfx,.thh-bfx-bar{--bf-black:#050505;--bf-ink:#111114;--bf-gold:#f5c542;--bf-gold2:#ffdf7e;--bf-red:#e3262f;--bf-line:#2a2a30}
 	/* Balk */
-	.thh-bfx-bar{width:100%;flex:0 0 100%;box-sizing:border-box;background:var(--bf-black);border-bottom:2px solid var(--bf-gold);position:relative;z-index:60;overflow:hidden}
+	.thh-bfx-bar{width:100%;flex:0 0 100%;box-sizing:border-box;background:var(--bf-black);border-bottom:2px solid var(--bf-red);position:relative;z-index:60;overflow:hidden}
 	.thh-bfx-bar:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(245,197,66,.18) 45%,transparent 60%);background-size:250% 100%;animation:thhBfShine 4.5s linear infinite;pointer-events:none}
 	@keyframes thhBfShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
 	.thh-bfx-bar-in{position:relative;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;max-width:1320px;margin:0 auto;padding:9px 16px;color:#fff!important;text-decoration:none!important;font-size:14px}
-	.thh-bfx-word{font-weight:900;letter-spacing:.14em;font-size:17px;background:linear-gradient(90deg,var(--bf-gold),var(--bf-gold2),var(--bf-gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+	.thh-bfx-word{font-weight:900;letter-spacing:.14em;font-size:17px;color:var(--bf-red)}
 	.thh-bfx-txt{color:#e9e9ee}
 	.thh-bfx-clock{display:inline-flex;gap:6px}
 	.thh-bfx-u{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;padding:3px 6px;border:1px solid var(--bf-line);border-radius:6px;background:#141418;line-height:1.05}
-	.thh-bfx-u b{font-size:15px;color:var(--bf-gold);font-variant-numeric:tabular-nums}
+	.thh-bfx-u b{font-size:15px;color:var(--bf-red);font-variant-numeric:tabular-nums}
 	.thh-bfx-u i{font-style:normal;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#9a9aa6}
 	.thh-bfx-cta{background:var(--bf-red);color:#fff;font-weight:800;border-radius:999px;padding:6px 14px;font-size:13px;white-space:nowrap}
 	.thh-bfx-bar-in:hover .thh-bfx-cta{background:#c81e27}
 	@media(max-width:760px){.thh-bfx-txt{display:none}.thh-bfx-bar-in{gap:10px;padding:7px 10px}.thh-bfx-word{font-size:14px}.thh-bfx-u{min-width:32px;padding:2px 4px}.thh-bfx-u b{font-size:13px}.thh-bfx-cta{padding:5px 10px;font-size:12px}}
 	@media(prefers-reduced-motion:reduce){.thh-bfx-bar:before{animation:none}}
+	</style>
+	<?php if ( $full ) : ?>
+	<style id="thh-bfx-css-full">
 	/* Header en menu */
 	body.thh-bfx .thh-xxlh-usp{background:var(--bf-ink)!important;border-bottom:1px solid var(--bf-line)}
 	body.thh-bfx .thh-xxlh-usp,body.thh-bfx .thh-xxlh-usp *{color:#d7d7de!important}
@@ -159,12 +178,16 @@ add_action( 'wp_head', function () {
 	.thh-bfx-confetti i{position:absolute;top:0;width:9px;height:14px;border-radius:2px;animation:thhBfxFall linear forwards}
 	@media(prefers-reduced-motion:reduce){body.thh-bfx *,body.thh-bfx.thh-bfx-shake{animation:none!important}.thh-bfx-confetti{display:none}}
 	</style>
+	<?php endif; ?>
 	<script>
 	(function(){function pad(n){return(n<10?'0':'')+n}
 	function tick(){var c=document.querySelectorAll('.thh-bfx-clock');for(var i=0;i<c.length;i++){var end=+c[i].getAttribute('data-end'),left=Math.max(0,end-Date.now()),s=Math.floor(left/1000);
 	var v={d:Math.floor(s/86400),h:pad(Math.floor(s%86400/3600)),m:pad(Math.floor(s%3600/60)),s:pad(s%60)};
 	for(var k in v){var b=c[i].querySelector('[data-u="'+k+'"]');if(b)b.textContent=v[k];}}}
 	function go(){tick();setInterval(tick,1000);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',go);}else{go();}})();
+	</script>
+	<?php if ( $full ) : ?>
+	<script>
 	/* Alle blauwe (navy) vlakken en verlopen zwart maken, ook in later geladen onderdelen. */
 	(function(){
 	var NAVY=/rgba?\((\d+),\s*(\d+),\s*(\d+)/g;
@@ -199,6 +222,7 @@ add_action( 'wp_head', function () {
 	if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',intro);}else{intro();}
 	})();
 	</script>
+	<?php endif; ?>
 	<?php
 }, 99 );
 
@@ -207,6 +231,7 @@ add_action( 'admin_menu', function () {
 	add_submenu_page( 'woocommerce', 'Black Friday', 'Black Friday', 'manage_woocommerce', 'thh-black-friday', function () {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) { return; }
 		$keys = array( 'mode', 'start', 'end', 'title', 'text', 'cta', 'link' );
+		if ( isset( $_POST['thh_bf_save'] ) && check_admin_referer( 'thh_bf_save' ) ) { update_option( 'thh_bf_bar_live', empty( $_POST['thh_bf_bar'] ) ? '0' : '1' ); }
 		if ( isset( $_POST['thh_bf_save'] ) && check_admin_referer( 'thh_bf_save' ) ) {
 			foreach ( $keys as $k ) {
 				if ( isset( $_POST[ 'thh_bf_' . $k ] ) ) {
@@ -226,6 +251,7 @@ add_action( 'admin_menu', function () {
 			echo '<option value="' . esc_attr( $v ) . '"' . selected( $s['mode'], $v, false ) . '>' . esc_html( $l ) . '</option>';
 		}
 		echo '</select></td></tr>';
+		echo '<tr><th>Balk bovenaan</th><td><label><input type="checkbox" name="thh_bf_bar" value="1"' . checked( $s['bar'], '1', false ) . '> Balk met afteller live voor iedereen (ook als de rest nog op proef staat)</label></td></tr>';
 		$labels = array( 'start' => 'Start (jjjj-mm-dd uu:mm)', 'end' => 'Einde, afteller loopt hierheen', 'title' => 'Titel in de balk', 'text' => 'Tekst in de balk', 'cta' => 'Knoptekst', 'link' => 'Link' );
 		foreach ( $labels as $k => $l ) {
 			echo '<tr><th>' . esc_html( $l ) . '</th><td><input class="regular-text" name="thh_bf_' . esc_attr( $k ) . '" value="' . esc_attr( $s[ $k ] ) . '"></td></tr>';
