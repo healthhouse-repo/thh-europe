@@ -133,8 +133,8 @@ add_action( 'wp_head', function () {
 	/* Prijzen en labels (webshop) */
 	body.thh-bfx .price ins,body.thh-bfx .price ins .amount,body.thh-bfx .wc-block-components-product-price__value.is-discounted{color:var(--bf-red)!important;text-decoration:none!important;font-weight:800}
 	body.thh-bfx .price del,body.thh-bfx .price del .amount{color:#8c8c96!important}
-	body.thh-bfx span.onsale,body.thh-bfx .wc-block-components-product-sale-badge{background:var(--bf-black)!important;color:var(--bf-gold)!important;border:1px solid var(--bf-gold)!important;font-size:0!important;border-radius:6px!important;min-width:0!important;min-height:0!important;padding:5px 8px!important;line-height:1!important}
-	body.thh-bfx span.onsale:after,body.thh-bfx .wc-block-components-product-sale-badge:after{content:"BLACK FRIDAY";font-size:11px;font-weight:900;letter-spacing:.08em}
+	html body.thh-bfx .woocommerce span.onsale.onsale,html body.thh-bfx span.onsale.onsale,html body.thh-bfx .wc-block-components-product-sale-badge{background:var(--bf-black)!important;color:var(--bf-gold)!important;border:1px solid var(--bf-gold)!important;font-size:0!important;border-radius:6px!important;min-width:0!important;min-height:0!important;padding:5px 8px!important;line-height:1!important}
+	html body.thh-bfx span.onsale.onsale:after,html body.thh-bfx .wc-block-components-product-sale-badge:after{content:"BLACK FRIDAY";font-size:11px;font-weight:900;letter-spacing:.08em}
 	body.thh-bfx .single_add_to_cart_button,body.thh-bfx .checkout-button,body.thh-bfx #place_order{background:var(--bf-black)!important;color:#fff!important;border:2px solid var(--bf-gold)!important}
 	body.thh-bfx .single_add_to_cart_button:hover,body.thh-bfx .checkout-button:hover,body.thh-bfx #place_order:hover{background:var(--bf-gold)!important;color:#000!important}
 	/* Footer */
