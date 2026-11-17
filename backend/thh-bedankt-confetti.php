@@ -2,7 +2,7 @@
 /**
  * THH Bedankpagina — confetti na een geslaagde bestelling (18 nov 2026)
  *
- * Op de afrondpagina van de checkout (bestelling ontvangen) valt één keer confetti
+ * Op de afrondpagina van de checkout (bestelling ontvangen) valt één keer confetti (één golf)
  * over het scherm. Alleen bij een betaalde of in behandeling zijnde bestelling, niet bij
  * een mislukte betaling. Eén keer per bestelling (ook niet opnieuw bij herladen).
  * Kleuren: navy/rood/wit, tijdens de Black Friday-stijl goud/rood/wit.
@@ -43,7 +43,7 @@ add_action( 'wp_footer', function () {
 	  p.style.animationDuration=(3+Math.random()*3)+'s';p.style.animationDelay=(delay+Math.random()*1.2)+'s';p.style.opacity='0';
 	  p.appendChild(document.createElement('b'));box.appendChild(p);}
 	 document.body.appendChild(box);setTimeout(function(){box.remove();},(delay+8)*1000);}
-	function go(){burst(140,0.2);burst(60,1.8);}
+	function go(){burst(160,0.2);}
 	if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',go);}else{go();}
 	})();
 	</script>
