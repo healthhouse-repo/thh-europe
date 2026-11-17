@@ -139,6 +139,25 @@ add_action( 'wp_head', function () {
 	body.thh-bfx .single_add_to_cart_button:hover,body.thh-bfx .checkout-button:hover,body.thh-bfx #place_order:hover{background:var(--bf-gold)!important;color:#000!important}
 	/* Footer */
 	body.thh-bfx footer.thf2-site{background:var(--bf-black)!important;border-top:3px solid var(--bf-gold)}
+	body.thh-bfx footer.elementor-location-footer{border-top:3px solid var(--bf-gold)}
+	/* Blauw wordt zwart (aangevuld door het script hieronder) */
+	body.thh-bfx .thh-bfx-black{background-color:var(--bf-black)!important}
+	body.thh-bfx .thh-bfx-blackgrad{background-image:linear-gradient(135deg,#17171b 0%,#050505 100%)!important}
+	body.thh-bfx .thh-bfx-ink{color:#0b0b0d!important}
+	/* Animaties */
+	@keyframes thhBfxShake{0%,100%{transform:translate(0,0) rotate(0)}10%{transform:translate(-9px,3px) rotate(-.6deg)}20%{transform:translate(8px,-4px) rotate(.6deg)}30%{transform:translate(-7px,2px) rotate(-.4deg)}40%{transform:translate(6px,-2px) rotate(.4deg)}50%{transform:translate(-4px,2px)}60%{transform:translate(3px,-1px)}70%{transform:translate(-2px,1px)}80%{transform:translate(1px,0)}}
+	@keyframes thhBfxPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(245,197,66,.55)}50%{transform:scale(1.05);box-shadow:0 0 0 12px rgba(245,197,66,0)}}
+	@keyframes thhBfxWiggle{0%,86%,100%{transform:rotate(0)}88%{transform:rotate(-6deg)}90%{transform:rotate(6deg)}92%{transform:rotate(-4deg)}94%{transform:rotate(4deg)}96%{transform:rotate(0)}}
+	@keyframes thhBfxGlitch{0%,92%,100%{text-shadow:none;transform:none}93%{text-shadow:-3px 0 var(--bf-red),3px 0 #3ff;transform:skewX(-8deg)}95%{text-shadow:3px 0 var(--bf-red),-3px 0 #3ff;transform:skewX(6deg)}97%{text-shadow:none;transform:none}}
+	@keyframes thhBfxFall{0%{transform:translate3d(0,-10vh,0) rotate(0);opacity:0}10%{opacity:1}100%{transform:translate3d(var(--dx),110vh,0) rotate(720deg);opacity:.9}}
+	body.thh-bfx.thh-bfx-shake{animation:thhBfxShake .7s cubic-bezier(.36,.07,.19,.97) both}
+	body.thh-bfx .thh-bfx-word{display:inline-block;animation:thhBfxGlitch 4s steps(1) infinite}
+	body.thh-bfx .thh-bfx-cta,body.thh-bfx .h2-ctas a:first-child{animation:thhBfxPulse 1.8s ease-in-out infinite}
+	body.thh-bfx span.onsale.onsale{animation:thhBfxWiggle 5s ease-in-out infinite;transform-origin:20% 50%}
+	body.thh-bfx .h2-herotxt:before{animation:thhBfxWiggle 4s ease-in-out infinite}
+	.thh-bfx-confetti{position:fixed;inset:0;pointer-events:none;z-index:99998;overflow:hidden}
+	.thh-bfx-confetti i{position:absolute;top:0;width:9px;height:14px;border-radius:2px;animation:thhBfxFall linear forwards}
+	@media(prefers-reduced-motion:reduce){body.thh-bfx *,body.thh-bfx.thh-bfx-shake{animation:none!important}.thh-bfx-confetti{display:none}}
 	</style>
 	<script>
 	(function(){function pad(n){return(n<10?'0':'')+n}
@@ -146,6 +165,39 @@ add_action( 'wp_head', function () {
 	var v={d:Math.floor(s/86400),h:pad(Math.floor(s%86400/3600)),m:pad(Math.floor(s%3600/60)),s:pad(s%60)};
 	for(var k in v){var b=c[i].querySelector('[data-u="'+k+'"]');if(b)b.textContent=v[k];}}}
 	function go(){tick();setInterval(tick,1000);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',go);}else{go();}})();
+	/* Alle blauwe (navy) vlakken en verlopen zwart maken, ook in later geladen onderdelen. */
+	(function(){
+	var NAVY=/rgba?\((\d+),\s*(\d+),\s*(\d+)/g;
+	function isNavy(r,g,b){var mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/510;if(b<=r||b<=g||l>.42||mx-mn<25)return false;return b>=g;}
+	function navyIn(str){var m;NAVY.lastIndex=0;while((m=NAVY.exec(str))){if(isNavy(+m[1],+m[2],+m[3]))return true;}return false;}
+	function skip(el){return el.closest&&(el.closest('#wpadminbar')||el.closest('.thh-bfx-bar'));}
+	function fix(el){if(el.nodeType!==1||skip(el))return;var cs=getComputedStyle(el);
+	 var bg=cs.backgroundColor,m=/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/.exec(bg);
+	 if(m&&(m[4]===undefined||+m[4]>.5)&&isNavy(+m[1],+m[2],+m[3]))el.classList.add('thh-bfx-black');
+	 if(cs.backgroundImage.indexOf('gradient')>-1&&navyIn(cs.backgroundImage))el.classList.add('thh-bfx-blackgrad');
+	 var c=/rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(cs.color);
+	 if(c&&isNavy(+c[1],+c[2],+c[3])&&!el.closest('.thh-bfx-black,.thh-bfx-blackgrad,.h2-hero,.h2-band'))el.classList.add('thh-bfx-ink');}
+	function scan(root){fix(root);var all=root.querySelectorAll?root.querySelectorAll('*'):[];for(var i=0;i<all.length;i++)fix(all[i]);}
+	var queue=[],timer=null;function flush(){var q=queue;queue=[];timer=null;for(var i=0;i<q.length;i++)if(q[i].isConnected)scan(q[i]);}
+	function start(){scan(document.body);if(window.MutationObserver){new MutationObserver(function(ms){for(var i=0;i<ms.length;i++)for(var j=0;j<ms[i].addedNodes.length;j++){var n=ms[i].addedNodes[j];if(n.nodeType===1)queue.push(n);}if(queue.length&&!timer)timer=setTimeout(flush,250);}).observe(document.body,{childList:true,subtree:true});}
+	 window.addEventListener('load',function(){scan(document.body);});}
+	if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',start);}else{start();}
+	})();
+	/* Effect bij binnenkomst: scherm schudt en gouden confetti valt (1x per bezoek). */
+	(function(){
+	if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+	var seen=false;try{seen=sessionStorage.getItem('thhBfxIntro')==='1';sessionStorage.setItem('thhBfxIntro','1');}catch(e){}
+	function confetti(n){var box=document.createElement('div');box.className='thh-bfx-confetti';box.setAttribute('aria-hidden','true');
+	 var cols=['#f5c542','#ffdf7e','#e3262f','#ffffff','#111114'];for(var i=0;i<n;i++){var p=document.createElement('i');
+	 p.style.left=(Math.random()*100)+'vw';p.style.background=cols[i%cols.length];p.style.setProperty('--dx',(Math.random()*30-15)+'vw');
+	 p.style.animationDuration=(2.6+Math.random()*2.4)+'s';p.style.animationDelay=(Math.random()*0.9)+'s';p.style.opacity='0';
+	 if(i%3===0){p.style.width='7px';p.style.height='7px';p.style.borderRadius='50%';}box.appendChild(p);}
+	 document.body.appendChild(box);setTimeout(function(){box.remove();},6500);}
+	function shake(){document.body.classList.remove('thh-bfx-shake');void document.body.offsetWidth;document.body.classList.add('thh-bfx-shake');setTimeout(function(){document.body.classList.remove('thh-bfx-shake');},800);}
+	function intro(){if(!seen){setTimeout(function(){shake();confetti(90);},350);}
+	 var cta=document.querySelectorAll('.thh-bfx-cta,.h2-ctas a:first-child');for(var i=0;i<cta.length;i++){cta[i].addEventListener('mouseenter',function(){confetti(25);},{once:true});}}
+	if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',intro);}else{intro();}
+	})();
 	</script>
 	<?php
 }, 99 );
