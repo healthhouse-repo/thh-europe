@@ -503,7 +503,7 @@ def page(b, lang, t):
     base = f"/{LDIR[lang]}/"
     cat_link = f"{SITE}/#catalogus?merk={E(b['name'])}"
     cards = "".join(
-        f'<a class="card" href="{SITE}/#product?id={E(p["slug"])}"><img src="{E(img_url(p))}" alt="{E(pname(p) if pname(p).lower().startswith(nm.lower()) else nm + " " + pname(p))}" loading="lazy">'
+        f'<a class="card" href="/producten/{E(p["slug"])}/"><img src="{E(img_url(p))}" alt="{E(pname(p) if pname(p).lower().startswith(nm.lower()) else nm + " " + pname(p))}" loading="lazy">'
         f'<span>{E(pname(p))}</span><small>{E(p.get("unit") or "")}</small></a>'
         for p in b["prods"][:12])
     faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
@@ -537,7 +537,7 @@ def page(b, lang, t):
 <div class="usp">{U['usp']}</div>
 <p style="font-size:13px">{lang_links(url_of, lang)}</p>
 </main>
-<footer><div class="wrap">THH Europe · {U['foot']} · <a href="mailto:info@thheurope.nl">info@thheurope.nl</a> · <a href="/">thheurope.com</a></div></footer>
+<footer><div class="wrap">THH Europe B.V. · {U['foot']} · <a href="mailto:info@thheurope.nl">info@thheurope.nl</a> · <a href="/">thheurope.com</a></div></footer>
 </body></html>
 """
 
@@ -555,7 +555,7 @@ def index_page(brands, lang):
 <header class="top"><div class="wrap"><a class="logo" href="/"><b>THHEU</b><span>THH EUROPE</span></a><nav><a href="/#catalogus">{U['cat']}</a><a href="/#word-klant">{U['join']}</a><a href="/#inloggen">{U['login']}</a></nav></div></header>
 <main class="wrap"><div class="crumb"><a href="/">THH Europe</a> / {U['idx_h']}</div><h1 style="margin-top:18px">{U['idx_h']}</h1><p>{E(intro)}</p>
 <div class="grid">{items}</div><p style="font-size:13px">{lang_links(url_of, lang)}</p></main>
-<footer><div class="wrap">THH Europe · <a href="mailto:info@thheurope.nl">info@thheurope.nl</a></div></footer></body></html>"""
+<footer><div class="wrap">THH Europe B.V. · <a href="mailto:info@thheurope.nl">info@thheurope.nl</a></div></footer></body></html>"""
 
 
 def main():
@@ -605,6 +605,19 @@ def main():
         for v in teksten.values():
             with open(os.path.join(d, v["slug"] + ".json"), "w", encoding="utf-8") as f:
                 json.dump(v[lang], f, ensure_ascii=False, separators=(",", ":"))
+    # productpagina's (Nederlands) uit dezelfde catalogus
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import productpaginas
+
+    def write(rel, doc):
+        full = os.path.join(ROOT, rel)
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        with open(full, "w", encoding="utf-8") as f:
+            f.write(doc)
+    purls = productpaginas.build(brands, img_url, CSS, write)
+    urls += purls
+    print(len(purls), "productpagina's")
     today = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
