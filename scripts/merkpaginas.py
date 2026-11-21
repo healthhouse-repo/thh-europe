@@ -617,6 +617,10 @@ def main():
             f.write(doc)
     purls = productpaginas.build(brands, img_url, CSS, write)
     urls += purls
+    curls = productpaginas.build_categories(brands, img_url, CSS, write, {k: v[3] for k, v in CAT.items()})
+    urls += curls
+    print(len(curls), "categoriepagina's")
+    urls += productpaginas.build_landing(brands, img_url, CSS, write)
     print(len(purls), "productpagina's")
     today = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
