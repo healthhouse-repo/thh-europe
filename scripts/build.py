@@ -9,13 +9,16 @@ SRC = os.path.join(ROOT, 'src')
 
 U = 'https://images.unsplash.com/photo-'
 def img(pid, w=2000):
+    if pid.startswith('/'):
+        return pid.replace('{w}', '2400' if w > 1600 else '1200')
     return f'{U}{pid}?auto=format&fit=crop&q=80&w={w}'
 
 P = {  # photos (Unsplash licence, free to use)
     'tees': '1523381294911-8d3cead13475', 'sewing': '1673201229733-69d19c5c4a87', 'hangers': '1792333531346-11a224cbcc40',
     'factory': '1741176505800-caaa3a52631a', 'fabric': '1741176506261-73218298e4d8', 'thread': '1783070610671-1cc98dffba42',
     'workshop': '1768746350424-ee28a364dcf5', 'team': '1577894947058-cfdae4276bef', 'black': '1610502778270-c5c6f4c7d575',
-    'model': '1571455786673-9d9d6c194f90', 'white': '1651761179569-4ba2aa054997',
+    'model': '1571455786673-9d9d6c194f90',
+    'c_tank': '/img/campaign-tank-{w}.jpg', 'c_sleep': '/img/campaign-sleepwear-{w}.jpg', 'c_sofa': '/img/campaign-sofa-{w}.jpg', 'white': '1651761179569-4ba2aa054997',
 }
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
@@ -61,8 +64,8 @@ def page(path, title, desc, body, active='', solid=False, quote_pill=False, scri
 <meta name="description" content="{html.escape(desc)}">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 {FONTS}
-<link rel="stylesheet" href="/app.css?v=9">
-<link rel="stylesheet" href="/site.css?v=9">
+<link rel="stylesheet" href="/app.css?v=10">
+<link rel="stylesheet" href="/site.css?v=10">
 {extra_head}
 </head>
 <body class="{body_class}">
@@ -164,7 +167,7 @@ def build():
     # Home
     page('index.html', 'Eleven Fashion | Clothing manufacturer in Bangkok – design your apparel online',
          'Eleven Fashion is a clothing manufacturer and wholesaler in Bangkok. Design T-shirts, hoodies, teamwear and merchandise online, request a quote and follow your order.',
-         f'''<section class="hero" style="--img:url('{img(P['tees'], 2600)}')"><div class="wrap">
+         f'''<section class="hero" style="--img:url('{img(P['c_tank'], 2600)}');background-position:68% center"><div class="wrap">
   <h1>We are<br>Eleven Fashion</h1>
   <p>Welcome to our world. Design your apparel online and we make it in Bangkok, for customers all over the world.</p>
   <div class="hbtns"><a class="btn white" href="/design">Start designing</a><a class="btn outline" href="#about">Find out more</a></div>
@@ -186,8 +189,8 @@ def build():
 {clients()}
 
 <section class="tiles"><div class="wrap">
-  <a class="tile" href="/services" style="--img:url('{img(P['sewing'], 1600)}')"><span class="tl">From sketch<br>to shipment.</span><span class="tb">Our services</span></a>
-  <a class="tile" href="/design" style="--img:url('{img(P['hangers'], 1600)}')"><span class="tl">Your design.<br>Our craft.</span><span class="tb">Start designing</span></a>
+  <a class="tile" href="/services" style="--img:url('{img(P['c_sleep'], 1200)}')"><span class="tl">From sketch<br>to shipment.</span><span class="tb">Our services</span></a>
+  <a class="tile" href="/design" style="--img:url('{img(P['c_sofa'], 1200)}')"><span class="tl">Your design.<br>Our craft.</span><span class="tb">Start designing</span></a>
 </div></section>
 
 <section class="sec coll-sec"><div class="wrap">
@@ -222,7 +225,7 @@ def build():
     page('design.html', 'Design your apparel | Eleven Fashion',
          'Choose a product, fabric, colour and sizes, add your logo or text and request a quote from Eleven Fashion in Bangkok.',
          '<div class="pagetop"><div class="wrap"><div class="lbl">Designer</div><h1 class="big">Design your apparel</h1><p class="intro-p">Pick a product, choose fabric, colour and sizes, put your logo or text on it and request a quote. No payment needed.</p></div></div>\n' + designer,
-         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=9"></script>')
+         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=10"></script>')
 
     # Services
     cards = ''.join(f'''<article class="scard"><div class="simg" style="--img:url('{img(P[ph], 1200)}')"></div><div class="stxt"><h3>{t}</h3><p>{d}</p></div></article>''' for t, ph, d in SERVICES)
@@ -241,7 +244,7 @@ def build():
 
     # About
     page('about.html', 'About Eleven Fashion | Clothing manufacturer in Bangkok', 'Eleven Fashion makes clothing for brands, teams and companies all over the world from Bangkok, Thailand.',
-         phero('team', 'About us', 'We are Eleven Fashion', 'A clothing manufacturer and wholesaler in Bangkok, working for customers all over the world.') + f'''
+         phero('c_sleep', 'About us', 'We are Eleven Fashion', 'A clothing manufacturer and wholesaler in Bangkok, working for customers all over the world.') + f'''
 <section class="about"><div class="wrap">
   <div class="about-g">
     <h2 class="big">Made in<br>Bangkok</h2>
@@ -318,7 +321,7 @@ def build():
     # Account
     page('account.html', 'My account | Eleven Fashion', 'Log in to follow your orders, approve mockups and view and pay your invoices.',
          open(os.path.join(SRC, 'account.html')).read(), active='/account', solid=True,
-         scripts='<script src="/account.js?v=9"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
+         scripts='<script src="/account.js?v=10"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
 
     # Invoice (printable)
     page('invoice.html', 'Invoice | Eleven Fashion', 'Invoice', open(os.path.join(SRC, 'invoice.html')).read(), solid=True, footer=False,
