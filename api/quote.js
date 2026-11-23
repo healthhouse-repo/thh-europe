@@ -12,26 +12,33 @@ function cleanItem(it) {
   const p = C.PRODUCTS.find((x) => x.id === it.product) || null;
   const sizes = {};
   let total = 0;
-  for (const s of C.SIZES) {
+  for (const s of C.SIZES.concat(['One size'])) {
     const n = Math.max(0, Math.min(100000, parseInt(it.sizes && it.sizes[s], 10) || 0));
     if (n) { sizes[s] = n; total += n; }
   }
   const qty = Math.max(0, Math.min(1000000, parseInt(it.quantity, 10) || 0));
+  const arr = (v, n, len) => (Array.isArray(v) ? v : []).map((x) => str(x, len || 60)).filter(Boolean).slice(0, n || 10);
   return {
     product: p ? p.name : 'Other',
     product_other: str(it.product_other, 120),
     weight: str(it.weight, 60),
     fit: str(it.fit, 60),
-    material: C.MATERIALS.includes(it.material) ? it.material : str(it.material, 80),
-    colors: (Array.isArray(it.colors) ? it.colors : []).map((c) => str(c, 60)).filter(Boolean).slice(0, 10),
+    material: str(it.material, 80),
+    colors: arr(it.colors, 10),
     pantone: str(it.pantone, 80),
+    more_colors: str(it.more_colors, 200),
     quantity: total || qty,
     sizes,
-    decoration: (Array.isArray(it.decoration) ? it.decoration : []).filter((d) => C.DECORATION.includes(d)),
-    positions: (Array.isArray(it.positions) ? it.positions : []).filter((d) => C.POSITIONS.includes(d)),
+    decoration: arr(it.decoration, 5, 60),
+    positions: arr(it.positions, 8, 40),
     print_colors: str(it.print_colors, 40),
     extras: (Array.isArray(it.extras) ? it.extras : []).filter((d) => C.EXTRAS.includes(d)),
     notes: str(it.notes, 1500),
+    design: (Array.isArray(it.design) ? it.design : []).slice(0, 30).map((d) => ({
+      view: str(d.view, 30), type: d.type === 'text' ? 'text' : 'logo', text: str(d.text, 80), font: str(d.font, 40),
+      color: str(d.color, 20), logo_name: str(d.logo_name, 120), logo_url: isUrl(str(d.logo_url, 500)) ? str(d.logo_url, 500) : '',
+    })),
+    mockups: (Array.isArray(it.mockups) ? it.mockups : []).slice(0, 6).map((m) => ({ view: str(m.view, 30), url: str(m.url, 500) })).filter((m) => isUrl(m.url)),
   };
 }
 
