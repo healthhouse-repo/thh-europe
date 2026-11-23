@@ -7,8 +7,8 @@
 <meta name="description" content="Choose a product, fabric, colour and sizes, add your logo or text and request a quote from Eleven Fashion in Bangkok.">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&family=Bebas+Neue&family=Permanent+Marker&family=Playfair+Display:wght@700&family=Pacifico&family=Anton&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/app.css?v=4">
-<link rel="stylesheet" href="/site.css?v=4">
+<link rel="stylesheet" href="/app.css?v=5">
+<link rel="stylesheet" href="/site.css?v=5">
 
 </head>
 <body class="">
@@ -56,12 +56,21 @@
       <div class="pane on" data-pane="product">
         <label class="f" for="pProduct">Product</label><select id="pProduct"></select>
         <div id="otherWrap" hidden><label class="f" for="pOther">Describe the product</label><input type="text" id="pOther" placeholder="e.g. rash guard, apron, socks"></div>
+        <div id="weightWrap" class="gsm">
+          <label class="f" for="gsmRange">Fabric weight / thickness</label>
+          <div class="gsm-top"><span class="gsm-v"><b id="gsmVal">180</b> gsm</span><em id="gsmClass">Midweight</em></div>
+          <div class="gsm-bar"><input type="range" id="gsmRange" aria-label="Fabric weight in gsm"><div class="gsm-scale"><span>Thin</span><span>Thick</span></div></div>
+          <div class="gsm-presets" id="gsmPresets"></div>
+          <div class="gsm-own"><label for="gsmNum">Exact weight</label><input type="number" id="gsmNum" inputmode="numeric"> <span>gsm</span></div>
+          <p class="gsm-hint" id="gsmHint"></p>
+          <label class="chk"><input type="checkbox" id="gsmAdvise"> Not sure, please advise the best weight</label>
+        </div>
         <div class="g2">
-          <div id="weightWrap"><label class="f" for="pWeight">Fabric weight</label><select id="pWeight"></select></div>
+          <div id="knitWrap"><label class="f" for="pKnit">Fabric type</label><select id="pKnit"></select></div>
           <div id="fitWrap"><label class="f" for="pFit">Style / fit</label><select id="pFit"></select></div>
         </div>
         <label class="f" for="pMaterial">Material</label><select id="pMaterial"></select>
-        <p class="note">Not sure? Choose "Other / please advise" and we recommend the best option in our quote.</p>
+        <p class="note">gsm = grams per square metre: the higher the number, the thicker the fabric. Not sure? Tick "please advise" and we recommend the best option in our quote.</p>
         <button type="button" class="btn dark next" data-go="colour">Next: colour →</button>
       </div>
 
@@ -174,7 +183,7 @@
 </div><div class="copy">© Eleven Fashion Co., Ltd. · Photos: Unsplash</div></footer>
 <div class="toast" id="toast" hidden></div>
 <script src="/garments.js"></script>
-<script src="/app.js?v=3"></script>
+<script src="/app.js?v=5"></script>
 <script>(function(){var h=document.getElementById("hdr");if(h.classList.contains("fixed"))return;function f(){h.classList.toggle("solid",scrollY>30)}addEventListener("scroll",f,{passive:true});f()})();</script>
 </body>
 </html>

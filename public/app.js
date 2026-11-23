@@ -23,7 +23,8 @@
   function sizesFor(id) { return ONE_SIZE[id] ? ['One size'] : OPT.SIZES; }
   function qty(s) { var t = 0; for (var k in s.sizes) t += (+s.sizes[k] || 0); return t; }
   function fresh(pid) {
-    return { product: pid, product_other: '', weight: '', fit: '', material: '', color: { name: 'Black', hex: COLOR_HEX.Black }, pantone: '', moreColors: '',
+    var fb = (OPT.PRODUCTS.find(function (x) { return x.id === pid; }) || {}).fabric;
+    return { product: pid, product_other: '', gsm: fb ? fb.def : 0, weight: fb ? fb.def + ' gsm' : '', knit: '', fit: '', material: '', color: { name: 'Black', hex: COLOR_HEX.Black }, pantone: '', moreColors: '',
       sizes: {}, deco: '', printColors: '', extras: [], notes: '', layers: { front: [], back: [], left: [], right: [] }, view: 'front', editing: null };
   }
 
@@ -32,7 +33,7 @@
     OPT = o;
     $('prodGrid').innerHTML = o.PRODUCTS.map(function (p) {
       return '<button type="button" class="prod" data-p="' + p.id + '"><svg viewBox="0 -20 400 480">' + GM.draw(p.id, 'front', '#ffffff') + '</svg><b>' + esc(p.name) + '</b>' +
-        (p.weights.length ? '<small>' + esc(p.weights[0]) + ' – ' + esc(p.weights[p.weights.length - 1]) + '</small>' : '<small>&nbsp;</small>') + '</button>';
+        (p.fabric ? '<small>' + p.fabric.min + '–' + p.fabric.max + ' gsm</small>' : '<small>&nbsp;</small>') + '</button>';
     }).join('');
     $('pProduct').innerHTML = o.PRODUCTS.map(function (p) { return '<option value="' + p.id + '">' + esc(p.name) + '</option>'; }).join('');
     $('pMaterial').innerHTML = opts(o.MATERIALS);
@@ -54,7 +55,7 @@
     $('pProduct').value = cur.product;
     $('dTitle').textContent = cur.product === 'other' ? 'product' : p.name;
     $('otherWrap').hidden = cur.product !== 'other'; $('pOther').value = cur.product_other;
-    $('weightWrap').hidden = !p.weights.length; $('pWeight').innerHTML = opts(p.weights, cur.weight);
+    renderGsm(); $('knitWrap').hidden = !p.fabric; if (p.fabric) $('pKnit').innerHTML = opts(p.fabric.knits, cur.knit);
     $('fitWrap').hidden = !p.fits.length; $('pFit').innerHTML = opts(p.fits, cur.fit);
     $('pMaterial').value = cur.material; $('pDeco').value = cur.deco; $('pPrintColors').value = cur.printColors; $('pNotes').value = cur.notes;
     $('pMoreColors').value = cur.moreColors; $('pPantone').value = cur.pantone;
@@ -83,7 +84,7 @@
   });
   function switchProduct(pid) {
     var keep = cur.layers, views = GM.views(pid);
-    cur.product = pid; cur.weight = ''; cur.fit = '';
+    var nf = prod(pid).fabric; cur.product = pid; cur.gsm = nf ? nf.def : 0; cur.weight = nf ? nf.def + ' gsm' : ''; cur.knit = ''; cur.fit = '';
     if (ONE_SIZE[pid]) cur.sizes = {}; else delete cur.sizes['One size'];
     cur.layers = { front: [], back: [], left: [], right: [] };
     views.forEach(function (v) { cur.layers[v] = keep[v] || []; });
@@ -93,7 +94,29 @@
   }
   $('pProduct').onchange = function () { switchProduct(this.value); };
   $('pOther').oninput = function () { cur.product_other = this.value; };
-  $('pWeight').onchange = function () { cur.weight = this.value; };
+  /* fabric weight (gsm) */
+  var ADVISE = 'Not sure, please advise';
+  function gsmClass(f, g) { return f.classes.find(function (c) { return g <= c[0]; }) || f.classes[f.classes.length - 1]; }
+  function renderGsm() {
+    var f = prod(cur.product).fabric; $('weightWrap').hidden = !f; if (!f) return;
+    var adv = cur.weight === ADVISE, g = cur.gsm || f.def, c = gsmClass(f, g);
+    var r = $('gsmRange'); r.min = f.min; r.max = f.max; r.step = f.step; r.value = g;
+    r.style.setProperty('--p', ((g - f.min) / (f.max - f.min) * 100) + '%');
+    $('gsmVal').textContent = g; $('gsmClass').textContent = c[1]; $('gsmHint').textContent = c[2];
+    $('gsmNum').min = f.min; $('gsmNum').max = f.max; if (document.activeElement !== $('gsmNum')) $('gsmNum').value = g;
+    $('gsmPresets').innerHTML = f.presets.map(function (x) { return '<button type="button" class="gp' + (x === g && !adv ? ' on' : '') + '" data-g="' + x + '">' + x + '<small>' + gsmClass(f, x)[1].replace('Super heavyweight', 'Super heavy').replace('weight', '') + '</small></button>'; }).join('');
+    $('gsmAdvise').checked = adv; $('weightWrap').classList.toggle('adv', adv);
+  }
+  function setGsm(g) {
+    var f = prod(cur.product).fabric; if (!f) return;
+    g = Math.round(Math.max(f.min, Math.min(f.max, +g || f.def)));
+    cur.gsm = g; cur.weight = g + ' gsm'; renderGsm();
+  }
+  $('gsmRange').oninput = function () { setGsm(this.value); };
+  $('gsmPresets').onclick = function (e) { var b = e.target.closest('[data-g]'); if (b) setGsm(b.dataset.g); };
+  $('gsmNum').onchange = function () { setGsm(this.value); this.value = cur.gsm; };
+  $('gsmAdvise').onchange = function () { if (this.checked) { cur.weight = ADVISE; renderGsm(); } else setGsm(cur.gsm); };
+  $('pKnit').onchange = function () { cur.knit = this.value; };
   $('pFit').onchange = function () { cur.fit = this.value; };
   $('pMaterial').onchange = function () { cur.material = this.value; };
   $('pDeco').onchange = function () { cur.deco = this.value; };
@@ -119,7 +142,7 @@
     var inner;
     if (l.type === 'img') inner = '<image href="' + l.src + '" x="' + (-l.w / 2) + '" y="' + (-l.h / 2) + '" width="' + l.w + '" height="' + l.h + '" preserveAspectRatio="xMidYMid meet"/>';
     else if (l.type === 'text') inner = '<text text-anchor="middle" dominant-baseline="central" font-family="' + esc(l.font) + '" font-weight="' + l.weight + '" font-size="' + l.fs + '" fill="' + l.color + '">' + esc(l.text) + '</text>';
-    else inner = '<rect x="' + (-l.w / 2) + '" y="' + (-l.h / 2) + '" width="' + l.w + '" height="' + l.h + '" fill="rgba(249,191,59,.25)" stroke="#b58a1d" stroke-dasharray="4 3"/><text text-anchor="middle" dominant-baseline="central" font-family="Montserrat" font-size="9" font-weight="700" fill="#5a4310">' + esc(l.name.length > 22 ? l.name.slice(0, 20) + '…' : l.name) + '</text>';
+    else inner = '<rect x="' + (-l.w / 2) + '" y="' + (-l.h / 2) + '" width="' + l.w + '" height="' + l.h + '" fill="rgba(63,62,61,.08)" stroke="#3f3e3d" stroke-dasharray="4 3"/><text text-anchor="middle" dominant-baseline="central" font-family="Montserrat" font-size="9" font-weight="700" fill="#3f3e3d">' + esc(l.name.length > 22 ? l.name.slice(0, 20) + '…' : l.name) + '</text>';
     return '<g class="layer" data-id="' + l.id + '" transform="' + t + '">' + inner + '</g>';
   }
   function svgMarkup(view, withUi) {
@@ -299,7 +322,7 @@
   function summary(it) {
     var p = prod(it.product), sz = Object.keys(it.sizes).map(function (k) { return k + ' ' + it.sizes[k]; }).join(', ');
     var deco = GM.views(it.product).filter(function (v) { return it.layers[v].length; }).map(function (v) { return GM.VIEW_NAMES[v]; });
-    return [p.id === 'other' ? (it.product_other || 'Other product') : p.name, it.weight, it.fit, it.color.name + (it.pantone ? ' (' + it.pantone + ')' : '')].filter(Boolean).join(' · ') +
+    return [p.id === 'other' ? (it.product_other || 'Other product') : p.name, it.weight, it.knit, it.fit, it.color.name + (it.pantone ? ' (' + it.pantone + ')' : '')].filter(Boolean).join(' · ') +
       '<br>' + qty(it) + ' pcs' + (sz ? ' (' + esc(sz) + ')' : '') + (deco.length ? '<br>Design on: ' + deco.join(', ') : '<br>No design added') + (it.deco ? ' · ' + esc(it.deco) : '');
   }
   $('addToQuote').onclick = function () {
@@ -367,7 +390,7 @@
           if (l.url && !logos.some(function (x) { return x.url === l.url; })) logos.push({ url: l.url, name: l.name });
         });
       });
-      return { product: it.product, product_other: it.product_other, weight: it.weight, fit: it.fit, material: it.material, colors: [it.color.name], pantone: it.pantone,
+      return { product: it.product, product_other: it.product_other, weight: it.weight, knit: it.knit, fit: it.fit, material: it.material, colors: [it.color.name], pantone: it.pantone,
         more_colors: it.moreColors, sizes: it.sizes, decoration: it.deco ? [it.deco] : [], positions: design.map(function (d) { return d.view; }).filter(function (x, i, a) { return a.indexOf(x) === i; }),
         print_colors: it.printColors, extras: it.extras, notes: it.notes, design: design, mockups: it.mockups.filter(function (m) { return m.url; }).map(function (m) { return { view: GM.VIEW_NAMES[m.view], url: m.url }; }) };
     });

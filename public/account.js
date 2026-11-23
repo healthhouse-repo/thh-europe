@@ -69,7 +69,7 @@
   function items(o) {
     return (o.items || []).map(function (it) {
       var sz = Object.keys(it.sizes || {}).map(function (k) { return k + ' ' + it.sizes[k]; }).join(' · ');
-      return '<li><b>' + esc(it.product) + '</b> · ' + esc(it.quantity) + ' pcs' + (it.weight ? ' · ' + esc(it.weight) : '') + ((it.colors || []).length ? ' · ' + esc(it.colors.join(', ')) : '') + ((it.decoration || []).length ? ' · ' + esc(it.decoration.join(', ')) : '') + (sz ? '<br><small>' + esc(sz) + '</small>' : '') + '</li>';
+      return '<li><b>' + esc(it.product) + '</b> · ' + esc(it.quantity) + ' pcs' + (it.weight ? ' · ' + esc(it.weight) : '') + (it.knit ? ' · ' + esc(it.knit) : '') + ((it.colors || []).length ? ' · ' + esc(it.colors.join(', ')) : '') + ((it.decoration || []).length ? ' · ' + esc(it.decoration.join(', ')) : '') + (sz ? '<br><small>' + esc(sz) + '</small>' : '') + '</li>';
     }).join('');
   }
   function mockupBlock(o) {

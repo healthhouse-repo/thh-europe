@@ -7,8 +7,8 @@
 <meta name="description" content="Eleven Fashion is a clothing manufacturer and wholesaler in Bangkok. Design T-shirts, hoodies, teamwear and merchandise online, request a quote and follow your order.">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&family=Bebas+Neue&family=Permanent+Marker&family=Playfair+Display:wght@700&family=Pacifico&family=Anton&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/app.css?v=4">
-<link rel="stylesheet" href="/site.css?v=4">
+<link rel="stylesheet" href="/app.css?v=5">
+<link rel="stylesheet" href="/site.css?v=5">
 
 </head>
 <body class="">
@@ -47,7 +47,7 @@
 <section class="sec coll-sec"><div class="wrap">
   <div class="lbl">Design online</div>
   <div class="coll-head"><h2 class="big">Product collection</h2><a class="more" href="/design">Open the designer</a></div>
-  <div class="coll" id="coll"></div><script>(function(){fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){return '<a class="citem" href="/design?product='+p.id+'"><div class="cimg">'+GARMENTS.draw(p.id,"front","#ffffff")+'</div><b>'+p.name+'</b><span>'+(p.weights.length?p.weights[0]+" – "+p.weights[p.weights.length-1]:"Custom")+'</span></a>'}).join("")})})();</script>
+  <div class="coll" id="coll"></div><script>(function(){fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){return '<a class="citem" href="/design?product='+p.id+'"><div class="cimg">'+GARMENTS.draw(p.id,"front","#ffffff")+'</div><b>'+p.name+'</b><span>'+(p.fabric?p.fabric.min+"–"+p.fabric.max+" gsm":"Custom")+'</span></a>'}).join("")})})();</script>
 </div></section>
 
 <section class="services" style="--img:url('https://images.unsplash.com/photo-1741176505800-caaa3a52631a?auto=format&fit=crop&q=80&w=2400')"><div class="wrap">

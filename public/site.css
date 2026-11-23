@@ -167,3 +167,23 @@ h3.sub{font:500 13px Montserrat;letter-spacing:2px;text-transform:uppercase;marg
   .cinfo{grid-template-columns:1fr;gap:4px}.cinfo dd{margin-bottom:12px}
   .itable .acts{flex-direction:column;align-items:flex-end;gap:8px}
 }
+/* fabric weight selector */
+.gsm{border:1px solid #e6e4e0;padding:16px;margin-top:4px}
+.gsm label.f{margin-top:0}
+.gsm-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.gsm-v{font-size:14px;color:#6b6a66}.gsm-v b{font:400 40px/1 "Bebas Neue",Oswald;color:#222;letter-spacing:1px;margin-right:2px}
+.gsm-top em{font-style:normal;font:500 11px Montserrat;letter-spacing:1.5px;text-transform:uppercase;background:#3f3e3d;color:#fff;padding:5px 10px}
+.gsm-bar{margin:12px 0 4px}
+.gsm-bar input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:linear-gradient(90deg,#3f3e3d var(--p,50%),#e2e0dc var(--p,50%));outline:none;margin:0}
+.gsm-bar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #3f3e3d;cursor:pointer}
+.gsm-bar input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid #3f3e3d;cursor:pointer}
+.gsm-scale{display:flex;justify-content:space-between;font-size:11px;color:#8a8a8a;text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.gsm-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.gp{border:1px solid #d4d2ce;background:#fff;padding:6px 9px;font:600 13px Assistant,sans-serif;cursor:pointer;line-height:1.1;text-align:center;min-width:54px}
+.gp small{display:block;font:500 9px Montserrat;letter-spacing:.5px;text-transform:uppercase;color:#8a8a8a;margin-top:2px}
+.gp.on{background:#3f3e3d;border-color:#3f3e3d;color:#fff}.gp.on small{color:#ddd}
+.gsm-own{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:#6b6a66}
+.gsm-own label{font:500 11px Montserrat;letter-spacing:1px;text-transform:uppercase}
+.gsm-own input{width:90px!important;padding:7px 8px}
+.gsm-hint{font-size:14px;color:#5f5e5b;margin:10px 0 0;min-height:40px}
+.gsm.adv .gsm-top,.gsm.adv .gsm-bar,.gsm.adv .gsm-presets,.gsm.adv .gsm-own,.gsm.adv .gsm-hint{opacity:.35;pointer-events:none}

@@ -24,6 +24,7 @@ function cleanItem(it) {
     product: p ? p.name : 'Other',
     product_other: str(it.product_other, 120),
     weight: str(it.weight, 60),
+    knit: str(it.knit, 60),
     fit: str(it.fit, 60),
     material: str(it.material, 80),
     colors: arr(it.colors, 10),

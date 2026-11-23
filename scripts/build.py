@@ -61,8 +61,8 @@ def page(path, title, desc, body, active='', solid=False, quote_pill=False, scri
 <meta name="description" content="{html.escape(desc)}">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 {FONTS}
-<link rel="stylesheet" href="/app.css?v=4">
-<link rel="stylesheet" href="/site.css?v=4">
+<link rel="stylesheet" href="/app.css?v=5">
+<link rel="stylesheet" href="/site.css?v=5">
 {extra_head}
 </head>
 <body class="{body_class}">
@@ -102,6 +102,25 @@ PAY = '''<div class="paygrid">
   <div><b>Bank transfer</b><span>Pay by international bank transfer with the details on your invoice.</span></div>
 </div>'''
 
+
+GSM_GUIDE = [
+    ('T-shirt / long sleeve', '90–150 gsm', '150–180 gsm', '180–240 gsm', '240+ gsm'),
+    ('Polo shirt', '160–200 gsm', '200–230 gsm', '230+ gsm', ''),
+    ('Hoodie / sweater / joggers', '220–280 gsm', '280–350 gsm', '350–430 gsm', '430+ gsm'),
+    ('Sports / dry-fit', '100–140 gsm', '140–180 gsm', '180+ gsm', ''),
+    ('Tote bag (canvas)', '140–180 gsm', '180–280 gsm', '280+ gsm', ''),
+]
+def gsm_html():
+    rows = ''.join(f'<tr><td>{a}</td><td>{b}</td><td>{c}</td><td>{d}</td><td>{e or "–"}</td></tr>' for a, b, c, d, e in GSM_GUIDE)
+    return f'''<div class="tablewrap"><table class="itable gsmt"><thead><tr><th>Product</th><th>Lightweight</th><th>Midweight</th><th>Heavyweight</th><th>Super heavy</th></tr></thead><tbody>{rows}</tbody></table></div>
+<div class="values" style="margin-top:28px">
+  <div><b>What is gsm?</b><p>Grams per square metre of fabric. The higher the number, the thicker and heavier the fabric.</p></div>
+  <div><b>Lightweight</b><p>Cool and breathable. Good for hot climates, events, promo and sportswear. Lower price and shipping cost.</p></div>
+  <div><b>Midweight</b><p>The all-round standard: soft, not see-through and great for printing. Example: a 300 gsm hoodie.</p></div>
+  <div><b>Heavyweight</b><p>Thick, durable and structured with a premium, boxy look. Popular for merch and streetwear.</p></div>
+</div>
+<p class="intro-p" style="margin-top:24px">The fabric type matters too: French terry is looped on the inside and breathable, brushed fleece is soft and warmer, loopback is a heavy terry for a premium feel. In the designer you choose the exact weight and fabric type, or ask us to advise.</p>'''
+
 SERVICES = [
     ('Fashion design', 'sewing', 'From a rough idea to a finished tech pack. We help with design, fit, size charts and samples so your product is ready for production.'),
     ('Fabric sourcing', 'fabric', 'Cotton, organic cotton, blends, fleece and performance fabrics in the weight and colour you need, including custom Pantone dyeing.'),
@@ -114,7 +133,7 @@ SERVICES = [
 ]
 
 def collection():
-    return '<div class="coll" id="coll"></div><script>(function(){fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){return \'<a class="citem" href="/design?product=\'+p.id+\'"><div class="cimg">\'+GARMENTS.draw(p.id,"front","#ffffff")+\'</div><b>\'+p.name+\'</b><span>\'+(p.weights.length?p.weights[0]+" – "+p.weights[p.weights.length-1]:"Custom")+\'</span></a>\'}).join("")})})();</script>'
+    return '<div class="coll" id="coll"></div><script>(function(){fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){return \'<a class="citem" href="/design?product=\'+p.id+\'"><div class="cimg">\'+GARMENTS.draw(p.id,"front","#ffffff")+\'</div><b>\'+p.name+\'</b><span>\'+(p.fabric?p.fabric.min+"–"+p.fabric.max+" gsm":"Custom")+\'</span></a>\'}).join("")})})();</script>'
 
 # ---------------- pages ----------------
 def build():
@@ -179,7 +198,7 @@ def build():
     page('design.html', 'Design your apparel | Eleven Fashion',
          'Choose a product, fabric, colour and sizes, add your logo or text and request a quote from Eleven Fashion in Bangkok.',
          '<div class="pagetop"><div class="wrap"><div class="lbl">Designer</div><h1 class="big">Design your apparel</h1><p class="intro-p">Pick a product, choose fabric, colour and sizes, put your logo or text on it and request a quote. No payment needed.</p></div></div>\n' + designer,
-         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=3"></script>')
+         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=5"></script>')
 
     # Services
     cards = ''.join(f'''<article class="scard"><div class="simg" style="--img:url('{img(P[ph], 1200)}')"></div><div class="stxt"><h3>{t}</h3><p>{d}</p></div></article>''' for t, ph, d in SERVICES)
@@ -237,6 +256,12 @@ def build():
   {stages_html()}
   <div class="hbtns" style="margin-top:34px"><a class="btn yellow" href="/design">Start designing</a><a class="btn ghost" href="/account">Log in to your account</a></div>
 </div></section>
+<section class="sec"><div class="wrap">
+  <div class="lbl">Fabric guide</div>
+  <h2 class="big">Fabric weight (gsm)</h2>
+  <p class="intro-p">Choose how thick your fabric should be. These are common ranges per product.</p>
+  {gsm_html()}
+</div></section>
 <section class="sec paysec"><div class="wrap">
   <div class="lbl">Payment</div>
   <h2 class="big">Pay the way you like</h2>
@@ -269,7 +294,7 @@ def build():
     # Account
     page('account.html', 'My account | Eleven Fashion', 'Log in to follow your orders, approve mockups and view and pay your invoices.',
          open(os.path.join(SRC, 'account.html')).read(), active='/account', solid=True,
-         scripts='<script src="/account.js?v=4"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
+         scripts='<script src="/account.js?v=5"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
 
     # Invoice (printable)
     page('invoice.html', 'Invoice | Eleven Fashion', 'Invoice', open(os.path.join(SRC, 'invoice.html')).read(), solid=True, footer=False,
