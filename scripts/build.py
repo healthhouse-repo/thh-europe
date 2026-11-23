@@ -61,8 +61,8 @@ def page(path, title, desc, body, active='', solid=False, quote_pill=False, scri
 <meta name="description" content="{html.escape(desc)}">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 {FONTS}
-<link rel="stylesheet" href="/app.css?v=5">
-<link rel="stylesheet" href="/site.css?v=5">
+<link rel="stylesheet" href="/app.css?v=6">
+<link rel="stylesheet" href="/site.css?v=6">
 {extra_head}
 </head>
 <body class="{body_class}">
@@ -132,8 +132,30 @@ SERVICES = [
     ('Distribution', 'hangers', 'Packing per size or per person and shipping to any country in the world, with tracking.'),
 ]
 
+PRODUCT_PHOTOS = {  # Unsplash
+    'tshirt': '1574180566232-aaad1b5b8450', 'longsleeve': '1602488283247-29bf1f5b148a', 'tank': '1686972213857-18ae00d74921',
+    'polo': '1761956255550-e1d6d12e94be', 'hoodie': '1556821840-3a63f95609a7', 'sweater': '1554568218-ffd1e72a2151',
+    'joggers': '1602573991155-21f0143bb45c', 'shorts': '1640943136566-3edeb13e3d3b', 'performance': '1596723524688-176682618fd2',
+    'jacket': '1643622782660-30dedcd8d75a', 'cap': '1588850561407-ed78c282e89b', 'bag': '1578237493287-8d4d2b03591a',
+}
 def collection():
-    return '<div class="coll" id="coll"></div><script>(function(){fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){return \'<a class="citem" href="/design?product=\'+p.id+\'"><div class="cimg">\'+GARMENTS.draw(p.id,"front","#ffffff")+\'</div><b>\'+p.name+\'</b><span>\'+(p.fabric?p.fabric.min+"–"+p.fabric.max+" gsm":"Custom")+\'</span></a>\'}).join("")})})();</script>'
+    import json
+    photos = json.dumps({k: f'{U}{v}?auto=format&fit=crop&w=640&h=800&q=75' for k, v in PRODUCT_PHOTOS.items()})
+    return ('<div class="coll-wrap"><button class="cnav prev" type="button" aria-label="Previous" onclick="document.getElementById(\'coll\').scrollBy({left:-600,behavior:\'smooth\'})">‹</button>'
+            '<div class="coll" id="coll"></div>'
+            '<button class="cnav next" type="button" aria-label="Next" onclick="document.getElementById(\'coll\').scrollBy({left:600,behavior:\'smooth\'})">›</button></div>'
+            '<script>(function(){var PH=' + photos + ';fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){'
+            'return \'<a class="citem" href="/design?product=\'+p.id+\'"><div class="cimg">\'+(PH[p.id]?\'<img src="\'+PH[p.id]+\'" alt="\'+p.name+\'" loading="lazy">\':GARMENTS.draw(p.id,"front","#ffffff"))+\'<span class="cgo">Design yours</span></div><b>\'+p.name+\'</b><span>\'+(p.fabric?p.fabric.min+"–"+p.fabric.max+" gsm":"Custom")+\'</span></a>\'}).join("")})})();</script>')
+
+CLIENTS = [  # typeset names, not the clients' own logo artwork (swap in official logo files with permission)
+    ('The Health House', 'c1'), ('Team Champ', 'c2'), ('Hard Rock Cafe', 'c3'), ('Male Lions', 'c4'),
+    ('Jaspal', 'c5'), ('Gentlewoman', 'c6'), ("Mike's Gym", 'c7'), ('Fairtex', 'c8'),
+]
+def clients():
+    one = ''.join(f'<li class="{c}">{html.escape(n)}</li>' for n, c in CLIENTS)
+    return f'''<section class="clients" aria-label="Some of our clients"><div class="wrap"><div class="lbl">Trusted by</div></div>
+  <div class="marquee"><ul>{one}</ul><ul aria-hidden="true">{one}</ul></div>
+</section>'''
 
 # ---------------- pages ----------------
 def build():
@@ -160,6 +182,8 @@ def build():
   </div>
   <img class="wide" src="{img(P['fabric'], 2400)}" alt="Fabric being prepared for production" loading="lazy">
 </div></section>
+
+{clients()}
 
 <section class="tiles"><div class="wrap">
   <a class="tile" href="/services" style="--img:url('{img(P['sewing'], 1600)}')"><span class="tl">From sketch<br>to shipment.</span><span class="tb">Our services</span></a>
@@ -198,7 +222,7 @@ def build():
     page('design.html', 'Design your apparel | Eleven Fashion',
          'Choose a product, fabric, colour and sizes, add your logo or text and request a quote from Eleven Fashion in Bangkok.',
          '<div class="pagetop"><div class="wrap"><div class="lbl">Designer</div><h1 class="big">Design your apparel</h1><p class="intro-p">Pick a product, choose fabric, colour and sizes, put your logo or text on it and request a quote. No payment needed.</p></div></div>\n' + designer,
-         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=5"></script>')
+         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=6"></script>')
 
     # Services
     cards = ''.join(f'''<article class="scard"><div class="simg" style="--img:url('{img(P[ph], 1200)}')"></div><div class="stxt"><h3>{t}</h3><p>{d}</p></div></article>''' for t, ph, d in SERVICES)
@@ -294,7 +318,7 @@ def build():
     # Account
     page('account.html', 'My account | Eleven Fashion', 'Log in to follow your orders, approve mockups and view and pay your invoices.',
          open(os.path.join(SRC, 'account.html')).read(), active='/account', solid=True,
-         scripts='<script src="/account.js?v=5"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
+         scripts='<script src="/account.js?v=6"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
 
     # Invoice (printable)
     page('invoice.html', 'Invoice | Eleven Fashion', 'Invoice', open(os.path.join(SRC, 'invoice.html')).read(), solid=True, footer=False,

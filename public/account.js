@@ -2,7 +2,7 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  var D = null, METHODS = null;
+  var D = null, METHODS = null, noAuto = false;
   function toast(m) { var t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true; }, 3200); }
   function api(a, body) {
     return fetch('/api/account?a=' + a, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), credentials: 'same-origin' } : { credentials: 'same-origin' })
@@ -14,7 +14,11 @@
 
   function load() {
     api('me').then(function (x) {
-      if (x.status === 401) { showLogin(x.j.demo); return; }
+      if (x.status === 401) {
+        // Demo version: open the demo account straight away (unless the visitor just logged out).
+        if (x.j.demo && !noAuto) { api('demo', {}).then(function (y) { if (y.ok) load(); else showLogin(true); }); return; }
+        showLogin(x.j.demo); return;
+      }
       if (!x.ok) { showLogin(false); err('lErr', x.j.error); return; }
       D = x.j; showDash();
     });
@@ -38,7 +42,7 @@
   };
   $('again').onclick = function () { $('f2').hidden = true; $('f1').hidden = false; err('lErr'); };
   $('demoBtn').onclick = function () { api('demo', {}).then(function (x) { if (!x.ok) return err('lErr', x.j.error); load(); }); };
-  $('logout').onclick = function () { api('logout', {}).then(function () { D = null; showLogin(false); load(); }); };
+  $('logout').onclick = function () { noAuto = true; api('logout', {}).then(function () { D = null; showLogin(false); load(); }); };
 
   // ---- dashboard ----
   document.querySelector('.atabs').onclick = function (e) {

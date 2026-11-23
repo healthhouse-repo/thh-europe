@@ -187,3 +187,31 @@ h3.sub{font:500 13px Montserrat;letter-spacing:2px;text-transform:uppercase;marg
 .gsm-own input{width:90px!important;padding:7px 8px}
 .gsm-hint{font-size:14px;color:#5f5e5b;margin:10px 0 0;min-height:40px}
 .gsm.adv .gsm-top,.gsm.adv .gsm-bar,.gsm.adv .gsm-presets,.gsm.adv .gsm-own,.gsm.adv .gsm-hint{opacity:.35;pointer-events:none}
+/* product collection photos */
+.coll-wrap{position:relative}
+.cimg{position:relative;overflow:hidden;padding:0}
+.cimg img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.citem:hover .cimg img{transform:scale(1.04)}
+.cgo{position:absolute;left:14px;bottom:14px;background:#fff;color:#222;font:500 11px Montserrat;letter-spacing:1.5px;text-transform:uppercase;padding:8px 12px;opacity:0;transform:translateY(6px);transition:.25s}
+.citem:hover .cgo{opacity:1;transform:none}
+.cnav{position:absolute;top:38%;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.15);font-size:26px;line-height:1;cursor:pointer;color:#222}
+.cnav.prev{left:-14px}.cnav.next{right:-14px}
+.coll{scrollbar-width:thin}
+/* client logo slider */
+.clients{background:#fff;padding:10px 0 90px}
+.marquee{display:flex;overflow:hidden;margin-top:22px;border-top:1px solid #eceae6;border-bottom:1px solid #eceae6;-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marquee ul{display:flex;align-items:center;gap:80px;list-style:none;margin:0;padding:34px 40px;flex-shrink:0;animation:mq 38s linear infinite}
+.marquee:hover ul{animation-play-state:paused}
+.marquee li{white-space:nowrap;color:#9b9994;transition:color .2s}
+.marquee li:hover{color:#222}
+@keyframes mq{to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){.marquee ul{animation:none}.marquee{overflow-x:auto}}
+.c1{font:700 22px Montserrat;letter-spacing:3px;text-transform:uppercase}
+.c2{font:400 34px "Bebas Neue",Oswald;letter-spacing:4px}
+.c3{font:700 26px "Playfair Display",Georgia,serif;font-style:italic}
+.c4{font:700 26px Oswald,sans-serif;letter-spacing:5px;text-transform:uppercase}
+.c5{font:600 24px Montserrat;letter-spacing:8px;text-transform:uppercase}
+.c6{font:400 30px "Bebas Neue",Oswald;letter-spacing:10px}
+.c7{font:400 28px "Permanent Marker",cursive}
+.c8{font:400 34px Anton,sans-serif;letter-spacing:2px;text-transform:uppercase}
+@media(max-width:560px){.cnav{display:none}.marquee ul{gap:50px;padding:24px 25px}}

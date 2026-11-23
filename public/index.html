@@ -7,8 +7,8 @@
 <meta name="description" content="Eleven Fashion is a clothing manufacturer and wholesaler in Bangkok. Design T-shirts, hoodies, teamwear and merchandise online, request a quote and follow your order.">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&family=Bebas+Neue&family=Permanent+Marker&family=Playfair+Display:wght@700&family=Pacifico&family=Anton&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/app.css?v=5">
-<link rel="stylesheet" href="/site.css?v=5">
+<link rel="stylesheet" href="/app.css?v=6">
+<link rel="stylesheet" href="/site.css?v=6">
 
 </head>
 <body class="">
@@ -39,6 +39,10 @@
   <img class="wide" src="https://images.unsplash.com/photo-1741176506261-73218298e4d8?auto=format&fit=crop&q=80&w=2400" alt="Fabric being prepared for production" loading="lazy">
 </div></section>
 
+<section class="clients" aria-label="Some of our clients"><div class="wrap"><div class="lbl">Trusted by</div></div>
+  <div class="marquee"><ul><li class="c1">The Health House</li><li class="c2">Team Champ</li><li class="c3">Hard Rock Cafe</li><li class="c4">Male Lions</li><li class="c5">Jaspal</li><li class="c6">Gentlewoman</li><li class="c7">Mike&#x27;s Gym</li><li class="c8">Fairtex</li></ul><ul aria-hidden="true"><li class="c1">The Health House</li><li class="c2">Team Champ</li><li class="c3">Hard Rock Cafe</li><li class="c4">Male Lions</li><li class="c5">Jaspal</li><li class="c6">Gentlewoman</li><li class="c7">Mike&#x27;s Gym</li><li class="c8">Fairtex</li></ul></div>
+</section>
+
 <section class="tiles"><div class="wrap">
   <a class="tile" href="/services" style="--img:url('https://images.unsplash.com/photo-1673201229733-69d19c5c4a87?auto=format&fit=crop&q=80&w=1600')"><span class="tl">From sketch<br>to shipment.</span><span class="tb">Our services</span></a>
   <a class="tile" href="/design" style="--img:url('https://images.unsplash.com/photo-1792333531346-11a224cbcc40?auto=format&fit=crop&q=80&w=1600')"><span class="tl">Your design.<br>Our craft.</span><span class="tb">Start designing</span></a>
@@ -47,7 +51,7 @@
 <section class="sec coll-sec"><div class="wrap">
   <div class="lbl">Design online</div>
   <div class="coll-head"><h2 class="big">Product collection</h2><a class="more" href="/design">Open the designer</a></div>
-  <div class="coll" id="coll"></div><script>(function(){fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){return '<a class="citem" href="/design?product='+p.id+'"><div class="cimg">'+GARMENTS.draw(p.id,"front","#ffffff")+'</div><b>'+p.name+'</b><span>'+(p.fabric?p.fabric.min+"–"+p.fabric.max+" gsm":"Custom")+'</span></a>'}).join("")})})();</script>
+  <div class="coll-wrap"><button class="cnav prev" type="button" aria-label="Previous" onclick="document.getElementById('coll').scrollBy({left:-600,behavior:'smooth'})">‹</button><div class="coll" id="coll"></div><button class="cnav next" type="button" aria-label="Next" onclick="document.getElementById('coll').scrollBy({left:600,behavior:'smooth'})">›</button></div><script>(function(){var PH={"tshirt": "https://images.unsplash.com/photo-1574180566232-aaad1b5b8450?auto=format&fit=crop&w=640&h=800&q=75", "longsleeve": "https://images.unsplash.com/photo-1602488283247-29bf1f5b148a?auto=format&fit=crop&w=640&h=800&q=75", "tank": "https://images.unsplash.com/photo-1686972213857-18ae00d74921?auto=format&fit=crop&w=640&h=800&q=75", "polo": "https://images.unsplash.com/photo-1761956255550-e1d6d12e94be?auto=format&fit=crop&w=640&h=800&q=75", "hoodie": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=640&h=800&q=75", "sweater": "https://images.unsplash.com/photo-1554568218-ffd1e72a2151?auto=format&fit=crop&w=640&h=800&q=75", "joggers": "https://images.unsplash.com/photo-1602573991155-21f0143bb45c?auto=format&fit=crop&w=640&h=800&q=75", "shorts": "https://images.unsplash.com/photo-1640943136566-3edeb13e3d3b?auto=format&fit=crop&w=640&h=800&q=75", "performance": "https://images.unsplash.com/photo-1596723524688-176682618fd2?auto=format&fit=crop&w=640&h=800&q=75", "jacket": "https://images.unsplash.com/photo-1643622782660-30dedcd8d75a?auto=format&fit=crop&w=640&h=800&q=75", "cap": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=640&h=800&q=75", "bag": "https://images.unsplash.com/photo-1578237493287-8d4d2b03591a?auto=format&fit=crop&w=640&h=800&q=75"};fetch("/api/options").then(function(r){return r.json()}).then(function(o){document.getElementById("coll").innerHTML=o.PRODUCTS.filter(function(p){return p.id!=="other"}).map(function(p){return '<a class="citem" href="/design?product='+p.id+'"><div class="cimg">'+(PH[p.id]?'<img src="'+PH[p.id]+'" alt="'+p.name+'" loading="lazy">':GARMENTS.draw(p.id,"front","#ffffff"))+'<span class="cgo">Design yours</span></div><b>'+p.name+'</b><span>'+(p.fabric?p.fabric.min+"–"+p.fabric.max+" gsm":"Custom")+'</span></a>'}).join("")})})();</script>
 </div></section>
 
 <section class="services" style="--img:url('https://images.unsplash.com/photo-1741176505800-caaa3a52631a?auto=format&fit=crop&q=80&w=2400')"><div class="wrap">
