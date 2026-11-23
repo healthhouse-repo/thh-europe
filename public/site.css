@@ -298,3 +298,9 @@ html,body{overflow-x:clip}
 @media(max-width:980px){.hdr nav{visibility:hidden}body.menu .hdr nav{visibility:visible}}
 .itable .linkbtn{white-space:nowrap}
 @media(max-width:640px){.pagetop .intro-p{margin-bottom:0}.pagetop+.sec{padding-top:36px}.ohead small .qref{display:none}}
+@media(max-width:980px){
+  .hdr nav a.mbtn,.hdr.solid nav a.mbtn{display:block;text-align:center;border-bottom:0;padding:15px;margin-top:12px;font:500 13px Montserrat;letter-spacing:2px;text-transform:uppercase}
+  .hdr nav a.mbtn:first-of-type{margin-top:0}
+  .hdr nav a.mfill,.hdr.solid nav a.mfill{background:#3f3e3d;color:#fff;border:1px solid #3f3e3d;margin-top:26px}
+  .hdr nav a.mline,.hdr.solid nav a.mline{background:#fff;color:#3f3e3d;border:1px solid #3f3e3d}
+}
