@@ -1,14 +1,24 @@
-# Eleven Fashion – quote portal
+# Eleven Fashion – design, quote and order portal
 
-Public showroom and quote request form for Eleven Fashion Co., Ltd. (Bangkok).
-Customers choose products (fabric weight, fit, material, colours, sizes, quantity, decoration, extras),
-upload their logo and send a quote request. The Eleven team sees requests at `/admin`.
+Static pages in `public/` (built from `scripts/build.py` + `src/`) and serverless API routes in `api/` on Vercel.
 
-Vercel project: `eleven-fashion-quote`. Static files in `public/`, serverless functions in `api/`.
+Pages: `/` home · `/design` designer + quote request · `/services` · `/about` · `/process` · `/contact` · `/account` customer area · `/invoice` printable invoice · `/admin` Eleven team.
 
-Environment variables (set in Vercel, never in this repo):
-- `BLOB_READ_WRITE_TOKEN` – Vercel Blob store for logos and quote requests (required)
-- `ADMIN_PASSWORD` – password for `/admin` (required for the admin list)
-- `RESEND_API_KEY`, `QUOTE_TO`, `QUOTE_FROM` – optional e-mail notification of new requests
+Customer area: login with a one-time e-mail code, orders with tracker Design → Mockup approval → In progress → In transit → Delivered, mockup approval / change requests, tracking, invoices (view / print to PDF) and online payment.
 
-Product options live in `lib/catalog.js`. No prices are shown; Eleven confirms options and price in the quote.
+## Without configuration
+Runs as a demo on sample data (clearly labelled). Quote requests need Blob or the database.
+
+## Environment variables (Vercel → Settings → Environment Variables)
+| Variable | Purpose |
+|---|---|
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Database (run `db/schema.sql` once). Switches the portal from demo to live. |
+| `SESSION_SECRET` | Long random string to sign login cookies (required live). |
+| `ADMIN_PASSWORD` | Password for `/admin`. |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob for logo, mockup and artwork uploads. |
+| `RESEND_API_KEY`, `QUOTE_FROM`, `QUOTE_TO` | E-mail: login codes, notifications to customers, alerts to the team. |
+| `SITE_URL` | Public URL, e.g. https://design.elevenfashion.co.th |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Stripe Checkout (cards, Apple/Google Pay, PromptPay, TrueMoney, LINE Pay, Alipay, WeChat Pay). Webhook: `/api/webhook?p=stripe`, events `checkout.session.completed` and `checkout.session.async_payment_succeeded`. |
+| `MOLLIE_API_KEY` | Optional, iDEAL / Bancontact / SEPA. Needs an EU-registered business. Webhook is set per payment automatically. |
+| `BANK_DETAILS` | Bank transfer details shown on invoices (use `\n` for new lines). |
+| `SELLER_NAME`, `SELLER_ADDRESS`, `SELLER_TAX_ID` | Seller details on invoices. |

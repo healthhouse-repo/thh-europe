@@ -1,0 +1,72 @@
+<main class="acct-main"><div class="wrap">
+  <section id="login" class="login" hidden>
+    <div class="login-g">
+      <div>
+        <div class="lbl">My account</div>
+        <h1 class="big">Follow your order</h1>
+        <p class="intro-p">Log in with the e-mail address you used for your quote request. We send you a one-time login code, no password needed.</p>
+        <ul class="ticks"><li>Approve your mockups</li><li>Follow production and shipping</li><li>View, download and pay invoices</li></ul>
+      </div>
+      <div class="card login-card">
+        <form id="f1">
+          <label class="f" for="lEmail">E-mail address</label>
+          <input type="email" id="lEmail" autocomplete="email" required>
+          <button class="btn yellow wide" type="submit">Send login code</button>
+        </form>
+        <form id="f2" hidden>
+          <p class="muted" id="codeInfo"></p>
+          <label class="f" for="lCode">Login code</label>
+          <input type="text" id="lCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">
+          <button class="btn yellow wide" type="submit">Log in</button>
+          <button class="linkbtn" type="button" id="again">Use another e-mail address</button>
+        </form>
+        <div class="err" id="lErr" hidden></div>
+        <div class="demo-box" id="demoBox" hidden><b>Demo version</b><p>The customer database is not connected yet. Open the demo account to see how ordering, tracking and invoices work.</p><button class="btn ghost wide" type="button" id="demoBtn">Open demo account</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dash" hidden>
+    <div class="dash-top">
+      <div><div class="lbl">My account</div><h1 class="big" id="hello">Hello</h1></div>
+      <div class="dash-acts"><a class="btn yellow" href="/design">New quote</a><button class="btn ghost" type="button" id="logout">Log out</button></div>
+    </div>
+    <div class="demo-banner" id="demoBanner" hidden>Demo account with sample data. Nothing here is a real order or invoice.</div>
+    <div class="atabs" role="tablist">
+      <button type="button" class="atab on" data-t="orders">Orders</button>
+      <button type="button" class="atab" data-t="invoices">Invoices</button>
+      <button type="button" class="atab" data-t="profile">Profile</button>
+    </div>
+    <div class="apane on" data-p="orders" id="orders"></div>
+    <div class="apane" data-p="invoices" id="invoices"></div>
+    <div class="apane" data-p="profile">
+      <form id="pf" class="card">
+        <div class="g2">
+          <div><label class="f" for="pName">Name *</label><input type="text" id="pName"></div>
+          <div><label class="f" for="pCompany">Company / team</label><input type="text" id="pCompany"></div>
+          <div><label class="f" for="pPhone">Phone / WhatsApp</label><input type="tel" id="pPhone"></div>
+          <div><label class="f" for="pVat">VAT / tax number</label><input type="text" id="pVat"></div>
+        </div>
+        <h3 class="sub">Delivery and invoice address</h3>
+        <label class="f" for="aLine1">Street and number</label><input type="text" id="aLine1">
+        <label class="f" for="aLine2">Address line 2</label><input type="text" id="aLine2">
+        <div class="g3">
+          <div><label class="f" for="aPost">Postcode</label><input type="text" id="aPost"></div>
+          <div><label class="f" for="aCity">City</label><input type="text" id="aCity"></div>
+          <div><label class="f" for="aState">State / province</label><input type="text" id="aState"></div>
+        </div>
+        <label class="f" for="aCountry">Country</label><input type="text" id="aCountry">
+        <p class="muted small">Login e-mail: <b id="pEmail"></b></p>
+        <button class="btn yellow" type="submit">Save</button>
+      </form>
+    </div>
+  </section>
+</div></main>
+
+<div class="modal" id="payModal" hidden><div class="modal-in card">
+  <button class="x" type="button" data-close aria-label="Close">×</button>
+  <div class="lbl">Pay invoice</div>
+  <h3 class="big sm" id="payTitle"></h3>
+  <div id="payOpts"></div>
+  <div class="err" id="payErr" hidden></div>
+</div></div>

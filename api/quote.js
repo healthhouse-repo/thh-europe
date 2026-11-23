@@ -3,6 +3,8 @@
 const crypto = require('crypto');
 const { put } = require('@vercel/blob');
 const C = require('../lib/catalog');
+const S = require('../lib/store');
+const H = require('../lib/http');
 
 const str = (v, n = 300) => String(v == null ? '' : v).trim().slice(0, n);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -63,7 +65,7 @@ module.exports = async (req, res) => {
   if (artwork_link && !isUrl(artwork_link)) errors.push('The artwork link must start with https://');
   if (!b.consent) errors.push('Please agree that we may contact you about this request.');
   if (errors.length) return res.status(400).json({ error: errors.join(' ') });
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return res.status(503).json({ error: 'Quote requests are not available yet. Please e-mail info@elevenfashion.co.th.' });
+  if (!S.LIVE && !process.env.BLOB_READ_WRITE_TOKEN) return res.status(503).json({ error: 'Quote requests are not available yet. Please e-mail info@elevenfashion.co.th.' });
 
   const now = new Date();
   const reference = `EF-Q-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
@@ -72,8 +74,17 @@ module.exports = async (req, res) => {
     deadline: str(b.deadline, 20), delivery_country: str(b.delivery_country, 80), budget: str(b.budget, 80),
     message: str(b.message, 3000), source: str(req.headers.referer, 200),
   };
+  let account = false;
   try {
-    await put(`quotes/${reference}.json`, JSON.stringify(quote, null, 2), { access: 'public', addRandomSuffix: true, contentType: 'application/json' });
+    if (S.LIVE) {
+      // Store the request, create/refresh the customer and open an order in stage "Design" so the customer can follow it.
+      await S.saveQuote(quote);
+      const cust = await S.upsertCustomer(contact);
+      await S.createOrder({ customer_id: cust.id, title: items.map((i) => i.product).join(' + '), quote_ref: reference, items, note: `Quote request ${reference} received` });
+      account = true;
+    } else {
+      await put(`quotes/${reference}.json`, JSON.stringify(quote, null, 2), { access: 'public', addRandomSuffix: true, contentType: 'application/json' });
+    }
   } catch (e) {
     console.error('store failed', e && e.message);
     return res.status(500).json({ error: 'Something went wrong. Please try again or e-mail info@elevenfashion.co.th.' });
@@ -90,5 +101,9 @@ module.exports = async (req, res) => {
       });
     } catch (e) { console.error('mail failed', e && e.message); }
   }
-  return res.status(200).json({ ok: true, reference });
+  if (account) {
+    const site = H.SITE() || `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
+    await H.mail(contact.email, `We received your quote request ${reference}`, H.mailLayout('Thank you for your request', `<p>Hi ${esc(contact.name)},</p><p>We received your quote request <b>${reference}</b> and will reply with a quote. You can follow your request in your account: log in with this e-mail address.</p><p><a href="${site}/account" style="display:inline-block;background:#3f3e3d;color:#fff;padding:12px 20px;text-decoration:none">Go to your account</a></p>`));
+  }
+  return res.status(200).json({ ok: true, reference, account });
 };

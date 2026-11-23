@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design your apparel | Eleven Fashion</title>
+<meta name="description" content="Choose a product, fabric, colour and sizes, add your logo or text and request a quote from Eleven Fashion in Bangkok.">
+<link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&family=Oswald:wght@500;700&family=Bebas+Neue&family=Permanent+Marker&family=Playfair+Display:wght@700&family=Pacifico&family=Anton&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app.css?v=3">
+<link rel="stylesheet" href="/site.css?v=3">
+
+</head>
+<body class="">
+<header class="hdr solid fixed" id="hdr"><div class="wrap">
+  <a class="logo" href="/" aria-label="Eleven Fashion home">
+    <img class="lw" src="https://www.elevenfashion.co.th/images/logo-white-retina.png" alt="Eleven Fashion" onerror="this.outerHTML='<b class=&quot;wm lw&quot;>ELEVEN<i>|</i>FASHION</b>'">
+    <img class="ld" src="https://www.elevenfashion.co.th/images/scroll-logo-retina.png" alt="" onerror="this.outerHTML='<b class=&quot;wm ld&quot;>ELEVEN<i>|</i>FASHION</b>'">
+  </a>
+  <button class="burger" type="button" aria-label="Menu" onclick="document.body.classList.toggle('menu')"><span></span><span></span></button>
+  <nav><a href="/services">Services</a><a href="/about">About</a><a href="/process">Process</a><a href="/contact">Contact</a><a href="/account" class="acct" aria-label="My account"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Account</span></a><a class="cta" href="#basket">Quote <span id="navCount" class="pill">0</span></a></nav>
+</div></header>
+<div class="pagetop"><div class="wrap"><div class="lbl">Designer</div><h1 class="big">Design your apparel</h1><p class="intro-p">Pick a product, choose fabric, colour and sizes, put your logo or text on it and request a quote. No payment needed.</p></div></div>
+<section class="sec" id="products"><div class="wrap">
+  <div class="lbl">Step 1</div><h2 class="ttl big">Choose your product</h2>
+  <div class="prodgrid" id="prodGrid"></div>
+</div></section>
+
+<section class="sec designer-sec" id="designer"><div class="wrap">
+  <div class="lbl">Step 2</div><h2 class="ttl big">Design your <span id="dTitle">T-shirt</span></h2>
+  <div class="designer">
+    <div class="stage">
+      <div class="stage-inner">
+        <svg id="canvas" viewBox="0 -20 400 480" xmlns="http://www.w3.org/2000/svg" aria-label="Product preview"></svg>
+        <div class="stage-hint" id="stageHint">Upload a logo or add text to start</div>
+      </div>
+      <div class="views" id="views"></div>
+      <div class="selbar" id="selbar" hidden>
+        <label>Size <input type="range" id="selSize" min="10" max="100"></label>
+        <label>Rotate <input type="range" id="selRot" min="-180" max="180"></label>
+        <button type="button" class="mini" id="selCenter">Centre</button>
+        <button type="button" class="mini" id="selFront">To front</button>
+        <button type="button" class="mini danger" id="selDel">Delete</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab on" data-tab="product">Product</button>
+        <button type="button" class="tab" data-tab="colour">Colour</button>
+        <button type="button" class="tab" data-tab="sizes">Sizes</button>
+        <button type="button" class="tab" data-tab="design">Logo &amp; text</button>
+        <button type="button" class="tab" data-tab="finish">Finish</button>
+      </div>
+
+      <div class="pane on" data-pane="product">
+        <label class="f" for="pProduct">Product</label><select id="pProduct"></select>
+        <div id="otherWrap" hidden><label class="f" for="pOther">Describe the product</label><input type="text" id="pOther" placeholder="e.g. rash guard, apron, socks"></div>
+        <div class="g2">
+          <div id="weightWrap"><label class="f" for="pWeight">Fabric weight</label><select id="pWeight"></select></div>
+          <div id="fitWrap"><label class="f" for="pFit">Style / fit</label><select id="pFit"></select></div>
+        </div>
+        <label class="f" for="pMaterial">Material</label><select id="pMaterial"></select>
+        <p class="note">Not sure? Choose "Other / please advise" and we recommend the best option in our quote.</p>
+        <button type="button" class="btn dark next" data-go="colour">Next: colour →</button>
+      </div>
+
+      <div class="pane" data-pane="colour">
+        <label class="f">Garment colour <span id="colName" class="muted"></span></label>
+        <div class="swatches" id="swatches"></div>
+        <div id="pantoneWrap" hidden class="g2">
+          <div><label class="f" for="pPantoneHex">Preview colour</label><input type="color" id="pPantoneHex" value="#c8102e"></div>
+          <div><label class="f" for="pPantone">Pantone code</label><input type="text" id="pPantone" placeholder="e.g. 186 C"></div>
+        </div>
+        <label class="f" for="pMoreColors">Same design in more colours? <span class="muted">(optional)</span></label>
+        <input type="text" id="pMoreColors" placeholder="e.g. also 50 pcs in white">
+        <button type="button" class="btn dark next" data-go="sizes">Next: sizes →</button>
+      </div>
+
+      <div class="pane" data-pane="sizes">
+        <label class="f">Quantity per size</label>
+        <table class="sizes" id="sizeTable"></table>
+        <div class="total-row"><span>Total</span><b id="qtyTotal">0 pcs</b></div>
+        <p class="note">Enter the number of pieces per size. For caps and bags enter the total under "One size".</p>
+        <button type="button" class="btn dark next" data-go="design">Next: logo &amp; text →</button>
+      </div>
+
+      <div class="pane" data-pane="design">
+        <div class="viewnote">Designing: <b id="curView">Front</b> <span class="muted">(switch side below the preview)</span></div>
+        <div class="block">
+          <label class="f">Upload your logo</label>
+          <div class="drop" id="drop" tabindex="0" role="button">
+            <b>Click or drop a file</b><small>PNG, JPG or SVG shows in the preview · PDF, AI and EPS are welcome too · max 4 MB</small>
+            <input type="file" id="file" accept=".png,.jpg,.jpeg,.svg,.webp,.pdf,.ai,.eps" hidden>
+          </div>
+          <label class="chk"><input type="checkbox" id="rmWhite" checked> Remove white background</label>
+        </div>
+        <div class="block">
+          <label class="f" for="tText">Add text</label>
+          <div class="addtext"><input type="text" id="tText" placeholder="Type your text" maxlength="60"><button type="button" class="btn dark" id="tAdd">Add</button></div>
+          <div class="g2">
+            <div><label class="f" for="tFont">Font</label><select id="tFont"></select></div>
+            <div><label class="f">Text colour</label><div class="tcolors" id="tColors"></div></div>
+          </div>
+        </div>
+        <p class="note">Drag to move, use the corner to resize. Click a logo or text to change size, rotation or colour.</p>
+        <button type="button" class="btn dark next" data-go="finish">Next: finish →</button>
+      </div>
+
+      <div class="pane" data-pane="finish">
+        <label class="f" for="pDeco">Decoration technique</label><select id="pDeco"></select>
+        <label class="f" for="pPrintColors">Number of colours in your logo <span class="muted">(for screen print)</span></label>
+        <select id="pPrintColors"><option value="">Choose…</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option><option>Full colour</option></select>
+        <label class="f">Extras</label><div class="chips" id="extras"></div>
+        <label class="f" for="pNotes">Notes for this product</label>
+        <textarea id="pNotes" placeholder="e.g. logo 25 cm wide on the back, names and numbers on the back"></textarea>
+      </div>
+
+      <div class="addbar">
+        <div><span class="muted">This product</span><b id="barQty">0 pcs</b></div>
+        <button type="button" class="btn yellow" id="addToQuote">Add to quote</button>
+      </div>
+      <div class="err" id="dErr" hidden></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" id="basket"><div class="wrap">
+  <div class="lbl">Step 3</div><h2 class="ttl big">Your quote</h2>
+  <div id="basketEmpty" class="empty">Nothing in your quote yet. Design a product above and click "Add to quote".</div>
+  <div class="basket" id="basketList"></div>
+
+  <form id="qf" class="checkout" novalidate hidden>
+    <div class="card">
+      <h3>Delivery and timing</h3>
+      <div class="g3">
+        <div><label class="f" for="deadline">Needed by <span class="muted">(optional)</span></label><input type="date" id="deadline"></div>
+        <div><label class="f" for="delivery_country">Deliver to (country)</label><input type="text" id="delivery_country" placeholder="e.g. Netherlands"></div>
+        <div><label class="f" for="budget">Budget <span class="muted">(optional)</span></label><input type="text" id="budget" placeholder="e.g. €1,500"></div>
+      </div>
+      <label class="f" for="artwork_link">Link to more artwork <span class="muted">(optional · WeTransfer, Google Drive)</span></label><input type="url" id="artwork_link" placeholder="https://">
+    </div>
+    <div class="card">
+      <h3>Your details</h3>
+      <div class="g2">
+        <div><label class="f" for="name">Name *</label><input type="text" id="name" autocomplete="name"></div>
+        <div><label class="f" for="company">Company / team</label><input type="text" id="company" autocomplete="organization"></div>
+        <div><label class="f" for="email">E-mail *</label><input type="email" id="email" autocomplete="email"></div>
+        <div><label class="f" for="phone">Phone / WhatsApp</label><input type="tel" id="phone" autocomplete="tel"></div>
+        <div><label class="f" for="country">Country *</label><input type="text" id="country" autocomplete="country-name"></div>
+        <div><label class="f" for="customer_type">You are a</label>
+          <select id="customer_type"><option value="">Choose…</option><option>Clothing brand / start-up</option><option>Gym / sports club / team</option><option>Company (merchandise, workwear)</option><option>Event / festival</option><option>School / association</option><option>Shop / reseller</option><option>Other</option></select></div>
+      </div>
+      <label class="f" for="website_url">Website or Instagram <span class="muted">(optional)</span></label><input type="text" id="website_url">
+      <label class="f" for="message">Anything else?</label><textarea id="message" placeholder="Questions, reference products, ideas…"></textarea>
+      <input class="hp" type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="chk"><input type="checkbox" id="consent"> Eleven Fashion may contact me about this request. My details are only used for this quote.</label>
+      <div class="sendrow"><button type="submit" class="btn yellow" id="send">Send quote request</button><span class="muted" id="sendInfo"></span></div>
+      <div class="err" id="qErr" hidden></div>
+    </div>
+  </form>
+  <div class="card done" id="done" hidden><div class="kicker">Thank you</div><div class="ref" id="ref"></div><p>We received your quote request with your designs and will reply by e-mail. Please keep this reference. You can follow your request in your account.</p><div class="hbtns" style="justify-content:center"><a class="btn dark" href="/account">Go to my account</a><a class="btn ghost" href="/design">Start a new quote</a></div></div>
+</div></section>
+
+
+<section class="callout"><div class="wrap">
+  <h3>Let's get to know each other...</h3>
+  <div class="cbtns"><a class="btn ghost" href="/about">We are Eleven Fashion</a><a class="btn yellow" href="/contact">Get in touch</a></div>
+</div></section>
+<footer class="ftr"><div class="wrap">
+  <div><h4>About us</h4><p>Eleven Fashion is a one stop shop for fashion brands, teams and companies: design, fabric sourcing, manufacturing, merchandise and worldwide distribution from Bangkok.</p></div>
+  <div><h4>Quick links</h4><p><a href="/design">Design your apparel</a><br><a href="/services">Services</a><br><a href="/process">How it works</a><br><a href="/account">My account</a></p></div>
+  <div><h4>Contact us</h4><p>71 Soi Suphaphong 1, Nongbon, Prawet<br>Bangkok 10250, Thailand<br>+66 (0)95 959 4633<br><a href="mailto:info@elevenfashion.co.th">info@elevenfashion.co.th</a></p></div>
+</div><div class="copy">© Eleven Fashion Co., Ltd. · Photos: Unsplash</div></footer>
+<div class="toast" id="toast" hidden></div>
+<script src="/garments.js"></script>
+<script src="/app.js?v=3"></script>
+<script>(function(){var h=document.getElementById("hdr");if(h.classList.contains("fixed"))return;function f(){h.classList.toggle("solid",scrollY>30)}addEventListener("scroll",f,{passive:true});f()})();</script>
+</body>
+</html>

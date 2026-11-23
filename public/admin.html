@@ -1,48 +1,116 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Quote requests | Eleven Fashion</title>
+<title>Admin | Eleven Fashion</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Montserrat:wght@500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#111;--muted:#6b6b6b;--line:#e6e3de;--bg:#faf9f7}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 18px}
-h1{font-size:22px;margin:0 0 16px}
-input{border:1px solid #d8d4cd;border-radius:10px;padding:10px 12px;font:14px inherit}
-button{border:0;border-radius:999px;background:var(--ink);color:#fff;padding:10px 18px;font-weight:600;cursor:pointer}
-.q{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
-.q h2{font-size:16px;margin:0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.q h2 small{font-weight:400;color:var(--muted)}
-.q table{border-collapse:collapse;width:100%;margin-top:10px;font-size:13px}.q td,.q th{border-top:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
-.logos{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.logos a{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:4px 8px;text-decoration:none;color:inherit}
-.logos img{width:36px;height:36px;object-fit:contain}
-.muted{color:var(--muted)}
-.mk{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}.mk a{text-decoration:none;color:inherit;text-align:center;font-size:12px}.mk img{width:120px;height:144px;object-fit:contain;background:#f4f4f4;display:block;border:1px solid var(--line)}.dl{font-size:13px;padding-left:6px}
+:root{--ink:#3f3e3d;--muted:#8a8a8a;--line:#e6e4e0;--bg:#f6f5f3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Assistant,system-ui,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 18px}
+h1{font:400 42px/1 "Bebas Neue",sans-serif;letter-spacing:2px;margin:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+input,select,textarea{border:1px solid #d4d2ce;padding:9px 10px;font:inherit;background:#fff;width:100%}
+textarea{min-height:60px}
+label{display:block;font:500 11px Montserrat;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+button,.b{border:0;background:var(--ink);color:#fff;padding:9px 14px;font:500 11px Montserrat;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block}
+.b2{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+.tabs{display:flex;gap:22px;border-bottom:1px solid #dcdad6;margin-bottom:18px}
+.tab{background:none;color:var(--muted);padding:10px 0;border-bottom:2px solid transparent}.tab.on{color:#000;border-bottom-color:#000}
+.pane{display:none}.pane.on{display:block}
+.card{background:#fff;padding:18px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.muted{color:var(--muted)}.small{font-size:13px}
+.badge{display:inline-block;padding:4px 9px;font:600 10px Montserrat;letter-spacing:1px;text-transform:uppercase;background:#eeece8}
+.badge.mockup,.badge.open{background:var(--ink);color:#fff}.badge.delivered,.badge.paid{background:#e4efe6;color:#1f5a33}.badge.cancelled,.badge.void{background:#f6e4e2;color:#8a2a22}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{border-top:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{font:500 10px Montserrat;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.box{border:1px solid var(--line);padding:14px}
+.box h4{margin:0 0 6px;font:500 12px Montserrat;letter-spacing:1.5px;text-transform:uppercase}
+.mk{display:flex;gap:8px;flex-wrap:wrap}.mk img{width:90px;height:108px;object-fit:cover;background:#f3f2f0}
+.lines input{padding:6px}.lines td{border:0;padding:3px}
+.demo{background:var(--ink);color:#fff;padding:9px 14px;margin-bottom:14px}
+.err{color:#8a2a22}
+details summary{cursor:pointer}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:10px 18px}
+.login{max-width:380px;margin:80px auto}
 </style></head><body><div class="wrap">
-<h1>Quote requests</h1>
-<form id="lf"><input type="password" id="pw" placeholder="Password" autocomplete="current-password"> <button>Show</button> <span id="msg" class="muted"></span></form>
-<input id="flt" placeholder="Search name, company, e-mail, product…" style="width:100%;margin-top:14px;display:none">
-<div id="list"></div>
+<div id="loginV" class="login card" hidden>
+  <h1>Eleven admin</h1>
+  <form id="lf"><label for="pw">Password</label><input type="password" id="pw" autocomplete="current-password"><p><button>Log in</button> <span id="lmsg" class="err"></span></p></form>
+  <div id="demoL" hidden><p class="muted small">No database, file storage or admin password is set up yet. You can look around in the demo with sample data.</p><button class="b2" id="demoBtn" type="button">Open demo admin</button></div>
 </div>
+<div id="app" hidden>
+  <div class="top"><h1>Eleven admin</h1><div><a class="b b2" href="/" target="_blank">Website</a> <button id="logout" class="b2">Log out</button></div></div>
+  <div class="demo" id="demoBar" hidden>Demo mode: sample data, changes are not saved permanently. Connect the database to go live.</div>
+  <div class="tabs"><button class="tab on" data-t="orders">Orders</button><button class="tab" data-t="quotes">Quote requests</button><button class="tab" data-t="customers">Customers</button><button class="tab" data-t="invoices">Invoices</button></div>
+  <div class="pane on" data-p="orders">
+    <details class="card"><summary><b>+ New order without quote</b></summary>
+      <div class="g"><div><label>Customer e-mail</label><input id="noEmail"></div><div><label>Name</label><input id="noName"></div><div><label>Company</label><input id="noCompany"></div><div><label>Title</label><input id="noTitle" placeholder="e.g. Team hoodies 2027"></div><div><label>Currency</label><select id="noCur"></select></div></div>
+      <p><button id="noBtn">Create order</button></p></details>
+    <input id="fo" placeholder="Search orders…" style="margin-bottom:12px"><div id="orders"></div>
+  </div>
+  <div class="pane" data-p="quotes"><input id="fq" placeholder="Search quote requests…" style="margin-bottom:12px"><div id="quotes"></div></div>
+  <div class="pane" data-p="customers"><div class="card"><table id="customers"></table></div></div>
+  <div class="pane" data-p="invoices"><div class="card"><table id="invoices"></table></div></div>
+</div>
+</div>
+<div class="toast" id="toast" hidden></div>
 <script>
+var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-var all=[];
-document.getElementById('lf').onsubmit=function(e){e.preventDefault();var m=document.getElementById('msg');m.textContent='Loading…';
-  fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('pw').value})})
-  .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})}).then(function(x){
-    if(!x.ok){m.textContent=x.j.error||'Error';return}
-    all=x.j.quotes;m.textContent=x.j.total+' request(s)';document.getElementById('flt').style.display='block';render();});};
-document.getElementById('flt').oninput=render;
-function render(){var f=document.getElementById('flt').value.toLowerCase();
-  document.getElementById('list').innerHTML=all.filter(function(q){return !f||JSON.stringify(q).toLowerCase().indexOf(f)>=0}).map(function(q){var c=q.contact||{};
-    var tot=(q.items||[]).reduce(function(a,i){return a+(+i.quantity||0)},0);
-    return '<div class="q"><h2><span>'+esc(q.reference)+' · '+esc(c.company||c.name)+'</span><small>'+esc(new Date(q.created_at).toLocaleString())+' · '+tot+' pcs</small></h2>'+
-    '<div>'+esc(c.name)+' · <a href="mailto:'+esc(c.email)+'?subject='+encodeURIComponent('Your quote request '+q.reference)+'">'+esc(c.email)+'</a>'+(c.phone?' · '+esc(c.phone):'')+' · '+esc(c.country)+(c.customer_type?' · '+esc(c.customer_type):'')+(c.website_url?' · '+esc(c.website_url):'')+'</div>'+
-    '<table><tr><th>Product</th><th>Qty / sizes</th><th>Fabric</th><th>Colours</th><th>Decoration</th><th>Extras / notes</th></tr>'+(q.items||[]).map(function(i){
-      var sz=Object.keys(i.sizes||{}).map(function(s){return s+': '+i.sizes[s]}).join(', ');
-      return '<tr><td>'+esc(i.product)+(i.product_other?' – '+esc(i.product_other):'')+(i.fit?'<br><span class="muted">'+esc(i.fit)+'</span>':'')+'</td><td>'+esc(i.quantity)+(sz?'<br><span class="muted">'+esc(sz)+'</span>':'')+'</td><td>'+esc([i.weight,i.material].filter(Boolean).join(', '))+'</td><td>'+esc(i.colors.join(', '))+(i.pantone?'<br>'+esc(i.pantone):'')+'</td><td>'+esc(i.decoration.join(', '))+(i.positions.length?'<br><span class="muted">'+esc(i.positions.join(', '))+'</span>':'')+(i.print_colors?'<br>'+esc(i.print_colors)+' colours':'')+'</td><td>'+esc(i.extras.join(', '))+(i.notes?'<br>'+esc(i.notes):'')+(i.more_colors?'<br>More colours: '+esc(i.more_colors):'')+'</td></tr>'+
-      (((i.mockups||[]).length||(i.design||[]).length)?'<tr><td colspan="6"><div class="mk">'+(i.mockups||[]).map(function(m){return '<a href="'+esc(m.url)+'" target="_blank" rel="noopener"><img src="'+esc(m.url)+'" alt=""><span>'+esc(m.view)+'</span></a>'}).join('')+
-        '<div class="dl">'+(i.design||[]).map(function(d){return '<div>'+esc(d.view)+': '+(d.type==='text'?'text “'+esc(d.text)+'” ('+esc(d.font)+', '+esc(d.color)+')':(d.logo_url?'<a href="'+esc(d.logo_url)+'" target="_blank" rel="noopener">'+esc(d.logo_name||'logo')+'</a>':esc(d.logo_name||'logo')))+'</div>'}).join('')+'</div></div></td></tr>':'')}).join('')+'</table>'+
-    ((q.logos||[]).length||q.artwork_link?'<div class="logos">'+(q.logos||[]).map(function(l){return '<a href="'+esc(l.url)+'" target="_blank" rel="noopener">'+(/\.(png|jpe?g|svg|webp)(\?|$)/i.test(l.url)?'<img src="'+esc(l.url)+'" alt="">':'📄')+esc(l.name)+'</a>'}).join('')+(q.artwork_link?'<a href="'+esc(q.artwork_link)+'" target="_blank" rel="noopener">🔗 Artwork link</a>':'')+'</div>':'')+
-    '<div class="muted" style="margin-top:8px">'+[q.deadline?'Needed by '+q.deadline:'',q.delivery_country?'Deliver to '+q.delivery_country:'',q.budget?'Budget '+q.budget:''].filter(Boolean).map(esc).join(' · ')+'</div>'+
-    (q.message?'<p>'+esc(q.message)+'</p>':'')+'</div>'}).join('')||'<p class="muted">No requests found.</p>';}
+function toast(m){var t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},3000)}
+function api(a,b){return fetch('/api/admin?a='+a,b?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b),credentials:'same-origin'}:{credentials:'same-origin'}).then(function(r){return r.json().then(function(j){return{ok:r.ok,status:r.status,j:j}})})}
+function d(s){return s?new Date(s).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):''}
+function money(c,n){try{return new Intl.NumberFormat(undefined,{style:'currency',currency:c}).format(n)}catch(e){return c+' '+n}}
+var D=null,open={};
+function boot(){api('data').then(function(x){if(x.status===401){$('loginV').hidden=false;$('app').hidden=true;$('demoL').hidden=!x.j.demo;return}D=x.j;$('loginV').hidden=true;$('app').hidden=false;$('demoBar').hidden=D.live;$('noCur').innerHTML=D.currencies.map(function(c){return'<option>'+c+'</option>'}).join('');render()})}
+$('lf').onsubmit=function(e){e.preventDefault();api('login',{password:$('pw').value}).then(function(x){if(!x.ok){$('lmsg').textContent=x.j.error;return}boot()})};
+$('demoBtn').onclick=function(){api('login',{demo:true}).then(function(x){if(!x.ok){$('lmsg').textContent=x.j.error;return}boot()})};
+$('logout').onclick=function(){api('logout',{}).then(boot)};
+document.querySelector('.tabs').onclick=function(e){var b=e.target.closest('.tab');if(!b)return;document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t===b)});document.querySelectorAll('.pane').forEach(function(p){p.classList.toggle('on',p.dataset.p===b.dataset.t)})};
+$('fo').oninput=renderOrders;$('fq').oninput=renderQuotes;
+function render(){renderOrders();renderQuotes();renderCustomers();renderInvoices()}
+function invsOf(o){return D.invoices.filter(function(i){return i.order_id===o.id})}
+function renderOrders(){var f=$('fo').value.toLowerCase();
+ $('orders').innerHTML=D.orders.filter(function(o){return!f||JSON.stringify(o).toLowerCase().indexOf(f)>=0}).map(function(o){var c=o.customer||{};
+  return '<div class="card"><div class="row"><div><b>'+esc(o.number)+'</b> · '+esc(o.title)+'<br><span class="muted small">'+esc(c.company||c.name)+' · '+esc(c.email)+' · '+d(o.created_at)+(o.quote_ref?' · quote '+esc(o.quote_ref):'')+'</span></div><div><span class="badge '+esc(o.status)+'">'+esc(D.labels[o.status]||o.status)+'</span>'+(o.mockup_status?' <span class="badge">mockup: '+esc(o.mockup_status)+'</span>':'')+' <button class="b2" data-tg="'+o.id+'">'+(open[o.id]?'Close':'Manage')+'</button></div></div>'+
+  (o.mockup_feedback?'<p class="small"><b>Customer feedback:</b> '+esc(o.mockup_feedback)+'</p>':'')+(open[o.id]?manage(o):'')+'</div>'}).join('')||'<p class="muted">No orders yet. Create one from a quote request.</p>'}
+function manage(o){var id=o.id;
+ return '<div class="g" style="margin-top:14px">'+
+ '<div class="box"><h4>Status</h4><select id="st-'+id+'">'+D.stages.concat(['cancelled']).map(function(s){return'<option value="'+s+'"'+(s===o.status?' selected':'')+'>'+esc(D.labels[s])+'</option>'}).join('')+'</select><label>Note for the customer</label><input id="sn-'+id+'" placeholder="e.g. Production started"><label><input type="checkbox" id="sm-'+id+'" style="width:auto"> E-mail the customer</label><p><button data-act="status" data-id="'+id+'">Update status</button></p>'+
+ '<details><summary class="small">History</summary><ul class="small">'+(o.events||[]).map(function(e){return'<li>'+d(e.created_at)+' – '+esc(e.note)+'</li>'}).join('')+'</ul></details></div>'+
+ '<div class="box"><h4>Mockup for approval</h4>'+((o.mockups||[]).length?'<div class="mk">'+o.mockups.map(function(m){return'<a href="'+esc(m.url)+'" target="_blank"><img src="'+esc(m.url)+'"></a>'}).join('')+'</div>':'')+
+ '<label>Upload image(s)</label><input type="file" id="mf-'+id+'" accept="image/*" multiple><label>or image URL(s), one per line</label><textarea id="mu-'+id+'"></textarea><label>Message</label><input id="mn-'+id+'" placeholder="Your mockup is ready for approval"><label><input type="checkbox" id="mm-'+id+'" style="width:auto" checked> E-mail the customer</label><p><button data-act="mockup" data-id="'+id+'">Send for approval</button></p></div>'+
+ '<div class="box"><h4>Shipping</h4><label>Carrier</label><input id="ca-'+id+'" value="'+esc(o.carrier)+'" placeholder="DHL Express, FedEx, Thailand Post…"><label>Tracking number</label><input id="tn-'+id+'" value="'+esc(o.tracking_number)+'"><label>Tracking link (https://)</label><input id="tu-'+id+'" value="'+esc(o.tracking_url)+'"><label>Expected delivery</label><input type="date" id="eta-'+id+'" value="'+esc(o.eta||'')+'"><label>Title</label><input id="ti-'+id+'" value="'+esc(o.title)+'"><p><button data-act="save" data-id="'+id+'">Save</button></p></div>'+
+ '<div class="box"><h4>Invoices</h4>'+invsOf(o).map(function(i){return'<p class="small"><b>'+esc(i.number)+'</b> '+money(i.currency,i.total)+' <span class="badge '+i.status+'">'+i.status+'</span> <a href="/invoice?admin=1&id='+i.id+'" target="_blank">view</a></p>'}).join('')+
+ '<label>Currency</label><select id="ic-'+id+'">'+D.currencies.map(function(c){return'<option'+(c===o.currency?' selected':'')+'>'+c+'</option>'}).join('')+'</select>'+
+ '<table class="lines" id="il-'+id+'"><tr><th>Description</th><th>Qty</th><th>Unit price</th></tr>'+lineRow()+'</table><button class="b2" data-act="addline" data-id="'+id+'" type="button">+ line</button>'+
+ '<div class="g" style="grid-template-columns:1fr 1fr;gap:8px"><div><label>VAT %</label><input type="number" id="it-'+id+'" value="0" min="0" max="30"></div><div><label>Due date</label><input type="date" id="id-'+id+'"></div></div><label>Note on invoice</label><input id="inn-'+id+'" placeholder="e.g. 50% deposit, balance before shipping"><label><input type="checkbox" id="im-'+id+'" style="width:auto" checked> E-mail the customer</label><p><button data-act="invoice" data-id="'+id+'">Create invoice</button></p></div></div>'}
+function lineRow(){return'<tr><td><input class="ld" placeholder="T-shirt 180 gsm, screen print"></td><td style="width:70px"><input class="lq" type="number" min="0"></td><td style="width:110px"><input class="lp" type="number" min="0" step="0.01"></td></tr>'}
+$('orders').onclick=function(e){var t=e.target.closest('[data-tg]');if(t){open[t.dataset.tg]=!open[t.dataset.tg];renderOrders();return}
+ var b=e.target.closest('[data-act]');if(!b)return;var id=b.dataset.id,a=b.dataset.act;
+ if(a==='addline'){$('il-'+id).insertAdjacentHTML('beforeend',lineRow());return}
+ b.disabled=true;var done=function(x,msg){b.disabled=false;if(!x.ok)return toast(x.j.error);toast(msg+(x.j.mailed?' · e-mail sent':''));boot()};
+ if(a==='status')api('status',{id:id,status:$('st-'+id).value,note:$('sn-'+id).value,notify:$('sm-'+id).checked}).then(function(x){done(x,'Status updated')});
+ if(a==='save')api('order-save',{id:id,carrier:$('ca-'+id).value,tracking_number:$('tn-'+id).value,tracking_url:$('tu-'+id).value,eta:$('eta-'+id).value,title:$('ti-'+id).value}).then(function(x){done(x,'Saved')});
+ if(a==='invoice'){var lines=[].map.call($('il-'+id).querySelectorAll('tr'),function(r){var q=r.querySelector('.lq');return q?{description:r.querySelector('.ld').value,qty:q.value,price:r.querySelector('.lp').value}:null}).filter(Boolean);
+  api('invoice',{order_id:id,currency:$('ic-'+id).value,lines:lines,tax_rate:$('it-'+id).value,due_date:$('id-'+id).value,notes:$('inn-'+id).value,notify:$('im-'+id).checked}).then(function(x){done(x,'Invoice created')})}
+ if(a==='mockup'){var urls=$('mu-'+id).value.split(/\n+/).map(function(s){return s.trim()}).filter(Boolean),files=[].slice.call($('mf-'+id).files);
+  Promise.all(files.map(function(f){return fetch('/api/upload',{method:'POST',headers:{'Content-Type':f.type||'application/octet-stream','X-Filename':f.name},body:f}).then(function(r){return r.json()}).then(function(j){if(!j.url)throw new Error(j.error||'Upload failed');return j.url})}))
+  .then(function(up){var all=up.concat(urls);return api('mockup',{id:id,mockups:all.map(function(u,n){return{label:'Mockup '+(n+1),url:u}}),note:$('mn-'+id).value,notify:$('mm-'+id).checked})}).then(function(x){done(x,'Mockup sent')}).catch(function(e){b.disabled=false;toast(e.message)})}};
+function renderQuotes(){var f=$('fq').value.toLowerCase();var used={};D.orders.forEach(function(o){if(o.quote_ref)used[o.quote_ref]=o.number});
+ $('quotes').innerHTML=D.quotes.filter(function(q){return!f||JSON.stringify(q).toLowerCase().indexOf(f)>=0}).map(function(q){var c=q.contact||{},tot=(q.items||[]).reduce(function(a,i){return a+(+i.quantity||0)},0);
+  return'<div class="card"><div class="row"><div><b>'+esc(q.reference)+'</b> · '+esc(c.company||c.name)+'<br><span class="muted small">'+esc(c.name)+' · <a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a>'+(c.phone?' · '+esc(c.phone):'')+' · '+esc(c.country)+' · '+d(q.created_at)+' · '+tot+' pcs</span></div><div>'+(used[q.reference]?'<span class="badge">order '+esc(used[q.reference])+'</span>':'<button data-q="'+esc(q.reference)+'">Create order</button>')+'</div></div>'+
+  '<table><tr><th>Product</th><th>Qty / sizes</th><th>Fabric</th><th>Colour</th><th>Decoration</th><th>Notes</th></tr>'+(q.items||[]).map(function(i){var sz=Object.keys(i.sizes||{}).map(function(s){return s+' '+i.sizes[s]}).join(', ');
+   return'<tr><td>'+esc(i.product)+(i.product_other?' – '+esc(i.product_other):'')+'</td><td>'+esc(i.quantity)+'<br><span class="muted small">'+esc(sz)+'</span></td><td>'+esc([i.weight,i.material,i.fit].filter(Boolean).join(', '))+'</td><td>'+esc((i.colors||[]).join(', '))+(i.pantone?' '+esc(i.pantone):'')+'</td><td>'+esc((i.decoration||[]).join(', '))+(i.print_colors?' · '+esc(i.print_colors)+' col.':'')+'</td><td>'+esc((i.extras||[]).join(', '))+(i.notes?'<br>'+esc(i.notes):'')+'</td></tr>'+
+   (((i.mockups||[]).length||(i.design||[]).length)?'<tr><td colspan="6"><div class="mk">'+(i.mockups||[]).map(function(m){return'<a href="'+esc(m.url)+'" target="_blank"><img src="'+esc(m.url)+'"></a>'}).join('')+'</div><div class="small">'+(i.design||[]).map(function(x){return esc(x.view)+': '+(x.type==='text'?'text “'+esc(x.text)+'” ('+esc(x.font)+', '+esc(x.color)+')':(x.logo_url?'<a href="'+esc(x.logo_url)+'" target="_blank">'+esc(x.logo_name||'logo')+'</a>':esc(x.logo_name||'logo')))}).join(' · ')+'</div></td></tr>':'')}).join('')+'</table>'+
+  ((q.logos||[]).length?'<p class="small">Logos: '+q.logos.map(function(l){return'<a href="'+esc(l.url)+'" target="_blank">'+esc(l.name)+'</a>'}).join(', ')+'</p>':'')+
+  '<p class="small muted">'+[q.deadline?'Needed by '+q.deadline:'',q.delivery_country?'Deliver to '+q.delivery_country:'',q.budget?'Budget '+q.budget:''].filter(Boolean).map(esc).join(' · ')+'</p>'+(q.message?'<p>'+esc(q.message)+'</p>':'')+'</div>'}).join('')||'<p class="muted">No quote requests yet.</p>'}
+$('quotes').onclick=function(e){var b=e.target.closest('[data-q]');if(!b)return;b.disabled=true;api('order-from-quote',{reference:b.dataset.q}).then(function(x){if(!x.ok){b.disabled=false;return toast(x.j.error)}toast('Order '+x.j.order.number+' created');boot()})};
+$('noBtn').onclick=function(){api('order-new',{email:$('noEmail').value,name:$('noName').value,company:$('noCompany').value,title:$('noTitle').value,currency:$('noCur').value}).then(function(x){if(!x.ok)return toast(x.j.error);toast('Order '+x.j.order.number+' created');boot()})};
+function renderCustomers(){$('customers').innerHTML='<tr><th>Name</th><th>Company</th><th>E-mail</th><th>Country</th><th>Orders</th><th>Since</th></tr>'+D.customers.map(function(c){return'<tr><td>'+esc(c.name)+'</td><td>'+esc(c.company)+'</td><td>'+esc(c.email)+'</td><td>'+esc(c.country)+'</td><td>'+D.orders.filter(function(o){return o.customer_id===c.id}).length+'</td><td>'+d(c.created_at)+'</td></tr>'}).join('')}
+function renderInvoices(){var cs={};D.customers.forEach(function(c){cs[c.id]=c});$('invoices').innerHTML='<tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr>'+D.invoices.map(function(i){var c=cs[i.customer_id]||{};return'<tr><td><a href="/invoice?admin=1&id='+i.id+'" target="_blank">'+esc(i.number)+'</a></td><td>'+esc(c.company||c.name)+'</td><td>'+d(i.issued_at)+'</td><td>'+money(i.currency,i.total)+'</td><td><span class="badge '+i.status+'">'+i.status+'</span>'+(i.payment_method?' <span class="small muted">'+esc(i.payment_method)+'</span>':'')+'</td><td>'+(i.status==='open'?'<button class="b2" data-inv="'+i.id+'" data-s="paid">Mark paid (bank)</button> <button class="b2" data-inv="'+i.id+'" data-s="void">Cancel</button>':i.status==='paid'?'':'<button class="b2" data-inv="'+i.id+'" data-s="open">Reopen</button>')+'</td></tr>'}).join('')}
+$('invoices').onclick=function(e){var b=e.target.closest('[data-inv]');if(!b)return;api('invoice-status',{id:b.dataset.inv,status:b.dataset.s}).then(function(x){if(!x.ok)return toast(x.j.error);toast('Invoice updated');boot()})};
+boot();
 </script></body></html>

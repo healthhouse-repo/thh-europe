@@ -8,7 +8,7 @@ a{color:inherit}
 .hdr .wrap{display:flex;align-items:center;justify-content:space-between;height:84px;transition:height .25s}
 .hdr.solid{top:0;background:#fff;box-shadow:0 1px 12px rgba(0,0,0,.08)}
 .hdr.solid .wrap{height:66px}
-.logo{display:block}.logo img{height:54px;width:auto;display:block}
+.logo{display:block;text-decoration:none}.logo img{height:54px;width:auto;display:block}
 .logo .ld{display:none}.hdr.solid .lw{display:none}.hdr.solid .ld{display:block;height:40px}
 .wm{color:#fff;font:700 20px Montserrat;letter-spacing:4px;white-space:nowrap}.wm i{font-style:normal;opacity:.6;margin:0 2px}
 .hdr.solid .wm{color:#222}
