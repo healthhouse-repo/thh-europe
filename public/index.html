@@ -11,26 +11,56 @@
 <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-<div class="topbar"><div class="wrap"><span>+66 (0)95 959 4633</span><a href="mailto:info@elevenfashion.co.th">info@elevenfashion.co.th</a><span>10AM – 6PM</span></div></div>
-<header class="hdr"><div class="wrap">
-  <a class="logo" href="https://www.elevenfashion.co.th/" aria-label="Eleven Fashion"><img src="https://www.elevenfashion.co.th/images/logo-white-retina.png" alt="Eleven Fashion" onerror="this.outerHTML='<b class=&quot;wm&quot;>ELEVEN FASHION</b>'"></a>
-  <nav><a href="#products">Products</a><a href="#designer">Designer</a><a href="#how">How it works</a><a href="https://www.elevenfashion.co.th/">Main website</a><a class="cta" href="#basket">Quote <span id="navCount" class="pill">0</span></a></nav>
+<div class="topbar"><div class="wrap"><span>+66(0)95-9594633</span><a href="mailto:info@elevenfashion.co.th">info@elevenfashion.co.th</a><span class="hide-s">Mon – Sat · 10AM – 6PM</span></div></div>
+<header class="hdr" id="hdr"><div class="wrap">
+  <a class="logo" href="https://www.elevenfashion.co.th/" aria-label="Eleven Fashion">
+    <img class="lw" src="https://www.elevenfashion.co.th/images/logo-white-retina.png" alt="Eleven Fashion" onerror="this.outerHTML='<b class=&quot;wm lw&quot;>ELEVEN<i>|</i>FASHION</b>'">
+    <img class="ld" src="https://www.elevenfashion.co.th/images/scroll-logo-retina.png" alt="" onerror="this.outerHTML='<b class=&quot;wm ld&quot;>ELEVEN<i>|</i>FASHION</b>'">
+  </a>
+  <nav><a href="https://www.elevenfashion.co.th/">Home</a><a href="#products">Design</a><a href="#how">How it works</a><a href="https://www.elevenfashion.co.th/">About Eleven Fashion</a><a href="mailto:info@elevenfashion.co.th">Get in touch</a><a class="cta" href="#basket">Quote <span id="navCount" class="pill">0</span></a></nav>
 </div></header>
 
-<section class="hero"><div class="wrap">
-  <div class="kicker">Custom apparel · Teamwear · Merchandise</div>
-  <h1>Design it. <span>We make it.</span></h1>
-  <p>Pick a product, choose fabric, colour and sizes, put your logo or text on it and request a quote. Made to order by Eleven Fashion in Bangkok.</p>
-  <a class="btn yellow" href="#products">Start designing</a>
+<section class="hero" style="--img:url('https://www.elevenfashion.co.th/assets/images/slide-1.jpg')"><div class="wrap">
+  <h1>We are<br>Eleven Fashion</h1>
+  <p>Welcome to our world. Design your apparel online and we make it in Bangkok.</p>
+  <div class="hbtns"><a class="btn yellow" href="#products">Start designing</a><a class="btn outline" href="#about">Find out more</a></div>
+</div></section>
+
+<section class="about" id="about"><div class="wrap">
+  <div class="lbl">About us</div>
+  <div class="about-g">
+    <h2 class="big">One stop<br>shop</h2>
+    <div>
+      <p class="lead">Eleven Fashion is a clothing manufacturer and wholesaler in Bangkok. We help brands, teams and companies from the first sketch to the finished garment.</p>
+      <p>Fashion design, fabric sourcing, manufacturing, printing and embroidery, packaging and distribution are handled under one roof. This portal is the quickest way to start: design your product, place your logo and request a quote.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="tiles"><div class="wrap">
+  <a class="tile" href="#products" style="--img:url('https://www.elevenfashion.co.th/assets/images/slide-2.jpg')"><span class="tl">From sketch<br>to shipment.</span><span class="tb">Start designing</span></a>
+  <a class="tile" href="#how" style="--img:url('https://www.elevenfashion.co.th/assets/images/slide-3.jpg')"><span class="tl">Teamwear &amp;<br>merchandise.</span><span class="tb">How it works</span></a>
+</div></section>
+
+<section class="services"><div class="wrap">
+  <h2 class="big light">Our services</h2>
+  <div class="svc">
+    <div><b>Fashion design</b><span>Tech packs, samples and fit</span></div>
+    <div><b>Fabric sourcing</b><span>Cotton, blends, performance fabrics</span></div>
+    <div><b>Manufacturing</b><span>Cut, sew and finish in Bangkok</span></div>
+    <div><b>Teamwear</b><span>Clubs, gyms and events</span></div>
+    <div><b>Merchandise</b><span>Company and brand merch</span></div>
+    <div><b>Distribution</b><span>Packing and worldwide shipping</span></div>
+  </div>
 </div></section>
 
 <section class="sec" id="products"><div class="wrap">
-  <h2 class="ttl">1. Choose your product</h2>
+  <div class="lbl">Step 1</div><h2 class="ttl big">Product collection</h2>
   <div class="prodgrid" id="prodGrid"></div>
 </div></section>
 
 <section class="sec designer-sec" id="designer"><div class="wrap">
-  <h2 class="ttl">2. Design your <span id="dTitle">T-shirt</span></h2>
+  <div class="lbl">Step 2</div><h2 class="ttl big">Design your <span id="dTitle">T-shirt</span></h2>
   <div class="designer">
     <div class="stage">
       <div class="stage-inner">
@@ -129,7 +159,7 @@
 </div></section>
 
 <section class="sec" id="basket"><div class="wrap">
-  <h2 class="ttl">3. Your quote</h2>
+  <div class="lbl">Step 3</div><h2 class="ttl big">Your quote</h2>
   <div id="basketEmpty" class="empty">Nothing in your quote yet. Design a product above and click "Add to quote".</div>
   <div class="basket" id="basketList"></div>
 
@@ -166,7 +196,7 @@
 </div></section>
 
 <section class="sec how" id="how"><div class="wrap">
-  <h2 class="ttl">How it works</h2>
+  <div class="lbl">The process</div><h2 class="ttl big">How it works</h2>
   <div class="steps">
     <div><span>1</span><b>Design</b><p>Choose a product, fabric, colour and sizes and place your logo or text.</p></div>
     <div><span>2</span><b>Request a quote</b><p>Add one or more products and send your request. No payment needed.</p></div>
@@ -181,14 +211,19 @@
   </div>
 </div></section>
 
+<section class="callout"><div class="wrap">
+  <h3>Let's get to know each other...</h3>
+  <div class="cbtns"><a class="btn outline" href="https://www.elevenfashion.co.th/">We are Eleven Fashion</a><a class="btn white" href="mailto:info@elevenfashion.co.th">Get in touch</a></div>
+</div></section>
 <footer class="ftr"><div class="wrap">
-  <div><img src="https://www.elevenfashion.co.th/images/logo-white-retina.png" alt="Eleven Fashion" style="height:44px" onerror="this.remove()"><p>Eleven Fashion Co., Ltd.<br>71 Soi Suphaphong 1, Nongbon Prawet<br>Bangkok 10250, Thailand</p></div>
-  <div><b>Contact</b><p><a href="mailto:info@elevenfashion.co.th">info@elevenfashion.co.th</a><br>+66 (0)95 959 4633<br>10AM – 6PM</p></div>
-  <div><b>Eleven Fashion</b><p><a href="https://www.elevenfashion.co.th/">Main website</a><br><a href="#products">Design your apparel</a><br><a href="#how">How it works</a></p></div>
-</div></footer>
+  <div><h4>About us</h4><p>Eleven Fashion is a one stop shop for fashion brands, teams and companies: design, fabric sourcing, manufacturing, merchandise and distribution from Bangkok.</p></div>
+  <div><h4>Quick links</h4><p><a href="https://www.elevenfashion.co.th/">Home</a><br><a href="#products">Design your apparel</a><br><a href="#how">How it works</a><br><a href="#basket">Your quote</a></p></div>
+  <div><h4>Contact us</h4><p>71 Soi Suphaphong 1, Nongbon Prawet<br>Bangkok 10250, Thailand<br>+66(0)95-9594633<br><a href="mailto:info@elevenfashion.co.th">info@elevenfashion.co.th</a></p></div>
+</div><div class="copy">© Eleven Fashion Co., Ltd.</div></footer>
 
 <div class="toast" id="toast" hidden></div>
 <script src="/garments.js"></script>
 <script src="/app.js"></script>
+<script>(function(){var h=document.getElementById("hdr");function f(){h.classList.toggle("solid",scrollY>30)}addEventListener("scroll",f,{passive:true});f()})();</script>
 </body>
 </html>
