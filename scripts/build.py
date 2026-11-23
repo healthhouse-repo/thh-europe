@@ -133,8 +133,8 @@ SERVICES = [
 ]
 
 PRODUCT_PHOTOS = {  # Unsplash
-    'tshirt': '1574180566232-aaad1b5b8450', 'longsleeve': '1602488283247-29bf1f5b148a', 'tank': '1686972213857-18ae00d74921',
-    'polo': '1761956255550-e1d6d12e94be', 'hoodie': '1556821840-3a63f95609a7', 'sweater': '1554568218-ffd1e72a2151',
+    'tshirt': '1574180566232-aaad1b5b8450', 'longsleeve': '1671438118257-cefa6c86fd50', 'tank': '1686972213857-18ae00d74921',
+    'polo': '1625910513399-c9fcba54338c', 'hoodie': '1556821840-3a63f95609a7', 'sweater': '1554568218-ffd1e72a2151',
     'joggers': '1602573991155-21f0143bb45c', 'shorts': '1640943136566-3edeb13e3d3b', 'performance': '1596723524688-176682618fd2',
     'jacket': '1643622782660-30dedcd8d75a', 'cap': '1588850561407-ed78c282e89b', 'bag': '1578237493287-8d4d2b03591a',
 }
