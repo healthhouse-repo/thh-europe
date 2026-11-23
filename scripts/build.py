@@ -61,8 +61,8 @@ def page(path, title, desc, body, active='', solid=False, quote_pill=False, scri
 <meta name="description" content="{html.escape(desc)}">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 {FONTS}
-<link rel="stylesheet" href="/app.css?v=3">
-<link rel="stylesheet" href="/site.css?v=3">
+<link rel="stylesheet" href="/app.css?v=4">
+<link rel="stylesheet" href="/site.css?v=4">
 {extra_head}
 </head>
 <body class="{body_class}">
@@ -269,7 +269,7 @@ def build():
     # Account
     page('account.html', 'My account | Eleven Fashion', 'Log in to follow your orders, approve mockups and view and pay your invoices.',
          open(os.path.join(SRC, 'account.html')).read(), active='/account', solid=True,
-         scripts='<script src="/account.js?v=3"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
+         scripts='<script src="/account.js?v=4"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
 
     # Invoice (printable)
     page('invoice.html', 'Invoice | Eleven Fashion', 'Invoice', open(os.path.join(SRC, 'invoice.html')).read(), solid=True, footer=False,
