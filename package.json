@@ -1,0 +1,10 @@
+{
+  "name": "eleven-fashion-quote",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Eleven Fashion: showroom and quote requests for custom apparel",
+  "engines": { "node": "22.x" },
+  "dependencies": {
+    "@vercel/blob": "2.9.0"
+  }
+}
