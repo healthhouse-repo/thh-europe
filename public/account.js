@@ -98,7 +98,7 @@
     $('orders').innerHTML = os.length ? os.map(function (o) {
       var invs = (D.invoices || []).filter(function (i) { return i.order_id === o.id && i.status === 'open'; });
       return '<article class="ocard">' +
-        '<div class="ohead"><div><small>' + esc(o.number) + ' · ' + date(o.created_at) + (o.quote_ref ? ' · Quote ' + esc(o.quote_ref) : '') + '</small><h3>' + esc(o.title || 'Order') + '</h3></div>' +
+        '<div class="ohead"><div><small>' + esc(o.number) + ' · ' + date(o.created_at) + (o.quote_ref ? '<span class="qref"> · Quote ' + esc(o.quote_ref) + '</span>' : '') + '</small><h3>' + esc(o.title || 'Order') + '</h3></div>' +
         '<span class="badge s-' + esc(o.status) + '">' + esc(D.labels[o.status] || o.status) + '</span></div>' +
         tracker(o) + mockupBlock(o) + shipBlock(o) +
         (invs.length ? '<div class="due">Open invoice: ' + invs.map(function (i) { return '<b>' + esc(i.number) + '</b> ' + money(i.currency, i.total) + ' <button class="linkbtn" data-pay="' + i.id + '">Pay now</button>'; }).join(' · ') + '</div>' : '') +
@@ -122,12 +122,13 @@
     var p = e.target.closest('[data-pay]'); if (p) openPay(p.dataset.pay);
   };
 
+  function acts(i, cls) { return '<div class="' + cls + '">' + (i.status === 'open' ? '<button class="btn yellow sm" data-pay="' + i.id + '">Pay</button>' : '') + '<a class="linkbtn" href="/invoice?id=' + i.id + '" target="_blank">View / PDF</a></div>'; }
   function renderInvoices() {
     var is = D.invoices || [];
-    $('invoices').innerHTML = is.length ? '<div class="tablewrap"><table class="itable"><thead><tr><th>Invoice</th><th>Date</th><th>Order</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>' + is.map(function (i) {
+    $('invoices').innerHTML = is.length ? '<div class="tablewrap"><table class="itable"><thead><tr><th>Invoice</th><th>Date</th><th class="icol-o">Order</th><th>Amount</th><th>Status</th><th class="iacts"></th></tr></thead><tbody>' + is.map(function (i) {
       var o = (D.orders || []).find(function (x) { return x.id === i.order_id; });
-      return '<tr><td><b>' + esc(i.number) + '</b></td><td>' + date(i.issued_at) + (i.status === 'open' && i.due_date ? '<br><small class="muted">due ' + date(i.due_date) + '</small>' : '') + '</td><td>' + esc(o ? o.number : '') + '</td><td>' + money(i.currency, i.total) + '</td><td><span class="badge i-' + esc(i.status) + '">' + (i.status === 'paid' ? 'Paid' : i.status === 'void' ? 'Cancelled' : 'Open') + '</span></td>' +
-        '<td class="acts"><a class="linkbtn" href="/invoice?id=' + i.id + '" target="_blank">View / PDF</a>' + (i.status === 'open' ? '<button class="btn yellow sm" data-pay="' + i.id + '">Pay</button>' : '') + '</td></tr>';
+      return '<tr><td><b>' + esc(i.number) + '</b></td><td>' + date(i.issued_at) + (i.status === 'open' && i.due_date ? '<br><small class="muted">due ' + date(i.due_date) + '</small>' : '') + '</td><td class="icol-o">' + esc(o ? o.number : '') + '</td><td>' + money(i.currency, i.total) + '</td><td><span class="badge i-' + esc(i.status) + '">' + (i.status === 'paid' ? 'Paid' : i.status === 'void' ? 'Cancelled' : 'Open') + '</span>' + acts(i, 'mact') + '</td>' +
+        '<td class="iacts">' + acts(i, 'acts') + '</td></tr>';
     }).join('') + '</tbody></table></div>' : '<div class="empty">No invoices yet.</div>';
   }
   $('invoices').onclick = function (e) { var p = e.target.closest('[data-pay]'); if (p) openPay(p.dataset.pay); };

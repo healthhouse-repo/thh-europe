@@ -26,17 +26,17 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
 NAV = [('/services', 'Services'), ('/about', 'About'), ('/process', 'Process'), ('/contact', 'Contact')]
 
 def header(active, solid, quote_pill):
-    links = ''.join(f'<a href="{h}"{" class=on" if h == active else ""}>{t}</a>' for h, t in NAV)
-    acct = f'<a href="/account" class="acct{" on" if active == "/account" else ""}" aria-label="My account"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Account</span></a>'
-    cta = ('<a class="cta" href="#basket">Quote <span id="navCount" class="pill">0</span></a>' if quote_pill
+    links = ''.join(f'<a href="{h}"{" class=on" if h == active else ""}>{t}</a>' for h, t in NAV) + '<a href="/design" class="mob-only">Start designing</a><a href="/account" class="mob-only">My account</a>'
+    acct = f'<a href="/account" class="acct{" on" if active == "/account" else ""}" aria-label="My account"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>My account</span></a>'
+    cta = ('<a class="cta qcta" href="#basket">Quote <span id="navCount" class="pill">0</span></a>' if quote_pill
            else '<a class="cta" href="/design">Start designing</a>')
     return f'''<header class="hdr{' solid fixed' if solid else ''}" id="hdr"><div class="wrap">
   <a class="logo" href="/" aria-label="Eleven Fashion home">
     <img class="lw" src="https://www.elevenfashion.co.th/images/logo-white-retina.png" alt="Eleven Fashion" onerror="this.outerHTML='<b class=&quot;wm lw&quot;>ELEVEN<i>|</i>FASHION</b>'">
     <img class="ld" src="https://www.elevenfashion.co.th/images/scroll-logo-retina.png" alt="" onerror="this.outerHTML='<b class=&quot;wm ld&quot;>ELEVEN<i>|</i>FASHION</b>'">
   </a>
-  <button class="burger" type="button" aria-label="Menu" onclick="document.body.classList.toggle('menu')"><span></span><span></span></button>
-  <nav>{links}{acct}{cta}</nav>
+  <nav>{links}</nav>
+  <div class="hacts">{acct}{cta}<button class="burger" type="button" aria-label="Menu" onclick="document.body.classList.toggle('menu')"><span></span><span></span></button></div>
 </div></header>'''
 
 FOOTER = '''<section class="callout"><div class="wrap">
@@ -61,8 +61,8 @@ def page(path, title, desc, body, active='', solid=False, quote_pill=False, scri
 <meta name="description" content="{html.escape(desc)}">
 <link rel="icon" href="https://www.elevenfashion.co.th/favicon.ico">
 {FONTS}
-<link rel="stylesheet" href="/app.css?v=6">
-<link rel="stylesheet" href="/site.css?v=6">
+<link rel="stylesheet" href="/app.css?v=8">
+<link rel="stylesheet" href="/site.css?v=8">
 {extra_head}
 </head>
 <body class="{body_class}">
@@ -222,7 +222,7 @@ def build():
     page('design.html', 'Design your apparel | Eleven Fashion',
          'Choose a product, fabric, colour and sizes, add your logo or text and request a quote from Eleven Fashion in Bangkok.',
          '<div class="pagetop"><div class="wrap"><div class="lbl">Designer</div><h1 class="big">Design your apparel</h1><p class="intro-p">Pick a product, choose fabric, colour and sizes, put your logo or text on it and request a quote. No payment needed.</p></div></div>\n' + designer,
-         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=6"></script>')
+         active='/design', solid=True, quote_pill=True, scripts='<script src="/garments.js"></script>\n<script src="/app.js?v=8"></script>')
 
     # Services
     cards = ''.join(f'''<article class="scard"><div class="simg" style="--img:url('{img(P[ph], 1200)}')"></div><div class="stxt"><h3>{t}</h3><p>{d}</p></div></article>''' for t, ph, d in SERVICES)
@@ -318,7 +318,7 @@ def build():
     # Account
     page('account.html', 'My account | Eleven Fashion', 'Log in to follow your orders, approve mockups and view and pay your invoices.',
          open(os.path.join(SRC, 'account.html')).read(), active='/account', solid=True,
-         scripts='<script src="/account.js?v=6"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
+         scripts='<script src="/account.js?v=8"></script>', extra_head='<meta name="robots" content="noindex">', body_class='acctpage')
 
     # Invoice (printable)
     page('invoice.html', 'Invoice | Eleven Fashion', 'Invoice', open(os.path.join(SRC, 'invoice.html')).read(), solid=True, footer=False,
