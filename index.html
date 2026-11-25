@@ -1157,7 +1157,7 @@
 
   /* Valuta: alle bedragen uit de API zijn in EUR; weergave in THB (standaard), EUR of USD. */
   var CUR_KEY = "thha_cur", CURS = ["THB","EUR","USD"];
-  var FX = { EUR: 1, THB: 37.5, USD: 1.08 };
+  var FX = { EUR: 1, THB: 37.32, USD: 1.09 };
   try{ var fxc = JSON.parse(localStorage.getItem("thha_fx") || "null"); if(fxc && fxc.THB && fxc.USD){ FX.THB = fxc.THB; FX.USD = fxc.USD; FX.date = fxc.date; FX.fetched = fxc.fetched; } }catch(e){}
   var currentCur = (function(){ try{ var c = localStorage.getItem(CUR_KEY); return CURS.indexOf(c) > -1 ? c : "THB"; }catch(e){ return "THB"; } })();
   function grp(str, sep){ return str.replace(/\B(?=(\d{3})+(?!\d))/g, sep); }
@@ -1193,7 +1193,7 @@
     updateCurUI();
     var today = new Date().toISOString().slice(0,10);
     if(FX.fetched === today) return;
-    fetch("https://api.frankfurter.app/latest?from=EUR&to=THB,USD").then(function(r){ return r.json(); }).then(function(d){
+    fetch("https://api.frankfurter.dev/v1/latest?base=EUR&symbols=THB,USD").then(function(r){ return r.json(); }).then(function(d){
       if(!d || !d.rates || !d.rates.THB || !d.rates.USD) return;
       var changed = d.rates.THB !== FX.THB || d.rates.USD !== FX.USD;
       FX.THB = d.rates.THB; FX.USD = d.rates.USD; FX.date = d.date;
