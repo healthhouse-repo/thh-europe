@@ -998,6 +998,8 @@
   }
   var BRAND_INFO, CATEGORY_INFO, BRANDS, CATEGORIES, BRAND_COUNTS;
   function deriveIndexes(){
+    /* THH Asia: Jennah niet tonen */
+    for(var _j = PRODUCTS.length - 1; _j >= 0; _j--){ if(/jennah/i.test(String(PRODUCTS[_j].brand || "") + " " + String(PRODUCTS[_j].name || ""))) PRODUCTS.splice(_j, 1); }
     BRAND_INFO = deriveSorted(PRODUCTS, "brand");
     CATEGORY_INFO = deriveSorted(PRODUCTS, "category");
     BRANDS = BRAND_INFO.map(function(b){ return b.name; });
