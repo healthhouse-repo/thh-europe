@@ -749,6 +749,7 @@
 
 
   .lang-switch{position:relative;}
+  #curSwitch{margin-right:6px;}
   .lang-btn{display:flex;align-items:center;background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.82);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.05em;padding:6px 9px;border-radius:4px;cursor:pointer;transition:color .15s ease,border-color .15s ease;}
   .lang-btn:hover{color:#fff;border-color:rgba(255,255,255,0.6);}
   .lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--header-bg,#111);border:1px solid #2a2a2a;border-radius:6px;min-width:158px;box-shadow:0 12px 32px rgba(0,0,0,.4);overflow:hidden;z-index:1200;}
@@ -841,7 +842,7 @@
   </defs>
 </svg>
 <div class="brand-bar"><div class="container"><span data-i18n="bar_bulk">&#128230; Groothandelsprijzen vanaf 1 stuk</span><span class="sep">&middot;</span><span data-i18n="bar_freeship">&#128666; Gratis levering vanaf &euro; 1.000,-</span><span class="sep">&middot;</span><span data-i18n="bar_official">&#10003; Offici&euml;el distributeur</span></div></div>
-<nav class="navbar" id="navbar"><div class="container nav-inner"><div class="nav-left"><a href="#home" class="logo-link" aria-label="THH Asia home"><span class="tgl-logo"><span class="tgl-badge">THHAS</span><span class="tgl-word"><span class="tgl-main">THH <span class="tgl-accent">ASIA</span></span><span class="tgl-sub">Wholesale Supplements</span></span></span></a><ul class="nav-links"><li class="nav-item has-mega"><a href="#merken" class="top-link" data-i18n="nav_brands">Merken</a><div class="dropdown mega" id="navBrandDropdown"></div></li><li class="nav-item"><a href="#catalogus" class="top-link" data-i18n="nav_catalog">Catalogus</a></li><li class="nav-item"><a href="#word-klant" class="top-link" data-i18n="nav_become">Word Klant</a></li><li class="nav-item"><a href="#over-ons" class="top-link" data-i18n="nav_about">Over Ons</a></li><li class="nav-item"><a href="#contact" class="top-link" data-i18n="nav_contact">Contact</a></li></ul></div><div class="nav-right"><div class="lang-switch" id="langSwitch"><button class="lang-btn" id="langBtn" type="button" aria-haspopup="true" aria-expanded="false"><span id="langCurrent">EN</span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:5px;"><path d="M6 9l6 6 6-6"/></svg></button><div class="lang-menu" id="langMenu"><button type="button" data-lang="en">EN &middot; English</button><button type="button" data-lang="th">TH &middot; ไทย</button></div></div><a href="#inloggen" class="account-link" id="accountLink">Inloggen</a><button class="icon-btn" id="searchToggle" data-i18n-attr="aria-label:aria_search" aria-label="zoeken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button><button class="icon-btn" id="cartToggle" data-i18n-attr="aria-label:aria_cart" aria-label="offertelijst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293A1 1 0 0 0 5.414 17H17M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span class="cart-badge" id="cartBadge" style="display:none;">0</span></button><button class="hamburger" id="hamburgerBtn" data-i18n-attr="aria-label:aria_menu" aria-label="menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button></div></div><div class="mobile-menu" id="mobileMenu"><a href="#merken" data-i18n="nav_brands">Merken</a><a href="#catalogus" data-i18n="nav_catalog">Catalogus</a><a href="#word-klant" data-i18n="nav_become">Word Klant</a><a href="#over-ons" data-i18n="nav_about">Over Ons</a><a href="#contact" data-i18n="nav_contact">Contact</a><a href="#faq" data-i18n="nav_faq">Veelgestelde vragen</a><a href="#inloggen" id="mobileLoginLink" data-i18n="nav_login">Inloggen</a><a href="#account" id="mobileAccountLink" data-i18n="nav_account" style="display:none;">Mijn account</a><div class="mobile-lang" id="mobileLang"><button type="button" data-lang="en">EN</button><button type="button" data-lang="th">TH</button></div></div></nav>
+<nav class="navbar" id="navbar"><div class="container nav-inner"><div class="nav-left"><a href="#home" class="logo-link" aria-label="THH Asia home"><span class="tgl-logo"><span class="tgl-badge">THHAS</span><span class="tgl-word"><span class="tgl-main">THH <span class="tgl-accent">ASIA</span></span><span class="tgl-sub">Wholesale Supplements</span></span></span></a><ul class="nav-links"><li class="nav-item has-mega"><a href="#merken" class="top-link" data-i18n="nav_brands">Merken</a><div class="dropdown mega" id="navBrandDropdown"></div></li><li class="nav-item"><a href="#catalogus" class="top-link" data-i18n="nav_catalog">Catalogus</a></li><li class="nav-item"><a href="#word-klant" class="top-link" data-i18n="nav_become">Word Klant</a></li><li class="nav-item"><a href="#over-ons" class="top-link" data-i18n="nav_about">Over Ons</a></li><li class="nav-item"><a href="#contact" class="top-link" data-i18n="nav_contact">Contact</a></li></ul></div><div class="nav-right"><div class="lang-switch" id="curSwitch"><button class="lang-btn" id="curBtn" type="button" aria-haspopup="true" aria-expanded="false"><span id="curCurrent">THB</span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:5px;"><path d="M6 9l6 6 6-6"/></svg></button><div class="lang-menu" id="curMenu"><button type="button" data-cur="THB">&#3647; THB &middot; Thai baht</button><button type="button" data-cur="EUR">&euro; EUR &middot; Euro</button><button type="button" data-cur="USD">$ USD &middot; US dollar</button></div></div><div class="lang-switch" id="langSwitch"><button class="lang-btn" id="langBtn" type="button" aria-haspopup="true" aria-expanded="false"><span id="langCurrent">EN</span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:5px;"><path d="M6 9l6 6 6-6"/></svg></button><div class="lang-menu" id="langMenu"><button type="button" data-lang="en">EN &middot; English</button><button type="button" data-lang="th">TH &middot; ไทย</button></div></div><a href="#inloggen" class="account-link" id="accountLink">Inloggen</a><button class="icon-btn" id="searchToggle" data-i18n-attr="aria-label:aria_search" aria-label="zoeken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button><button class="icon-btn" id="cartToggle" data-i18n-attr="aria-label:aria_cart" aria-label="offertelijst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293A1 1 0 0 0 5.414 17H17M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span class="cart-badge" id="cartBadge" style="display:none;">0</span></button><button class="hamburger" id="hamburgerBtn" data-i18n-attr="aria-label:aria_menu" aria-label="menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button></div></div><div class="mobile-menu" id="mobileMenu"><a href="#merken" data-i18n="nav_brands">Merken</a><a href="#catalogus" data-i18n="nav_catalog">Catalogus</a><a href="#word-klant" data-i18n="nav_become">Word Klant</a><a href="#over-ons" data-i18n="nav_about">Over Ons</a><a href="#contact" data-i18n="nav_contact">Contact</a><a href="#faq" data-i18n="nav_faq">Veelgestelde vragen</a><a href="#inloggen" id="mobileLoginLink" data-i18n="nav_login">Inloggen</a><a href="#account" id="mobileAccountLink" data-i18n="nav_account" style="display:none;">Mijn account</a><div class="mobile-lang" id="mobileLang"><button type="button" data-lang="en">EN</button><button type="button" data-lang="th">TH</button></div><div class="mobile-lang" id="mobileCur"><button type="button" data-cur="THB">&#3647; THB</button><button type="button" data-cur="EUR">&euro; EUR</button><button type="button" data-cur="USD">$ USD</button></div></div></nav>
 <main>
 <section class="page active" id="page-home">
 <section class="hero"><div class="hero-glow"></div><div class="container"><div class="hero-text"><div class="hero-eyebrow" data-i18n="hero_eyebrow">B2B Groothandel Sportvoeding</div><h1 data-i18n="hero_h1">Groothandel<br/><span class="accent-text">Sportvoeding</span></h1><p data-i18n="hero_p">THH Asia levert de sterkste sportvoedingsmerken aan webshops, sportscholen, retail en horeca in de Benelux. Uit eigen voorraad, met scherpe staffelprijzen en een vaste accountmanager.</p><div class="hero-cta"><a href="#catalogus" class="btn btn-dark" style="background:var(--cellucor-red);border-color:var(--cellucor-red);color:var(--cellucor-black);" data-i18n="hero_btn_catalog">Bekijk catalogus</a><a href="#word-klant" class="btn btn-outline-white" data-i18n="hero_btn_customer">Word klant</a></div></div><div class="hero-image-wrap"><img src="./assets/img/dope_lifestyle-deadlift.jpg" alt="Sporter in de gym" style="border-radius:10px;max-height:520px;" /></div></div></section>
@@ -905,6 +906,9 @@
     var o = I18N[key];
     var s = (o && (o[currentLang] || o.en)) || key;
     if(vars){ Object.keys(vars).forEach(function(k){ s = s.split("{" + k + "}").join(vars[k]); }); }
+    if(typeof FX !== "undefined" && FX && currentCur && currentCur !== "EUR" && s.indexOf("\u20ac") > -1){
+      s = s.replace(/\u20ac ?([\d.]+),-/g, function(m, num){ return fmtEur(Number(num.replace(/\./g, ""))); });
+    }
     return s;
   }
   function descFor(p){
@@ -1028,6 +1032,7 @@
     if(w && w <= 64){ img.style.maxHeight = "36px"; var n = document.createElement("span"); n.className = "bt-name"; n.textContent = img.getAttribute("data-name") || ""; img.parentNode.style.flexDirection = "column"; img.parentNode.style.gap = "8px"; img.parentNode.appendChild(n); }
   };
   window.thhLogoFail = function(img){ var w = img.parentNode; if(w){ w.innerHTML = '<span class="bt-name">' + esc(img.getAttribute("data-name") || "") + '</span>'; } };
+  I18N.charged_eur = {en:"Invoiced and paid in euro", th:"ออกใบแจ้งหนี้และชำระเป็นยูโร", nl:"Gefactureerd en betaald in euro"};
   I18N.mk_all = {en:"View all brands", th:"ดูแบรนด์ทั้งหมด", nl:"Bekijk alle merken", fr:"Voir toutes les marques", de:"Alle Marken ansehen", bs:"Pogledaj sve brendove"};
   function renderBrandNav(){
     var STRIP_BRANDS = ["QNT","NOW Foods","Universal Nutrition","USN","MUTANT","5% Nutrition Rich Piana","Animal","Applied Nutrition","RedCon1","Yamamoto Nutrition","Gaspari Nutrition"].filter(function(b){ return BRAND_COUNTS[b]; });
@@ -1098,7 +1103,7 @@
     filterCat: "Alle categorie\u00ebn"
   };
 
-  function fmtPrice(n){ return "\u20ac " + n.toFixed(2).replace(".", ","); }
+  function fmtPrice(n){ return fmtEur(n); }
   function byId(id){ return document.getElementById(id); }
   function esc(s){ return String(s).replace(/&(?![a-zA-Z#0-9]+;)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
   function fullName(p){ return p.name.indexOf(p.brand) === 0 ? p.name : p.brand + " " + p.name; }
@@ -1150,12 +1155,53 @@
   }
   indexProductsById();
 
-  function fmtEur(n){
+  /* Valuta: alle bedragen uit de API zijn in EUR; weergave in THB (standaard), EUR of USD. */
+  var CUR_KEY = "thha_cur", CURS = ["THB","EUR","USD"];
+  var FX = { EUR: 1, THB: 37.5, USD: 1.08 };
+  try{ var fxc = JSON.parse(localStorage.getItem("thha_fx") || "null"); if(fxc && fxc.THB && fxc.USD){ FX.THB = fxc.THB; FX.USD = fxc.USD; FX.date = fxc.date; FX.fetched = fxc.fetched; } }catch(e){}
+  var currentCur = (function(){ try{ var c = localStorage.getItem(CUR_KEY); return CURS.indexOf(c) > -1 ? c : "THB"; }catch(e){ return "THB"; } })();
+  function grp(str, sep){ return str.replace(/\B(?=(\d{3})+(?!\d))/g, sep); }
+  function fmtEurReal(n){
     if(n === null || n === undefined || isNaN(n)) return "";
     var s = Math.abs(n).toFixed(2).split(".");
-    s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return (n < 0 ? "- " : "") + "\u20ac " + s[0] + "," + s[1];
+    return (n < 0 ? "- " : "") + "€ " + grp(s[0], ".") + "," + s[1];
   }
+  function fmtEur(n){
+    if(n === null || n === undefined || isNaN(n)) return "";
+    n = Number(n);
+    if(currentCur === "EUR") return fmtEurReal(n);
+    var v = Math.abs(n * FX[currentCur]), neg = n < 0 ? "- " : "";
+    if(currentCur === "THB") return neg + "฿ " + grp(String(Math.round(v)), ",");
+    var s = v.toFixed(2).split(".");
+    return neg + "$ " + grp(s[0], ",") + "." + s[1];
+  }
+  function updateCurUI(){
+    var cc = document.getElementById("curCurrent"); if(cc) cc.textContent = currentCur;
+    document.querySelectorAll("#curMenu button, #mobileCur button").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-cur") === currentCur); });
+  }
+  function setCur(c){
+    if(CURS.indexOf(c) < 0) return;
+    currentCur = c; try{ localStorage.setItem(CUR_KEY, c); }catch(e){}
+    var m = document.getElementById("curMenu"); if(m) m.classList.remove("open");
+    setLang(currentLang); updateCurUI();
+  }
+  function setupCurSwitcher(){
+    var btn = document.getElementById("curBtn"), menu = document.getElementById("curMenu");
+    if(btn && menu) btn.addEventListener("click", function(e){ e.stopPropagation(); var lm = document.getElementById("langMenu"); if(lm) lm.classList.remove("open"); var open = menu.classList.toggle("open"); btn.setAttribute("aria-expanded", open ? "true" : "false"); });
+    document.querySelectorAll("#curMenu button, #mobileCur button").forEach(function(b){ b.addEventListener("click", function(e){ e.stopPropagation(); setCur(b.getAttribute("data-cur")); }); });
+    document.addEventListener("click", function(){ if(menu) menu.classList.remove("open"); });
+    updateCurUI();
+    var today = new Date().toISOString().slice(0,10);
+    if(FX.fetched === today) return;
+    fetch("https://api.frankfurter.app/latest?from=EUR&to=THB,USD").then(function(r){ return r.json(); }).then(function(d){
+      if(!d || !d.rates || !d.rates.THB || !d.rates.USD) return;
+      var changed = d.rates.THB !== FX.THB || d.rates.USD !== FX.USD;
+      FX.THB = d.rates.THB; FX.USD = d.rates.USD; FX.date = d.date;
+      try{ localStorage.setItem("thha_fx", JSON.stringify({THB: FX.THB, USD: FX.USD, date: d.date, fetched: today})); }catch(e){}
+      if(changed && currentCur !== "EUR") setLang(currentLang);
+    }).catch(function(){});
+  }
+
   function lsGet(k){ try{ return localStorage.getItem(k) || sessionStorage.getItem(k) || ""; }catch(e){ return ""; } }
   function getToken(){ return lsGet(TOKEN_KEY); }
   function isRemembered(){ try{ return !!localStorage.getItem(TOKEN_KEY); }catch(e){ return false; } }
@@ -1381,7 +1427,7 @@
     if(!ACCT.orders.length){ el.innerHTML = '<tr><td colspan="8">' + t("no_orders") + '</td></tr>'; return; }
     el.innerHTML = ACCT.orders.map(function(o){
       var inv = o.invoice && o.invoice.no ? (o.invoice.id ? '<a href="' + invHref(o.invoice.id) + '">' + esc(o.invoice.no) + '</a>' : o.invoice.url ? '<a href="' + esc(o.invoice.url) + '" target="_blank" rel="noopener">' + esc(o.invoice.no) + '</a>' : esc(o.invoice.no)) : "";
-      var row = '<tr><td>' + esc(o.no) + '</td><td>' + fmtDate(o.date) + '</td><td>' + o.items + '</td><td>' + fmtEur(o.total) +
+      var row = '<tr><td>' + esc(o.no) + '</td><td>' + fmtDate(o.date) + '</td><td>' + o.items + '</td><td>' + fmtEurReal(o.total) +
         '</td><td><span class="status-pill ' + statusClass(o.status) + '">' + statusLabel(o.status) + '</span></td><td>' + trackLinks(o) +
         '</td><td>' + inv + '</td><td><button class="link-btn" data-order="' + esc(o.no) + '">' + t("order_details") + '</button></td></tr>';
       if(ACCT.detail[o.no]) row += '<tr class="order-detail-row"><td colspan="8">' + orderDetailHtml(o, ACCT.detail[o.no]) + '</td></tr>';
@@ -1391,16 +1437,16 @@
   function orderDetailHtml(o, d){
     if(d === "loading") return t("loading");
     var lines = (d.lines || []).map(function(l){
-      return '<tr><td>' + esc(l.name) + '</td><td>' + l.qty + '&times;</td><td>' + fmtEur(l.unit) + '</td><td>' + fmtEur(l.total) + '</td></tr>';
+      return '<tr><td>' + esc(l.name) + '</td><td>' + l.qty + '&times;</td><td>' + fmtEurReal(l.unit) + '</td><td>' + fmtEurReal(l.total) + '</td></tr>';
     }).join("");
     var addr = d.shipping_address ? esc([d.shipping_address.name, d.shipping_address.street, (d.shipping_address.postcode || "") + " " + (d.shipping_address.city || ""), d.shipping_address.country].filter(Boolean).join(", ")) : "";
     var btns = '<button class="btn btn-outline btn-sm" data-reorder="' + esc(o.no) + '">' + t("reorder") + '</button>';
     if(o.status === "awaiting_payment") btns += ' <button class="btn btn-dark btn-sm" data-pay="' + esc(o.no) + '">' + t("paid_retry") + '</button>';
     return '<table class="mini-table">' + lines +
-      '<tr class="sum"><td colspan="3">' + t("cart_subtotal") + '</td><td>' + fmtEur(d.subtotal) + '</td></tr>' +
-      '<tr class="sum"><td colspan="3">' + t("cart_ship_lbl") + '</td><td>' + (d.shipping ? fmtEur(d.shipping) : t("free")) + '</td></tr>' +
-      '<tr class="sum"><td colspan="3">' + t("cart_vat") + '</td><td>' + fmtEur(d.vat) + '</td></tr>' +
-      '<tr class="sum total"><td colspan="3">' + t("cart_total") + '</td><td>' + fmtEur(d.total) + '</td></tr></table>' +
+      '<tr class="sum"><td colspan="3">' + t("cart_subtotal") + '</td><td>' + fmtEurReal(d.subtotal) + '</td></tr>' +
+      '<tr class="sum"><td colspan="3">' + t("cart_ship_lbl") + '</td><td>' + (d.shipping ? fmtEurReal(d.shipping) : t("free")) + '</td></tr>' +
+      '<tr class="sum"><td colspan="3">' + t("cart_vat") + '</td><td>' + fmtEurReal(d.vat) + '</td></tr>' +
+      '<tr class="sum total"><td colspan="3">' + t("cart_total") + '</td><td>' + fmtEurReal(d.total) + '</td></tr></table>' +
       (addr ? '<p class="muted-line">' + t("co_address") + ': ' + addr + (d.po ? ' &middot; PO ' + esc(d.po) : '') + '</p>' : '') +
       '<div class="detail-actions">' + btns + '</div>';
   }
@@ -1413,7 +1459,7 @@
       if(!res.ok) return;
       ACCT.invoices = res.data.invoices || [];
       var s = res.data.summary || {};
-      if(sm) sm.innerHTML = ACCT.invoices.length ? esc(t("inv_sum", { n: ACCT.invoices.length, open: fmtEur(s.open || 0) })) + (s.late ? '<span class="late">' + esc(t("inv_sum_late", { n: s.late })) + '</span>' : "") : "";
+      if(sm) sm.innerHTML = ACCT.invoices.length ? esc(t("inv_sum", { n: ACCT.invoices.length, open: fmtEurReal(s.open || 0) })) + (s.late ? '<span class="late">' + esc(t("inv_sum_late", { n: s.late })) + '</span>' : "") : "";
       if(!ACCT.invoices.length){ el.innerHTML = '<tr><td colspan="8">' + t("no_invoices") + '</td></tr>'; return; }
       el.innerHTML = ACCT.invoices.map(function(i){
         var late = i.state === "late" || i.state === "reminded", paid = i.state === "paid";
@@ -1421,7 +1467,7 @@
         pill += '<span class="status-pill ' + (paid ? "status-geleverd" : (late && !i.credit) ? "status-geannuleerd" : "status-behandeling") + '">' + (i.credit && !paid ? t("inv_settle") : invState(i.state)) + '</span>';
         var link = i.id ? '<a class="inv-link" href="' + invHref(i.id) + '">' + t("inv_view_btn") + ' &rarr;</a>' : "";
         return '<tr><td>' + (i.id ? '<a href="' + invHref(i.id) + '">' + esc(i.no) + '</a>' : esc(i.no)) + '</td><td>' + esc(i.order || i.reference || "") + '</td><td>' + fmtDate(i.date) + '</td><td>' + fmtDate(i.due) +
-          '</td><td>' + fmtEur(i.total) + '</td><td>' + (Number(i.unpaid) > 0 && !paid ? fmtEur(i.unpaid) : "&ndash;") + '</td><td>' + pill + '</td><td>' + link + '</td></tr>';
+          '</td><td>' + fmtEurReal(i.total) + '</td><td>' + (Number(i.unpaid) > 0 && !paid ? fmtEurReal(i.unpaid) : "&ndash;") + '</td><td>' + pill + '</td><td>' + link + '</td></tr>';
       }).join("");
     });
   }
@@ -1560,6 +1606,7 @@
     else if(q.vat_mode === "export") h += '<div class="tot-row note"><span>' + t("vat_export") + '</span><span>' + fmtEur(0) + '</span></div>';
     else (q.vat_lines || []).forEach(function(v){ h += '<div class="tot-row"><span>' + t("cart_vat") + ' ' + String(v.rate).replace(".", ",") + '%</span><span>' + fmtEur(v.amount) + '</span></div>'; });
     h += '<div class="tot-row total"><span>' + t("cart_total") + '</span><span>' + (q.total === null ? t("on_request") : fmtEur(q.total)) + '</span></div>';
+    if(q.total !== null && currentCur !== "EUR") h += '<div class="tot-row note"><span>' + t("charged_eur") + '</span><span>' + fmtEurReal(q.total) + '</span></div>';
     return h;
   }
   function messagesHtml(q){
@@ -2475,6 +2522,7 @@
   /* ---------- INIT ---------- */
   applyI18n();
   setupLangSwitcher();
+  setupCurSwitcher();
   updateLangUI();
   renderFilters();
   renderCatalog();
