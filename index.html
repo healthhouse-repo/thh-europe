@@ -892,14 +892,8 @@
   function browserLang(){
     /* Zoekmachines krijgen de standaardtaal van de site (Nederlands), zoals in de HTML staat */
     if(/bot|crawler|spider|crawling|google-inspectiontool|lighthouse/i.test(navigator.userAgent || "")) return "en";
-    var l = [].concat(navigator.languages || [], navigator.language || []);
-    for(var i = 0; i < l.length; i++){
-      var c = String(l[i] || "").toLowerCase().slice(0, 2);
-      if(c === "hr" || c === "sr") c = "bs";
-      if(LANGS.indexOf(c) > -1) return c;
-      if(c === "en") return "en";
-    }
-    return "en";
+    /* Standaardtaal voor bezoekers: Thais (wie zelf EN kiest, houdt EN) */
+    return "th";
   }
   var currentLang = (function(){ try{ var s = localStorage.getItem(LANG_KEY); return LANGS.indexOf(s) > -1 ? s : browserLang(); }catch(e){ return browserLang(); } })();
   function t(key, vars){
